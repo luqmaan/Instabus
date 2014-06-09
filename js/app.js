@@ -41,7 +41,7 @@ function drawVehicles(vehicles) {
             var lat = posStr.split(',')[0],
                 lon = posStr.split(',')[1];
 
-            L.circleMarker([lat, lon], 50).bindLabel(vehicle.Vehicleid + ' ' + i, {
+            L.circleMarker([lat, lon], 50).bindLabel(vehicle.Direction + ' ' +  vehicle.Vehicleid + ' ' + i, {
                 noHide: true
             }).addTo(map);
         });
