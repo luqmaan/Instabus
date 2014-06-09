@@ -1,0 +1,54 @@
+[
+  {
+    "trip_short_name" : "<null>",
+    "direction_id" : "1",
+    "block_id" : "550-53",
+    "bikes_allowed" : "0",
+    "trip_headsign" : "NORTHBOUND",
+    "service_id" : "4160",
+    "trip_type" : "<null>",
+    "shape_id" : "31803",
+    "route_id" : "550",
+    "wheelchair_accessible" : "1",
+    "trip_id" : "1350046"
+  },
+  {
+    "trip_short_name" : "<null>",
+    "direction_id" : "0",
+    "block_id" : "801-02",
+    "bikes_allowed" : "0",
+    "trip_headsign" : "NORTHBOUND",
+    "service_id" : "2200",
+    "trip_type" : "<null>",
+    "shape_id" : "31901",
+    "route_id" : "801",
+    "wheelchair_accessible" : "1",
+    "trip_id" : "1335341"
+  },
+  {
+    "trip_short_name" : "<null>",
+    "direction_id" : "0",
+    "block_id" : "550-53",
+    "bikes_allowed" : "0",
+    "trip_headsign" : "SOUTHBOUND",
+    "service_id" : "4160",
+    "trip_type" : "<null>",
+    "shape_id" : "31797",
+    "route_id" : "550",
+    "wheelchair_accessible" : "1",
+    "trip_id" : "1350042"
+  },
+  {
+    "trip_short_name" : "<null>",
+    "direction_id" : "1",
+    "block_id" : "801-01",
+    "bikes_allowed" : "0",
+    "trip_headsign" : "SOUTHBOUND",
+    "service_id" : "2200",
+    "trip_type" : "<null>",
+    "shape_id" : "31902",
+    "route_id" : "801",
+    "wheelchair_accessible" : "1",
+    "trip_id" : "1335379"
+  }
+]

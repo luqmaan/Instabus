@@ -1,0 +1,247 @@
+<!--
+        GET 200 http://www.capmetro.org/planner/s_buslocation.asp?route=*
+        {'access-control-allow-origin': 'http://cmtacustas1',
+ 'cache-control': 'private',
+ 'content-encoding': 'gzip',
+ 'content-length': '2403',
+ 'content-type': 'text/html',
+ 'date': 'Sun, 08 Jun 2014 02:41:55 GMT',
+ 'server': 'Microsoft-IIS/7.0',
+ 'set-cookie': 'ASPSESSIONIDCSBDBBRA=EPPFHJGBECAJHDLHGKBACLMB; path=/',
+ 'vary': 'Accept-Encoding',
+ 'x-powered-by': 'ASP.NET1a'}
+-->
+    <?xml version="1.0"?>
+<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" soap:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><BuslocationResponse xmlns="AT_WEB">
+			<Version>1.0</Version>
+			<Responsecode>0</Responsecode>
+			<Input>
+				<Route>*</Route>
+				<Direction>*</Direction>
+			</Input>
+			<Vehicles>
+				<Vehicle>
+					<Route>550</Route>
+					<Direction>N</Direction>
+					<Updatetime>09:40 PM</Updatetime>
+					<Vehicleid>11103</Vehicleid>
+					<Block>550-90</Block>
+					<Adherance>0</Adherance>
+					<Adhchange>S</Adhchange>
+					<Reliable>Y</Reliable>
+					<Offroute>N</Offroute>
+					<Stopped>N</Stopped>
+					<Inservice>Y</Inservice>
+					<Speed>20.95</Speed>
+					<Heading> 2</Heading>
+					<Routeid>44629</Routeid>
+					<Positions>
+						<Position>30.395325,-97.715767</Position>
+						<Position>30.392933,-97.716339</Position>
+						<Position>30.392492,-97.716492</Position>
+						<Position>30.387928,-97.717667</Position>
+						<Position>30.383032,-97.718872</Position>
+						<Position>30.377945,-97.720772</Position>
+					</Positions>
+				</Vehicle>
+				<Vehicle>
+					<Route>550</Route>
+					<Direction>S</Direction>
+					<Updatetime>09:32 PM</Updatetime>
+					<Vehicleid>10105</Vehicleid>
+					<Block>550-91</Block>
+					<Adherance>0</Adherance>
+					<Adhchange>S</Adhchange>
+					<Reliable>Y</Reliable>
+					<Offroute>N</Offroute>
+					<Stopped>N</Stopped>
+					<Inservice>Y</Inservice>
+					<Speed>13.69</Speed>
+					<Heading>27</Heading>
+					<Routeid>44681</Routeid>
+					<Positions>
+						<Position>30.265057,-97.739418</Position>
+						<Position>30.263929,-97.735558</Position>
+						<Position>30.263765,-97.733086</Position>
+						<Position>30.262609,-97.729416</Position>
+						<Position>30.262363,-97.727959</Position>
+						<Position>30.262115,-97.727264</Position>
+					</Positions>
+				</Vehicle>
+				<Vehicle>
+					<Route>550</Route>
+					<Direction>S</Direction>
+					<Updatetime>09:40 PM</Updatetime>
+					<Vehicleid>11104</Vehicleid>
+					<Block>550-92</Block>
+					<Adherance>0</Adherance>
+					<Adhchange>S</Adhchange>
+					<Reliable>Y</Reliable>
+					<Offroute>N</Offroute>
+					<Stopped>N</Stopped>
+					<Inservice>Y</Inservice>
+					<Speed>8.47</Speed>
+					<Heading>19</Heading>
+					<Routeid>44681</Routeid>
+					<Positions>
+						<Position>30.391668,-97.716713</Position>
+						<Position>30.392603,-97.716492</Position>
+						<Position>30.395491,-97.715767</Position>
+						<Position>30.413172,-97.710602</Position>
+						<Position>30.417324,-97.708992</Position>
+						<Position>30.421257,-97.705223</Position>
+					</Positions>
+				</Vehicle>
+				<Vehicle>
+					<Route>801</Route>
+					<Direction>S</Direction>
+					<Updatetime>09:40 PM</Updatetime>
+					<Vehicleid>5005</Vehicleid>
+					<Block>801-05</Block>
+					<Adherance>-4</Adherance>
+					<Adhchange>D</Adhchange>
+					<Reliable>Y</Reliable>
+					<Offroute>N</Offroute>
+					<Stopped>N</Stopped>
+					<Inservice>Y</Inservice>
+					<Speed>36.69</Speed>
+					<Heading>21</Heading>
+					<Routeid>44920</Routeid>
+					<Positions>
+						<Position>30.408003,-97.678238</Position>
+						<Position>30.419937,-97.674377</Position>
+						<Position>30.424337,-97.671402</Position>
+						<Position>30.421587,-97.665924</Position>
+						<Position>30.419195,-97.666428</Position>
+						<Position>30.418205,-97.668266</Position>
+					</Positions>
+				</Vehicle>
+				<Vehicle>
+					<Route>801</Route>
+					<Direction>N</Direction>
+					<Updatetime>09:40 PM</Updatetime>
+					<Vehicleid>5007</Vehicleid>
+					<Block>801-06</Block>
+					<Adherance>-3</Adherance>
+					<Adhchange>S</Adhchange>
+					<Reliable>Y</Reliable>
+					<Offroute>N</Offroute>
+					<Stopped>N</Stopped>
+					<Inservice>Y</Inservice>
+					<Speed>2.52</Speed>
+					<Heading> 1</Heading>
+					<Routeid>44916</Routeid>
+					<Positions>
+						<Position>30.204943,-97.774765</Position>
+						<Position>30.204035,-97.775078</Position>
+						<Position>30.202166,-97.775581</Position>
+						<Position>30.196913,-97.777229</Position>
+						<Position>30.194466,-97.778152</Position>
+						<Position>30.184538,-97.781662</Position>
+					</Positions>
+				</Vehicle>
+				<Vehicle>
+					<Route>801</Route>
+					<Direction>N</Direction>
+					<Updatetime>09:40 PM</Updatetime>
+					<Vehicleid>5008</Vehicleid>
+					<Block>801-50</Block>
+					<Adherance>-2</Adherance>
+					<Adhchange>D</Adhchange>
+					<Reliable>Y</Reliable>
+					<Offroute>N</Offroute>
+					<Stopped>N</Stopped>
+					<Inservice>Y</Inservice>
+					<Speed>9.25</Speed>
+					<Heading>35</Heading>
+					<Routeid>44916</Routeid>
+					<Positions>
+						<Position>30.289286,-97.741417</Position>
+						<Position>30.286177,-97.741638</Position>
+						<Position>30.280842,-97.740753</Position>
+						<Position>30.279137,-97.741287</Position>
+						<Position>30.275480,-97.742653</Position>
+						<Position>30.270201,-97.744614</Position>
+					</Positions>
+				</Vehicle>
+				<Vehicle>
+					<Route>801</Route>
+					<Direction>S</Direction>
+					<Updatetime>09:40 PM</Updatetime>
+					<Vehicleid>5010</Vehicleid>
+					<Block>801-51</Block>
+					<Adherance>-6</Adherance>
+					<Adhchange>I</Adhchange>
+					<Reliable>Y</Reliable>
+					<Offroute>N</Offroute>
+					<Stopped>N</Stopped>
+					<Inservice>Y</Inservice>
+					<Speed>4.48</Speed>
+					<Heading>21</Heading>
+					<Routeid>44920</Routeid>
+					<Positions>
+						<Position>30.302952,-97.738121</Position>
+						<Position>30.303558,-97.737709</Position>
+						<Position>30.306335,-97.735939</Position>
+						<Position>30.310707,-97.733154</Position>
+						<Position>30.314585,-97.732483</Position>
+						<Position>30.316813,-97.732231</Position>
+					</Positions>
+				</Vehicle>
+				<Vehicle>
+					<Route>801</Route>
+					<Direction>S</Direction>
+					<Updatetime>09:39 PM</Updatetime>
+					<Vehicleid>5011</Vehicleid>
+					<Block>801-90</Block>
+					<Adherance>-7</Adherance>
+					<Adhchange>I</Adhchange>
+					<Reliable>Y</Reliable>
+					<Offroute>N</Offroute>
+					<Stopped>Y</Stopped>
+					<Inservice>Y</Inservice>
+					<Speed>0.07</Speed>
+					<Heading>21</Heading>
+					<Routeid>44920</Routeid>
+					<Positions>
+						<Position>30.222763,-97.766403</Position>
+						<Position>30.221552,-97.765038</Position>
+						<Position>30.228373,-97.761116</Position>
+						<Position>30.229059,-97.760735</Position>
+						<Position>30.230078,-97.760071</Position>
+						<Position>30.238026,-97.754333</Position>
+					</Positions>
+				</Vehicle>
+				<Vehicle>
+					<Route>801</Route>
+					<Direction>N</Direction>
+					<Updatetime>09:40 PM</Updatetime>
+					<Vehicleid>5016</Vehicleid>
+					<Block>801-91</Block>
+					<Adherance>-10</Adherance>
+					<Adhchange>S</Adhchange>
+					<Reliable>Y</Reliable>
+					<Offroute>N</Offroute>
+					<Stopped>N</Stopped>
+					<Inservice>Y</Inservice>
+					<Speed>10.88</Speed>
+					<Heading> 4</Heading>
+					<Routeid>44916</Routeid>
+					<Positions>
+						<Position>30.366175,-97.695213</Position>
+						<Position>30.362627,-97.697182</Position>
+						<Position>30.354074,-97.704491</Position>
+						<Position>30.347145,-97.712601</Position>
+						<Position>30.349207,-97.711685</Position>
+						<Position>30.349621,-97.711235</Position>
+					</Positions>
+				</Vehicle>
+			</Vehicles>
+			<Mapextents>30.184538,-97.781662,30.424337,-97.665924</Mapextents>
+			<Traces>
+			</Traces>
+			<Requestor>192.168.10.91</Requestor>
+			<Host>cmtaatisweb2</Host>
+			<Copyright>XML schema Copyright (c) 2003-2013 Trapeze Software ULC, its subsidiaries and affiliates.  All rights reserved.</Copyright>
+			<Soapversion>2.6.3 - 09/23/13</Soapversion>
+		</BuslocationResponse></soap:Body></soap:Envelope>
