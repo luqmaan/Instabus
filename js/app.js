@@ -83,7 +83,7 @@ function fetchShape(routeID, directionID) {
     var deferred = new $.Deferred();
 
     $.ajax({
-        url: '/data/shapes_' + routeID + '_' + directionID + '.json'
+        url: 'data/shapes_' + routeID + '_' + directionID + '.json'
     }).done(function(data) {
         var shape = [];
         data.forEach(function(el) {
@@ -113,7 +113,7 @@ function fetchStops(routeID, directionID) {
     var deferred = new $.Deferred();
 
     $.ajax({
-        url: '/data/stops_' + routeID + '_' + directionID + '.json'
+        url: 'data/stops_' + routeID + '_' + directionID + '.json'
     }).done(function(data) {
         deferred.resolve(data);
     }).fail(function(xhr, status, err) {
