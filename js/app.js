@@ -5,7 +5,35 @@ var x2js = new X2JS({}),
     drawVehicles,
     fetchShape,
     drawShape,
+    vehicles,
     map;
+
+var utils = {
+    formatDirection: function(direction) {
+        switch (direction) {
+            case 0:
+                return 'South';
+            case 1:
+                return 'North';
+            case 'S':
+                return 'South';
+            case 'N':
+                return 'North';
+        }
+    },
+    getDirectionID: function(direction) {
+        direction = direction.toLowerCase().replace('/', '');
+
+        if (direction === 'north' || direction === 'n') {
+            return 1;
+        }
+        if (direction === 'south' || direction === 's') {
+            return 0;
+        }
+
+        return 0;
+    }
+};
 
 document.addEventListener( "DOMContentLoaded", function(){
     document.removeEventListener( "DOMContentLoaded", arguments.callee, false );
@@ -19,32 +47,6 @@ function param(name) {
     return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
-function formatDirection(direction) {
-    switch (direction) {
-        case 0:
-            return 'South';
-        case 1:
-            return 'North';
-        case 'S':
-            return 'South';
-        case 'N':
-            return 'North';
-    }
-}
-
-function getDirectionID(direction) {
-    direction = direction.toLowerCase().replace('/', '');
-
-    if (direction === 'north' || direction === 'n') {
-        return 1;
-    }
-    if (direction === 'south' || direction === 's') {
-        return 0;
-    }
-
-    return 0;
-}
-
 function start() {
     map = L.map('map');
     map.setView([30.267153, -97.743061], 12);
@@ -54,82 +56,20 @@ function start() {
     }).addTo(map);
 
     var routeID = parseInt(param('route')),
-        directionID = getDirectionID(param('direction'));
+        directionID = utils.getDirectionID(param('direction'));
 
-    fetchBusLocations().then(function() {
-        drawVehicles(routeID, directionID, busLocationResponse.query.results.Envelope.Body.BuslocationResponse.Vehicles.Vehicle);
-    });
+    vehicles = new Vehicles(map, utils);
+    vehicles.update();
 
     fetchRoute(routeID).then(function(route) {
-        console.log(route);
         fetchShape(routeID, directionID).then(function(shape) {
             drawShape(shape);
+            fetchStops(routeID, directionID).then(function(stops) {
+                drawStops(stops);
+            });
         });
-
-        fetchStops(routeID, directionID).then(function(stops) {
-            drawStops(stops);
-        });
     });
 }
-
-function fetchBusLocations() {
-    var deferred = new $.Deferred();
-
-    $.ajax({
-        url: "http://query.yahooapis.com/v1/public/yql",
-        data:{
-            q: "select * from xml where url=\"http://www.capmetro.org/planner/s_buslocation.asp?route=*\"",
-            format: "xml"
-        }
-    }).done(function(data) {
-        busLocationResponse = x2js.xml2json(data);
-        deferred.resolve();
-    }).fail(function(xhr, status, err) {
-        console.error(err);
-        deferred.reject();
-    });
-
-    return deferred.promise();
-}
-
-function drawVehicles(routeID, directionID, allVehicles) {
-    var vehicles = _.filter(allVehicles, function(vehicle) {
-        var _route = parseInt(vehicle.Route),
-            _dir = getDirectionID(vehicle.Direction);
-        return _route === routeID && _dir === directionID;
-    });
-
-    console.log('Drawing', vehicles.length, 'of', allVehicles.length, 'total vehicles', vehicles);
-
-    vehicles.forEach(function(vehicle) {
-        var posStr = vehicle.Positions.Position[0],
-            lat = posStr.split(',')[0],
-            lon = posStr.split(',')[1],
-            popupText;
-
-        popupText = [
-            'Vehicle ' + vehicle.Vehicleid,
-            'Updated at ' + vehicle.Updatetime,
-            'Moving ' + formatDirection(vehicle.Direction) + ' at ' + vehicle.Speed + 'mph',
-            'Reliable? ' + vehicle.Reliable,
-            'Stopped? ' + vehicle.Stopped,
-            'Off Route? ' + vehicle.Offroute,
-            'In Service? ' + vehicle.Inservice,
-        ].join('<br />');
-
-        var vehicleColor = vehicle.Inservice === 'Y' ? 'rgb(206,36,41)' : 'rgb(188,188,188)';
-
-        L.circleMarker([lat, lon], {
-            weight: 0,
-            radius: 12,
-            fillOpacity: '0.9',
-            fillColor: 'rgb(34,189,252)'
-        })
-        .bindPopup(popupText)
-        .addTo(map);
-    });
-}
-
 
 function fetchShape(routeID, directionID) {
     var deferred = new $.Deferred();
@@ -149,7 +89,6 @@ function fetchShape(routeID, directionID) {
 
     return deferred.promise();
 }
-
 
 function drawShape(shape, color) {
     color = color || 'rgb(199,16,22)';
@@ -216,9 +155,7 @@ function fetchRoute(routeID) {
         }));
         return deferred.promise;
     }
-    $.ajax({
-        url: 'data/routes.json'
-    }).done(function(data) {
+    $.ajax({url: 'data/routes.json'}).done(function(data) {
         _routesCache = data;
         deferred.resolve(deferred.resolve(_.find(_routesCache, function(r) {
             return parseInt(r.route_id) === routeID;
