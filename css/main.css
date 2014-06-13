@@ -24,7 +24,6 @@ body {
     left: 0;
     width: 100%;
     background: rgb(159,12,16);
-    min-height: 50px;
     padding: 5px;
     z-index: 1000;
 }

@@ -1,5 +1,6 @@
 var x2js = new X2JS({}),
     busLocationResponse = {},
+    _routesCache,
     start,
     fetchBusLocations,
     drawVehicles,
@@ -35,36 +36,28 @@ var utils = {
     }
 };
 
-document.addEventListener( "DOMContentLoaded", function(){
-    document.removeEventListener( "DOMContentLoaded", arguments.callee, false );
-    applyBindings();
-    start(801, 1, true);
-}, false );
+var Controls = {
+    availableRoutes: ko.observableArray([
+        {route: 801, direction: 0, name: '801 MetroRapid North'},
+        {route: 801, direction: 1, name: '801 MetroRapid South'},
+        {route: 550, direction: 0, name: '550 MetroRail North'},
+        {route: 550, direction: 1, name: '550 MetroRail South'},
+    ]),
+    selectedRoute: ko.observable(),
+    activity: ko.observable('loading...'),
+    updateVehicles: function() {
+        this.activity('refreshing...');
+        console.log('refreshing...');
+        vehicles.update().then(function() {
+            this.activity('');
+        }.bind(this));
+    }
+};
 
-function param(name) {
-    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-        results = regex.exec(location.search);
-    return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-}
+ko.applyBindings(Controls, document.getElementById('controls'));
 
-
-function applyBindings() {
-    // le turd
-
-    $('#refrescar').on('click', function() {
-        vehicles.update();
-    });
-
-    $('input[name=route]').click(function(e) {
-        $btn = $(e.target);
-        console.log('arguments', arguments)
-        console.log('switching', parseInt($btn.data('route')), parseInt($btn.data('direction')));
-        $("#map").remove();
-        $("body").append("<div id='map'></div>")
-        start(parseInt($btn.data('route')), parseInt($btn.data('direction')));
-    });
-}
+Controls.selectedRoute.subscribe(start);
+Controls.selectedRoute(Controls.availableRoutes()[0]);
 
 function fetchShape(routeID, directionID) {
     var deferred = new $.Deferred();
@@ -113,18 +106,6 @@ function fetchStops(routeID, directionID) {
     return deferred.promise();
 }
 
-
-function invertColor(hexTripletColor) {
-    var color = hexTripletColor;
-    color = color.replace('#', '');       // remove #
-    color = parseInt(color, 16);          // convert to integer
-    color = 0xFFFFFF ^ color;             // invert three bytes
-    color = color.toString(16);           // convert to hex
-    color = ("000000" + color).slice(-6); // pad with leading zeros
-    color = "#" + color;                  // prepend #
-    return color;
-}
-
 function drawStops(stops, color) {
     color = color || 'rgb(199,16,22)';
     stops.forEach(function(stop) {
@@ -140,7 +121,6 @@ function drawStops(stops, color) {
     });
 }
 
-var _routesCache = null;
 function fetchRoute(routeID) {
     var deferred = new $.Deferred();
 
@@ -162,7 +142,6 @@ function fetchRoute(routeID) {
     return deferred.promise();
 }
 
-
 function onLocationFound(e) {
     console.log('found location: ', e.latlng, "accuracy:", e.accuracy);
     map.setView(e.latlng, 16, {
@@ -183,8 +162,14 @@ function onLocationError(e) {
     map.setView([30.267153, -97.743061], 16);
 }
 
+function start(route, locateUser) {
+    var routeID = route.route,
+        directionID = route.direction;
 
-function start(routeID, directionID, locateUser) {
+    if (map) {
+        map.remove();
+    }
+
     map = L.map('map', {
         zoomControl: false,
     });
@@ -204,7 +189,9 @@ function start(routeID, directionID, locateUser) {
     }).addTo(map);
 
     vehicles = new Vehicles(map, [{route: routeID, direction: directionID}], utils);
-    vehicles.update();
+    vehicles.update().then(function() {
+        Controls.activity('');
+    });
 
     fetchRoute(routeID).then(function(route) {
         fetchShape(routeID, directionID).then(function(shape) {
