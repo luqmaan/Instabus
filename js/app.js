@@ -38,7 +38,7 @@ var utils = {
 document.addEventListener( "DOMContentLoaded", function(){
     document.removeEventListener( "DOMContentLoaded", arguments.callee, false );
     applyBindings();
-    start(801, 1);
+    start(801, 1, true);
 }, false );
 
 function param(name) {
@@ -184,13 +184,16 @@ function onLocationError(e) {
 }
 
 
-function start(routeID, directionID) {
+function start(routeID, directionID, locateUser) {
     map = L.map('map', {
         zoomControl: false,
     });
-    map.locate({maximumAge: 1000, enableHighAccuracy: true});
-    map.on('locationfound', onLocationFound);
-    map.on('locationerror', onLocationError);
+
+    if (locateUser) {
+        map.locate({maximumAge: 1000, enableHighAccuracy: true});
+        map.on('locationfound', onLocationFound);
+        map.on('locationerror', onLocationError);
+    }
 
     L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
         maxZoom: 18,
@@ -199,8 +202,6 @@ function start(routeID, directionID) {
             'Imagery © <a href="http://mapbox.com">Mapbox</a>',
         id: 'examples.map-i86knfo3',
     }).addTo(map);
-
-    var zoomCtrl = new L.Control.Zoom({ position: 'bottomright' }).addTo(map);
 
     vehicles = new Vehicles(map, [{route: routeID, direction: directionID}], utils);
     vehicles.update();

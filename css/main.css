@@ -18,7 +18,7 @@ body {
 
 #controls {
     color: #fff;
-    position: fixed;
+    position: relative;
     display: block;
     top: 0;
     left: 0;
