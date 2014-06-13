@@ -47,11 +47,16 @@ Vehicles.prototype = {
         }.bind(this));
     },
     update: function() {
+        var deferred = $.Deferred();
+
         this.loadBusLocation().then(function() {
             var visibleVehicles = this.filterVehicles();
             console.log('Total vehicles', this.vehicles.length, 'Visible vehicles', visibleVehicles.length, visibleVehicles);
             this.draw(visibleVehicles);
+            deferred.resolve();
         }.bind(this));
+
+        return deferred.promise();
     },
     popupContent: function(vehicle) {
         return [
