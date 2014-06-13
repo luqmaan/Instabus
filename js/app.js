@@ -164,7 +164,8 @@ function fetchRoute(routeID) {
 
 
 function onLocationFound(e) {
-    console.log('found location: ', e.latlng);
+    console.log('found location: ', e.latlng, "accuracy:", e.accuracy);
+    map.setView(e.latlng, 16, {zoom: {animate: true}, pan: {animate: true}});
     var radius = e.accuracy / 2;
     L.marker(e.latlng).addTo(map).bindPopup("You are here").openPopup();
     L.circle(e.latlng, radius).addTo(map);
@@ -178,7 +179,7 @@ function onLocationError(e) {
 
 function start(routeID, directionID) {
     map = L.map('map');
-    map.locate({setView: true, maxZoom: 15});
+    map.locate({maximumAge: 1000, enableHighAccuracy: true});
     map.on('locationfound', onLocationFound);
     map.on('locationerror', onLocationError);
 
