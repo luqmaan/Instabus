@@ -1,10 +1,10 @@
 var x2js = new X2JS({}),
+    busLocationResponse = {},
     start,
     fetchBusLocations,
     drawVehicles,
     fetchShape,
     drawShape,
-    busLocationResponse = {},
     map;
 
 document.addEventListener( "DOMContentLoaded", function(){
@@ -19,23 +19,30 @@ function param(name) {
     return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
-function directionify(directionID, format) {
-    if (format === '%S') {
-        return directionID === 0 ? 'S' : 'N';
-    }
-    else {
-        return directionID == 0 ? 'South' : 'North';
+function formatDirection(direction) {
+    switch (direction) {
+        case 0:
+            return 'South';
+        case 1:
+            return 'North';
+        case 'S':
+            return 'South';
+        case 'N':
+            return 'North';
     }
 }
 
-function unDirectionify(direction) {
+function getDirectionID(direction) {
     direction = direction.toLowerCase().replace('/', '');
+
     if (direction === 'north' || direction === 'n') {
         return 1;
     }
     if (direction === 'south' || direction === 's') {
         return 0;
     }
+
+    return 0;
 }
 
 function start() {
@@ -47,18 +54,21 @@ function start() {
     }).addTo(map);
 
     var routeID = parseInt(param('route')),
-        directionID = unDirectionify(param('direction'));
+        directionID = getDirectionID(param('direction'));
 
     fetchBusLocations().then(function() {
         drawVehicles(routeID, directionID, busLocationResponse.query.results.Envelope.Body.BuslocationResponse.Vehicles.Vehicle);
     });
 
-    fetchShape(routeID, directionID).then(function(shape) {
-        drawShape(shape);
-    });
+    fetchRoute(routeID).then(function(route) {
+        console.log(route);
+        fetchShape(routeID, directionID).then(function(shape) {
+            drawShape(shape);
+        });
 
-    fetchStops(routeID, directionID).then(function(stops) {
-        drawStops(stops);
+        fetchStops(routeID, directionID).then(function(stops) {
+            drawStops(stops);
+        });
     });
 }
 
@@ -82,42 +92,41 @@ function fetchBusLocations() {
     return deferred.promise();
 }
 
-function drawVehicles(routeID, directionID, vehicles) {
+function drawVehicles(routeID, directionID, allVehicles) {
+    var vehicles = _.filter(allVehicles, function(vehicle) {
+        var _route = parseInt(vehicle.Route),
+            _dir = getDirectionID(vehicle.Direction);
+        return _route === routeID && _dir === directionID;
+    });
+
+    console.log('Drawing', vehicles.length, 'of', allVehicles.length, 'total vehicles', vehicles);
+
     vehicles.forEach(function(vehicle) {
-        if (parseInt(vehicle.Route) !== routeID || vehicle.Direction !== directionify(directionID, '%S')) {
-            return;
-        }
-        console.log(vehicle);
         var posStr = vehicle.Positions.Position[0],
             lat = posStr.split(',')[0],
             lon = posStr.split(',')[1],
             popupText;
 
         popupText = [
-            'Route ' + vehicle.Route + ' ' + directionify(vehicle.Direction),
             'Vehicle ' + vehicle.Vehicleid,
             'Updated at ' + vehicle.Updatetime,
-            'Moving at ' + vehicle.Speed + 'mph',
+            'Moving ' + formatDirection(vehicle.Direction) + ' at ' + vehicle.Speed + 'mph',
             'Reliable? ' + vehicle.Reliable,
-            'Off Route?' + vehicle.Offroute,
             'Stopped? ' + vehicle.Stopped,
+            'Off Route? ' + vehicle.Offroute,
+            'In Service? ' + vehicle.Inservice,
         ].join('<br />');
 
+        var vehicleColor = vehicle.Inservice === 'Y' ? 'rgb(206,36,41)' : 'rgb(188,188,188)';
 
         L.circleMarker([lat, lon], {
-            color: 'white',
-            opacity: 0.8,
+            weight: 0,
+            radius: 12,
             fillOpacity: '0.9',
-            fillColor: 'rgb(206,36,41)',
-            weight: 2
+            fillColor: 'rgb(34,189,252)'
         })
-        .setRadius(10)
         .bindPopup(popupText)
-        .bindLabel('Vehicle ' + vehicle.Vehicleid, {
-            noHide: true
-        })
         .addTo(map);
-
     });
 }
 
@@ -142,14 +151,16 @@ function fetchShape(routeID, directionID) {
 }
 
 
-function drawShape(shape) {
+function drawShape(shape, color) {
+    color = color || 'rgb(199,16,22)';
+
     var line = new L.Polyline(shape, {
-        color: 'rgb(40,52,78)',
+        color: color,
+        stroke: true,
         weight: 5,
         opacity: 0.9,
         smoothFactor: 1
     }).addTo(map);
-    window.l = line;
     map.fitBounds(line.getBounds());
 }
 
@@ -168,10 +179,53 @@ function fetchStops(routeID, directionID) {
     return deferred.promise();
 }
 
-function drawStops(stops) {
+
+function invertColor(hexTripletColor) {
+    var color = hexTripletColor;
+    color = color.replace('#', '');           // remove #
+    color = parseInt(color, 16);          // convert to integer
+    color = 0xFFFFFF ^ color;             // invert three bytes
+    color = color.toString(16);           // convert to hex
+    color = ("000000" + color).slice(-6); // pad with leading zeros
+    color = "#" + color;                  // prepend #
+    return color;
+}
+
+function drawStops(stops, color) {
+    color = color || 'rgb(199,16,22)';
     stops.forEach(function(stop) {
-        L.circleMarker([stop.stop_lat, stop.stop_lon], 10)
-            .bindLabel('Stop ' + stop.stop_name)
-            .addTo(map);
+        L.circleMarker([stop.stop_lat, stop.stop_lon], {
+            color: 'white',
+            opacity: 1,
+            weight: 3,
+            fillColor: color,
+            fill: true,
+            fillOpacity: 1,
+            radius: 7,
+        }).bindPopup(stop.stop_name).addTo(map);
     });
+}
+
+var _routesCache = null;
+function fetchRoute(routeID) {
+    var deferred = new $.Deferred();
+
+    if (_routesCache) {
+        deferred.resolve(_.find(_routesCache, function(r) {
+            return parseInt(r.route_id) === routeID;
+        }));
+        return deferred.promise;
+    }
+    $.ajax({
+        url: 'data/routes.json'
+    }).done(function(data) {
+        _routesCache = data;
+        deferred.resolve(deferred.resolve(_.find(_routesCache, function(r) {
+            return parseInt(r.route_id) === routeID;
+        })));
+    }).fail(function(xhr, status, err) {
+        console.error(err);
+        deferred.reject();
+    });
+    return deferred.promise();
 }
