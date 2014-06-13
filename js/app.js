@@ -135,7 +135,7 @@ function drawStops(stops, color) {
             fillColor: color,
             fill: true,
             fillOpacity: 1,
-            radius: 7,
+            radius: 10
         }).bindPopup(stop.stop_name).addTo(map);
     });
 }
