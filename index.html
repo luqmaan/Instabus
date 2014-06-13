@@ -7,6 +7,16 @@
     <link href="css/leaflet-label.css" rel="stylesheet">
 <style type="text/css"></style></head>
 <body>
+    <div id="controls">
+        MeteorRappid
+        <button id="refrescar">refrescar</button>
+        <form>
+            <input name="route" id="route-801-1" data-route="801" data-direction="1" type="radio" checked="true"><label for="route-801-1">801 North</label>
+            <input name="route" id="route-801-0" data-route="801" data-direction="0" type="radio"><label for="route-801-0">801 South</label>
+            <input name="route" id="route-550-1" data-route="550" data-direction="1" type="radio"><label for="route-550-1">550 North</label>
+            <input name="route" id="route-550-0" data-route="550" data-direction="0" type="radio"><label for="route-550-0">550 South</label>
+        </form>
+    </div>
     <div id="map"></div>
     <script src="js/libs/leaflet-src.js"></script>
     <script src="js/libs/leaflet-label-src.js"></script>

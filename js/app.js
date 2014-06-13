@@ -37,7 +37,8 @@ var utils = {
 
 document.addEventListener( "DOMContentLoaded", function(){
     document.removeEventListener( "DOMContentLoaded", arguments.callee, false );
-    start();
+    applyBindings();
+    start(801, 1);
 }, false );
 
 function param(name) {
@@ -47,27 +48,21 @@ function param(name) {
     return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
-function start() {
-    map = L.map('map');
-    map.setView([30.267153, -97.743061], 12);
 
-    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
+function applyBindings() {
+    // le turd
 
-    var routeID = parseInt(param('route')),
-        directionID = utils.getDirectionID(param('direction'));
+    $('#refrescar').on('click', function() {
+        vehicles.update();
+    });
 
-    vehicles = new Vehicles(map, utils);
-    vehicles.update();
-
-    fetchRoute(routeID).then(function(route) {
-        fetchShape(routeID, directionID).then(function(shape) {
-            drawShape(shape);
-            fetchStops(routeID, directionID).then(function(stops) {
-                drawStops(stops);
-            });
-        });
+    $('input[name=route]').click(function(e) {
+        $btn = $(e.target);
+        console.log('arguments', arguments)
+        console.log('switching', parseInt($btn.data('route')), parseInt($btn.data('direction')));
+        $("#map").remove();
+        $("body").append("<div id='map'></div>")
+        start(parseInt($btn.data('route')), parseInt($btn.data('direction')));
     });
 }
 
@@ -150,7 +145,7 @@ function fetchRoute(routeID) {
     var deferred = new $.Deferred();
 
     if (_routesCache) {
-        deferred.resolve(_.find(_routesCache, function(r) {
+        return deferred.resolve(_.find(_routesCache, function(r) {
             return parseInt(r.route_id) === routeID;
         }));
         return deferred.promise;
@@ -165,4 +160,27 @@ function fetchRoute(routeID) {
         deferred.reject();
     });
     return deferred.promise();
+}
+
+
+
+function start(routeID, directionID) {
+    map = L.map('map');
+    map.setView([30.267153, -97.743061], 12);
+
+    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    vehicles = new Vehicles(map, [{route: routeID, direction: directionID}], utils);
+    vehicles.update();
+
+    fetchRoute(routeID).then(function(route) {
+        fetchShape(routeID, directionID).then(function(shape) {
+            drawShape(shape);
+            fetchStops(routeID, directionID).then(function(stops) {
+                drawStops(stops);
+            });
+        });
+    });
 }

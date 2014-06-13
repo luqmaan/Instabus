@@ -1,9 +1,6 @@
-function Vehicles(map, utils) {
+function Vehicles(map, visibleCriteria, utils) {
     this.map = map;
-    this.visibleCriteria = [{
-        route: 801,
-        direction: 1
-    }];
+    this.visibleCriteria = visibleCriteria;
     this.vehicles = [];
     this.markers = {};
     this.busLocationResponse = null;
