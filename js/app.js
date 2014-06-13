@@ -1,13 +1,23 @@
 var x2js = new X2JS({}),
-    busLocationResponse = {},
+    map = L.map('map', {
+        zoomControl: false,
+    }),
     _routesCache,
     start,
-    fetchBusLocations,
-    drawVehicles,
     fetchShape,
     drawShape,
     vehicles,
-    map;
+    locationMarker,
+    lair;
+
+L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
+    maxZoom: 18,
+    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+        '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+        'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+    id: 'examples.map-i86knfo3',
+}).addTo(map);
+
 
 var utils = {
     formatDirection: function(direction) {
@@ -51,6 +61,29 @@ var Controls = {
         vehicles.update().then(function() {
             this.activity('');
         }.bind(this));
+    },
+    locate: function() {
+        map.locate({maximumAge: 1000, enableHighAccuracy: true});
+        map.on('locationfound', function onLocationFound(e) {
+            console.log('found location: ', e.latlng, "accuracy:", e.accuracy);
+            map.setView(e.latlng, 16, {
+                zoom: {
+                    animate: true
+                },
+                pan: {
+                    animate: true
+                },
+            });
+            var radius = e.accuracy / 2;
+            if (locationMarker) {
+                locationMarker.remove();
+            }
+            locationMarker = L.marker(e.latlng).addTo(map).bindPopup("You are here").openPopup();
+        });
+        map.on('locationerror', function onLocationError(e) {
+            console.log('unable to find location: ', e.message)
+            map.setView([30.267153, -97.743061], 16);
+        });
     }
 };
 
@@ -87,7 +120,8 @@ function drawShape(shape, color) {
         weight: 5,
         opacity: 0.9,
         smoothFactor: 1
-    }).addTo(map);
+    }).addTo(lair);
+
     map.fitBounds(line.getBounds());
 }
 
@@ -117,7 +151,7 @@ function drawStops(stops, color) {
             fill: true,
             fillOpacity: 1,
             radius: 10
-        }).bindPopup(stop.stop_name).addTo(map);
+        }).bindPopup(stop.stop_name).addTo(lair);
     });
 }
 
@@ -142,53 +176,19 @@ function fetchRoute(routeID) {
     return deferred.promise();
 }
 
-function onLocationFound(e) {
-    console.log('found location: ', e.latlng, "accuracy:", e.accuracy);
-    map.setView(e.latlng, 16, {
-        zoom: {
-            animate: true
-        },
-        pan: {
-            animate: true
-        },
-    });
-    var radius = e.accuracy / 2;
-    L.marker(e.latlng).addTo(map).bindPopup("You are here").openPopup();
-    L.circle(e.latlng, radius).addTo(map);
-}
-
-function onLocationError(e) {
-    console.log('unable to find location: ', e.message)
-    map.setView([30.267153, -97.743061], 16);
-}
-
 function start(route, locateUser) {
     var routeID = route.route,
         directionID = route.direction;
 
-    if (map) {
-        map.remove();
+    if (lair) {
+        map.removeLayer(lair);
     }
 
-    map = L.map('map', {
-        zoomControl: false,
-    });
+    lair = L.layerGroup();
 
-    if (locateUser) {
-        map.locate({maximumAge: 1000, enableHighAccuracy: true});
-        map.on('locationfound', onLocationFound);
-        map.on('locationerror', onLocationError);
-    }
+    lair.addTo(map);
 
-    L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
-        maxZoom: 18,
-        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
-            '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-            'Imagery © <a href="http://mapbox.com">Mapbox</a>',
-        id: 'examples.map-i86knfo3',
-    }).addTo(map);
-
-    vehicles = new Vehicles(map, [{route: routeID, direction: directionID}], utils);
+    vehicles = new Vehicles(lair, [{route: routeID, direction: directionID}], utils);
     vehicles.update().then(function() {
         Controls.activity('');
     });
