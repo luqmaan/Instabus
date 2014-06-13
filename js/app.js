@@ -165,7 +165,14 @@ function fetchRoute(routeID) {
 
 function onLocationFound(e) {
     console.log('found location: ', e.latlng, "accuracy:", e.accuracy);
-    map.setView(e.latlng, 16, {zoom: {animate: true}, pan: {animate: true}});
+    map.setView(e.latlng, 16, {
+        zoom: {
+            animate: true
+        },
+        pan: {
+            animate: true
+        },
+    });
     var radius = e.accuracy / 2;
     L.marker(e.latlng).addTo(map).bindPopup("You are here").openPopup();
     L.circle(e.latlng, radius).addTo(map);
@@ -178,7 +185,9 @@ function onLocationError(e) {
 
 
 function start(routeID, directionID) {
-    map = L.map('map');
+    map = L.map('map', {
+        zoomControl: false,
+    });
     map.locate({maximumAge: 1000, enableHighAccuracy: true});
     map.on('locationfound', onLocationFound);
     map.on('locationerror', onLocationError);
@@ -188,8 +197,10 @@ function start(routeID, directionID) {
         attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
             '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
             'Imagery © <a href="http://mapbox.com">Mapbox</a>',
-        id: 'examples.map-i86knfo3'
+        id: 'examples.map-i86knfo3',
     }).addTo(map);
+
+    var zoomCtrl = new L.Control.Zoom({ position: 'bottomright' }).addTo(map);
 
     vehicles = new Vehicles(map, [{route: routeID, direction: directionID}], utils);
     vehicles.update();
