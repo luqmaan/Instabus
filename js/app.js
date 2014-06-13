@@ -166,7 +166,7 @@ function fetchRoute(routeID) {
 function onLocationFound(e) {
     console.log('found location: ', e.latlng);
     var radius = e.accuracy / 2;
-    L.marker(e.latlng).addTo(map).bindPopup("You are within " + radius + " meters from this point").openPopup();
+    L.marker(e.latlng).addTo(map).bindPopup("You are here").openPopup();
     L.circle(e.latlng, radius).addTo(map);
 }
 
@@ -182,9 +182,12 @@ function start(routeID, directionID) {
     map.on('locationfound', onLocationFound);
     map.on('locationerror', onLocationError);
 
-    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-        maxZoom: 15
+    L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+            '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+            'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+        id: 'examples.map-i86knfo3'
     }).addTo(map);
 
     vehicles = new Vehicles(map, [{route: routeID, direction: directionID}], utils);
