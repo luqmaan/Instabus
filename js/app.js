@@ -189,15 +189,15 @@ function start(route, locateUser) {
     lair.addTo(map);
 
     vehicles = new Vehicles(lair, [{route: routeID, direction: directionID}], utils);
-    vehicles.update().then(function() {
-        Controls.activity('');
-    });
 
     fetchRoute(routeID).then(function(route) {
         fetchShape(routeID, directionID).then(function(shape) {
             drawShape(shape);
             fetchStops(routeID, directionID).then(function(stops) {
                 drawStops(stops);
+                vehicles.update().then(function() {
+                    Controls.activity('');
+                });
             });
         });
     });
