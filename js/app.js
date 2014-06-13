@@ -116,7 +116,7 @@ function fetchStops(routeID, directionID) {
 
 function invertColor(hexTripletColor) {
     var color = hexTripletColor;
-    color = color.replace('#', '');           // remove #
+    color = color.replace('#', '');       // remove #
     color = parseInt(color, 16);          // convert to integer
     color = 0xFFFFFF ^ color;             // invert three bytes
     color = color.toString(16);           // convert to hex
@@ -163,13 +163,32 @@ function fetchRoute(routeID) {
 }
 
 
+function onLocationFound(e) {
+    console.log('found location: ', e.latlng, "accuracy:", e.accuracy);
+    map.setView(e.latlng, 16, {zoom: {animate: true}, pan: {animate: true}});
+    var radius = e.accuracy / 2;
+    L.marker(e.latlng).addTo(map).bindPopup("You are here").openPopup();
+    L.circle(e.latlng, radius).addTo(map);
+}
+
+function onLocationError(e) {
+    console.log('unable to find location: ', e.message)
+    map.setView([30.267153, -97.743061], 16);
+}
+
 
 function start(routeID, directionID) {
     map = L.map('map');
-    map.setView([30.267153, -97.743061], 12);
+    map.locate({maximumAge: 1000, enableHighAccuracy: true});
+    map.on('locationfound', onLocationFound);
+    map.on('locationerror', onLocationError);
 
-    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+    L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+            '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+            'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+        id: 'examples.map-i86knfo3'
     }).addTo(map);
 
     vehicles = new Vehicles(map, [{route: routeID, direction: directionID}], utils);
