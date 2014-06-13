@@ -116,7 +116,7 @@ function fetchStops(routeID, directionID) {
 
 function invertColor(hexTripletColor) {
     var color = hexTripletColor;
-    color = color.replace('#', '');           // remove #
+    color = color.replace('#', '');       // remove #
     color = parseInt(color, 16);          // convert to integer
     color = 0xFFFFFF ^ color;             // invert three bytes
     color = color.toString(16);           // convert to hex
