@@ -73,7 +73,7 @@ function fetchShape(routeID, directionID) {
         url: 'data/shapes_' + routeID + '_' + directionID + '.json'
     }).done(function(data) {
         var shape = [];
-        data.forEach(function(el) {
+        $.parseJSON(data).forEach(function(el) {
             shape.push(new L.LatLng(el.shape_pt_lat, el.shape_pt_lon));
         });
         deferred.resolve(shape);
@@ -104,7 +104,7 @@ function fetchStops(routeID, directionID) {
     $.ajax({
         url: 'data/stops_' + routeID + '_' + directionID + '.json'
     }).done(function(data) {
-        deferred.resolve(data);
+        deferred.resolve($.parseJSON(data));
     }).fail(function(xhr, status, err) {
         console.error(err);
         deferred.reject();
