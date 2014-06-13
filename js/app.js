@@ -163,13 +163,28 @@ function fetchRoute(routeID) {
 }
 
 
+function onLocationFound(e) {
+    console.log('found location: ', e.latlng);
+    var radius = e.accuracy / 2;
+    L.marker(e.latlng).addTo(map).bindPopup("You are within " + radius + " meters from this point").openPopup();
+    L.circle(e.latlng, radius).addTo(map);
+}
+
+function onLocationError(e) {
+    console.log('unable to find location: ', e.message)
+    map.setView([30.267153, -97.743061], 16);
+}
+
 
 function start(routeID, directionID) {
     map = L.map('map');
-    map.setView([30.267153, -97.743061], 12);
+    map.locate({setView: true, maxZoom: 15});
+    map.on('locationfound', onLocationFound);
+    map.on('locationerror', onLocationError);
 
     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 15
     }).addTo(map);
 
     vehicles = new Vehicles(map, [{route: routeID, direction: directionID}], utils);
