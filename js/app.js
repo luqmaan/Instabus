@@ -48,10 +48,10 @@ var utils = {
 
 var Controls = {
     availableRoutes: ko.observableArray([
-        {route: 801, direction: 0, name: '801 MetroRapid North'},
-        {route: 801, direction: 1, name: '801 MetroRapid South'},
-        {route: 550, direction: 0, name: '550 MetroRail North'},
-        {route: 550, direction: 1, name: '550 MetroRail South'},
+        {route: 801, direction: 1, name: '801 MetroRapid North'},
+        {route: 801, direction: 0, name: '801 MetroRapid South'},
+        {route: 550, direction: 1, name: '550 MetroRail North'},
+        {route: 550, direction: 0, name: '550 MetroRail South'},
     ]),
     selectedRoute: ko.observable(),
     activity: ko.observable('loading...'),
@@ -151,7 +151,7 @@ function drawStops(stops, color) {
             fill: true,
             fillOpacity: 1,
             radius: 10
-        }).bindPopup(stop.stop_name).addTo(lair);
+        }).bindPopup(stop.stop_id + ' - ' + stop.stop_name).addTo(lair);
     });
 }
 
