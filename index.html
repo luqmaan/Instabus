@@ -3,7 +3,8 @@
 <head>
     <title>MetroRappid v.Ghetto</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="apple-touch-icon" href="icons/icon-60.png">
@@ -17,10 +18,9 @@
 </head>
 <body>
     <div id="controls">
-        MeteorRappid
+        <select id="route" data-bind="options: availableRoutes, optionsText: 'name', value: selectedRoute"></select>
         <button data-bind="click: updateVehicles">refrescar</button>
         <button data-bind="click: locate">locate</button>
-        <select id="route" data-bind="options: availableRoutes, optionsText: 'name', value: selectedRoute"></select>
         <span data-bind="text: activity"></span>
     </div>
     <div id="map"></div>
