@@ -48,10 +48,10 @@ var utils = {
 
 var Controls = {
     availableRoutes: ko.observableArray([
-        {route: 801, direction: 0, name: '801 MetroRapid North'},
-        {route: 801, direction: 1, name: '801 MetroRapid South'},
-        {route: 550, direction: 0, name: '550 MetroRail North'},
-        {route: 550, direction: 1, name: '550 MetroRail South'},
+        {route: 801, direction: 0, name: '801 MetroRapid South'},
+        {route: 801, direction: 1, name: '801 MetroRapid North'},
+        {route: 550, direction: 0, name: '550 MetroRail South'},
+        {route: 550, direction: 1, name: '550 MetroRail North'},
     ]),
     selectedRoute: ko.observable(),
     activity: ko.observable('loading...'),
