@@ -75,10 +75,11 @@ var Controls = {
                 },
             });
             var radius = e.accuracy / 2;
-            if (locationMarker) {
-                locationMarker.remove();
+            try {
+                locationMarker.setLatLng(e.latlng).update();
+            } catch(err) {
+                locationMarker = L.marker(e.latlng).addTo(map).bindPopup("You are here").openPopup();
             }
-            locationMarker = L.marker(e.latlng).addTo(map).bindPopup("You are here").openPopup();
         });
         map.on('locationerror', function onLocationError(e) {
             console.log('unable to find location: ', e.message)
