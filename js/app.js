@@ -70,7 +70,7 @@ var Controls = {
     locate: function() {
         map.locate({maximumAge: 1000, enableHighAccuracy: true});
         map.on('locationfound', function onLocationFound(e) {
-            console.log('found location: ', e.latlng, "accuracy:", e.accuracy);
+            console.log('found location:', e.latlng, 'accuracy:', e.accuracy);
             map.setView(e.latlng, 16, {
                 zoom: {
                     animate: true
@@ -83,11 +83,11 @@ var Controls = {
             try {
                 locationMarker.setLatLng(e.latlng).update();
             } catch(err) {
-                locationMarker = L.marker(e.latlng).addTo(map).bindPopup("You are here").openPopup();
+                locationMarker = L.marker(e.latlng).addTo(map).bindPopup('You are here').openPopup();
             }
         });
         map.on('locationerror', function onLocationError(e) {
-            console.log('unable to find location: ', e.message)
+            console.log('unable to find location: ', e.message);
             map.setView([30.267153, -97.743061], 16);
         });
     }
