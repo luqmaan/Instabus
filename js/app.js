@@ -143,7 +143,7 @@ function fetchNextArrivalForStop(stop_id) {
 
         var arrivalData = data.query.results.json.list;
         // sometimes they return a single object, sometimes an array
-        if (Object.prototype.toString.call(arrivalData) === '[object Array]') {
+        if (Array.isArray(arrivalData)) {
             arrivalData.forEach(function(bus) {
                 // some stops have multiple bus arrivals, make sure its for the selcted route only
                 if (bus.route == selectedRouteID) {
