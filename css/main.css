@@ -22,9 +22,9 @@ body {
     display: block;
     top: 0;
     left: 0;
+    padding: 0;
     width: 100%;
     background: rgb(159,12,16);
-    padding: 5px;
     z-index: 1000;
 }
 #controls div {

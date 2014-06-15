@@ -17,7 +17,7 @@ L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
         'Imagery © <a href="http://mapbox.com">Mapbox</a>',
     id: 'examples.map-i86knfo3',
 }).addTo(map);
-
+var zoomCtrl = new L.Control.Zoom({ position: 'bottomright' }).addTo(map);
 
 var utils = {
     formatDirection: function(direction) {
