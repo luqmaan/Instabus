@@ -20,6 +20,68 @@ function setupMap() {
         id: 'examples.map-i86knfo3',
     }).addTo(map);
     var zoomCtrl = new L.Control.Zoom({ position: 'bottomright' }).addTo(map);
+
+    var LocateCtrl = L.Control.extend({
+        options: {
+            position: 'topleft',
+            icon: 'icon-location',
+            defaultLatLng: [30.267153, -97.743061],
+            defaultZoom: 16,
+        },
+        onAdd: function (map) {
+            var container = L.DomUtil.create('div', 'locate-control leaflet-bar leaflet-control');
+            var link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single ' + this.options.icon, container);
+
+            var locate = function() {
+                container.classList.add('loading');
+
+                map.locate({maximumAge: 1000, enableHighAccuracy: true});
+                map.on('locationfound', function onLocationFound(e) {
+                    var radius = e.accuracy / 2;
+                    console.log('found location:', e.latlng, 'accuracy:', e.accuracy);
+
+                    container.classList.remove('loading');
+
+                    map.setView(e.latlng, 16, {
+                        zoom: {
+                            animate: true
+                        },
+                        pan: {
+                            animate: true
+                        },
+                    });
+                    try {
+                        locationMarker.setLatLng(e.latlng).update();
+                    } catch(err) {
+                        locationMarker = L.marker(e.latlng).addTo(map).bindPopup('You are here').openPopup();
+                    }
+                });
+                map.on('locationerror', function onLocationError(e) {
+                    console.log('unable to find location: ', e.message);
+
+                    container.classList.remove('loading');
+
+                    map.setView(this.defaultLatLng, this.defaultZoom);
+                }.bind(this));
+
+            }.bind(this);
+
+            this.locate = locate;
+
+            L.DomEvent
+                .on(link, 'click', L.DomEvent.stopPropagation)
+                .on(link, 'click', L.DomEvent.preventDefault)
+                .on(link, 'click', locate)
+                .on(link, 'dblclick', L.DomEvent.stopPropagation);
+
+            return container;
+        }
+    });
+
+    var locateCtrl = new LocateCtrl({
+        position: 'topleft'
+    }).addTo(map);
+
 }
 
 $(document).ready(setupMap);
@@ -67,30 +129,6 @@ var Controls = {
             this.activity('');
         }.bind(this));
     },
-    locate: function() {
-        map.locate({maximumAge: 1000, enableHighAccuracy: true});
-        map.on('locationfound', function onLocationFound(e) {
-            console.log('found location:', e.latlng, 'accuracy:', e.accuracy);
-            map.setView(e.latlng, 16, {
-                zoom: {
-                    animate: true
-                },
-                pan: {
-                    animate: true
-                },
-            });
-            var radius = e.accuracy / 2;
-            try {
-                locationMarker.setLatLng(e.latlng).update();
-            } catch(err) {
-                locationMarker = L.marker(e.latlng).addTo(map).bindPopup('You are here').openPopup();
-            }
-        });
-        map.on('locationerror', function onLocationError(e) {
-            console.log('unable to find location: ', e.message);
-            map.setView([30.267153, -97.743061], 16);
-        });
-    }
 };
 
 ko.applyBindings(Controls, document.getElementById('controls'));

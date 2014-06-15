@@ -30,3 +30,29 @@ body {
 #controls div {
     display: inline-block;
 }
+
+.locate-control {
+    background-color: #FFF;
+    border-bottom: 1px solid #CCC;
+    width: 26px;
+    height: 26px;
+    line-height: 26px;
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    color: #000;
+}
+
+
+.icon-location {
+    background: url('../icons/locate.png') center center;
+    background-size: 70% 70%;
+}
+
+.icon-location, .icon-location * {
+    cursor: pointer;
+}
+
+.locate-control.loading {
+    opacity: 0.5;
+}
