@@ -14,7 +14,7 @@ Vehicles.prototype = {
         $.ajax({
             url: "http://query.yahooapis.com/v1/public/yql",
             data:{
-                q: "select * from xml where url=\"http://www.capmetro.org/planner/s_buslocation.asp?route=*\"",
+                q: "select * from xml where url='http://www.capmetro.org/planner/s_buslocation.asp?route=*'",
                 format: "xml"
             }
         }).done(function(data) {

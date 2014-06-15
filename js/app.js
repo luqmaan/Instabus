@@ -125,6 +125,43 @@ function drawShape(shape, color) {
     map.fitBounds(line.getBounds());
 }
 
+function fetchNextArrivalForStop(stop_id) {
+    var deferred = new $.Deferred();
+
+    console.log("fetching next arrival for stop", stop_id);
+    var next_arrival_url = "http://www.capmetro.org/planner/s_nextbus2.asp?opt=1&stopid=" + stop_id;
+    $.ajax({
+        url: "http://query.yahooapis.com/v1/public/yql",
+        data:{
+            q: "select * from json where url='"+ next_arrival_url + "'",
+            format: "json"
+        }
+    }).done(function(data) {
+        var result = [];
+        var selectedRouteID = Controls.selectedRoute().route;
+
+        var arrivalData = data.query.results.json.list;
+        // sometimes they return a single object, sometimes an array
+        if (Object.prototype.toString.call(arrivalData) === '[object Array]') {
+            arrivalData.forEach(function(bus) {
+                // some stops have multiple bus arrivals, make sure its for the selcted route only
+                if (bus.route == selectedRouteID) {
+                    result.push(bus);
+                }
+            });
+        } else {
+            result.push(arrivalData)
+        }
+        console.log("next arrival for stop", stop_id, "route", selectedRouteID, result);
+        deferred.resolve(result);
+    }.bind(this)).fail(function(xhr, status, err) {
+        console.error("FETCH NEXT ERROR:" + err);
+        deferred.reject();
+    });
+
+    return deferred.promise();
+}
+
 function fetchStops(routeID, directionID) {
     var deferred = new $.Deferred();
 
@@ -143,7 +180,8 @@ function fetchStops(routeID, directionID) {
 function drawStops(stops, color) {
     color = color || 'rgb(199,16,22)';
     stops.forEach(function(stop) {
-        L.circleMarker([stop.stop_lat, stop.stop_lon], {
+        var stopMessage = stop.stop_id + ' - ' + stop.stop_name;
+        var marker = L.circleMarker([stop.stop_lat, stop.stop_lon], {
             color: 'white',
             opacity: 1,
             weight: 3,
@@ -151,7 +189,22 @@ function drawStops(stops, color) {
             fill: true,
             fillOpacity: 1,
             radius: 10
-        }).bindPopup(stop.stop_id + ' - ' + stop.stop_name).addTo(lair);
+        })
+        .bindPopup(stopMessage)
+        .addEventListener(
+            'click',
+            function(e) {
+                fetchNextArrivalForStop(stop.stop_id).then(function(nextBusData) {
+                    var updatedStopMessage = stopMessage;
+                    nextBusData.forEach(function(bus) {
+                        updatedStopMessage += '<br/>next bus: ' + bus.estMin + ' min'
+                    });
+                    marker.bindPopup(updatedStopMessage);
+                });
+            },
+            this
+        )
+        .addTo(lair);
     });
 }
 
