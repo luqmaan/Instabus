@@ -88,10 +88,30 @@ Vehicles.prototype = {
                 fillColor = vehicle.Inservice === 'Y' ? 'rgb(34,189,252)' : 'rgb(188,188,188)';
 
             if (marker) {
-                console.log('Updating existing marker', marker, vehicles);
-                marker.setLatLng([vehicle.lat,   vehicle.lng]);
+                console.log('Updating existing marker', marker, vehicle);
+
+                var markerLatLng = marker.getLatLng(),
+                    start = [markerLatLng.lat, markerLatLng.lng],
+                    stop = [vehicle.lat, vehicle.lng],
+                    delta = [stop[0] - start[0], stop[1] - start[1]],
+                    easeInOutCubic = function(t, b, c, d) {
+                        if ((t/=d/2) < 1) return c/2*t*t*t + b;
+                        return c/2*((t-=2)*t*t + 2) + b;
+                    },
+                    animateFn = function(i, steps, startLatLng, deltaLatLng) {
+                        var x = easeInOutCubic(i, startLatLng[0], deltaLatLng[0], steps),
+                            y = easeInOutCubic(i, startLatLng[1], deltaLatLng[1], steps);
+                        marker.setLatLng([x, y]);
+                        if (i < steps) {
+                            setTimeout(animateFn.bind(null, i+1, steps, startLatLng, deltaLatLng), 10);
+                        }
+                    };
+
+                animateFn(0, 200, start, delta);
+
                 marker._popup.setContent(popupContent);
-                marker.setStyle({fillColor: fillColor});  // FIXME: Does this work?
+                marker.setStyle({fillColor: fillColor});
+
                 return;
             }
 

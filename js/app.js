@@ -10,14 +10,19 @@ var x2js = new X2JS({}),
     locationMarker,
     lair;
 
-L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
-    maxZoom: 18,
-    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
-        '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-        'Imagery © <a href="http://mapbox.com">Mapbox</a>',
-    id: 'examples.map-i86knfo3',
-}).addTo(map);
-var zoomCtrl = new L.Control.Zoom({ position: 'bottomright' }).addTo(map);
+
+function setupMap() {
+    L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+            '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+            'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+        id: 'examples.map-i86knfo3',
+    }).addTo(map);
+    var zoomCtrl = new L.Control.Zoom({ position: 'bottomright' }).addTo(map);
+}
+
+$(document).ready(setupMap);
 
 var utils = {
     formatDirection: function(direction) {
@@ -129,13 +134,13 @@ function drawShape(shape, color) {
 function fetchNextArrivalForStop(stop_id) {
     var deferred = new $.Deferred();
 
-    console.log("fetching next arrival for stop", stop_id);
-    var next_arrival_url = "http://www.capmetro.org/planner/s_nextbus2.asp?opt=1&stopid=" + stop_id;
+    console.log('fetching next arrival for stop', stop_id);
+    var next_arrival_url = 'http://www.capmetro.org/planner/s_nextbus2.asp?opt=1&stopid=' + stop_id;
     $.ajax({
-        url: "http://query.yahooapis.com/v1/public/yql",
+        url: 'http://query.yahooapis.com/v1/public/yql',
         data:{
-            q: "select * from json where url='"+ next_arrival_url + "'",
-            format: "json"
+            q: 'select * from json where url="'+ next_arrival_url + '"',
+            format: 'json'
         }
     }).done(function(data) {
         var result = [];
@@ -146,12 +151,12 @@ function fetchNextArrivalForStop(stop_id) {
         if (Array.isArray(arrivalData)) {
             arrivalData.forEach(function(bus) {
                 // some stops have multiple bus arrivals, make sure its for the selcted route only
-                if (bus.route == selectedRouteID) {
+                if (bus.route === selectedRouteID) {
                     result.push(bus);
                 }
             });
         } else {
-            result.push(arrivalData)
+            result.push(arrivalData);
         }
         console.log("next arrival for stop", stop_id, "route", selectedRouteID, result);
         deferred.resolve(result);
@@ -192,19 +197,15 @@ function drawStops(stops, color) {
             radius: 10
         })
         .bindPopup(stopMessage)
-        .addEventListener(
-            'click',
-            function(e) {
-                fetchNextArrivalForStop(stop.stop_id).then(function(nextBusData) {
-                    var updatedStopMessage = stopMessage;
-                    nextBusData.forEach(function(bus) {
-                        updatedStopMessage += '<br/>next bus: ' + bus.estMin + ' min'
-                    });
-                    marker.bindPopup(updatedStopMessage);
+        .addEventListener('click', function(e) {
+            fetchNextArrivalForStop(stop.stop_id).then(function(nextBusData) {
+                var updatedStopMessage = stopMessage;
+                nextBusData.forEach(function(bus) {
+                    updatedStopMessage += '<br/>next bus: ' + bus.estMin + ' min';
                 });
-            },
-            this
-        )
+                marker.bindPopup(updatedStopMessage);
+            });
+        }, this)
         .addTo(lair);
     });
 }
