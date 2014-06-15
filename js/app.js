@@ -131,37 +131,38 @@ function drawShape(shape, color) {
     map.fitBounds(line.getBounds());
 }
 
-function fetchNextArrivalForStop(stop_id) {
-    var deferred = new $.Deferred();
+function fetchArrivals(routeID, directionID, stopID) {
+    var deferred = new $.Deferred(),
+        next_arrival_url = 'http://www.capmetro.org/planner/s_service.asp?output=xml&opt=2&tool=SI&route=' + routeID + '&stopid=' + stopID;
 
-    console.log('fetching next arrival for stop', stop_id);
-    var next_arrival_url = 'http://www.capmetro.org/planner/s_nextbus2.asp?opt=1&stopid=' + stop_id;
+    console.log('Fetching next arrival', next_arrival_url);
+
     $.ajax({
         url: 'http://query.yahooapis.com/v1/public/yql',
-        data:{
-            q: 'select * from json where url="'+ next_arrival_url + '"',
-            format: 'json'
+        data: {
+            q: 'select * from xml where url="' + next_arrival_url + '"',
+            format: 'xml'
         }
     }).done(function(data) {
-        var result = [];
-        var selectedRouteID = Controls.selectedRoute().route;
+        var doc = x2js.xml2json(data),
+            fault = doc.query.results.Envelope.Body.Fault,
+            service,
+            times;
 
-        var arrivalData = data.query.results.json.list;
-        // sometimes they return a single object, sometimes an array
-        if (Array.isArray(arrivalData)) {
-            arrivalData.forEach(function(bus) {
-                // some stops have multiple bus arrivals, make sure its for the selcted route only
-                if (bus.route === selectedRouteID) {
-                    result.push(bus);
-                }
-            });
-        } else {
-            result.push(arrivalData);
+        if (fault) {
+            console.error(fault);
+            deferred.reject(fault);
         }
-        console.log("next arrival for stop", stop_id, "route", selectedRouteID, result);
-        deferred.resolve(result);
+
+        service = doc.query.results.Envelope.Body.SchedulenearbyResponse.Atstop.Service;
+        if (Array.isArray(service)) {
+            service = service.filter(function(s) { return utils.getDirectionID(s.Direction) === directionID; })[0];
+        }
+        times = service.Times;
+
+        deferred.resolve(times);
     }.bind(this)).fail(function(xhr, status, err) {
-        console.error("FETCH NEXT ERROR:" + err);
+        console.error('Fetch arrivals', err);
         deferred.reject();
     });
 
@@ -186,27 +187,29 @@ function fetchStops(routeID, directionID) {
 function drawStops(stops, color) {
     color = color || 'rgb(199,16,22)';
     stops.forEach(function(stop) {
-        var stopMessage = stop.stop_id + ' - ' + stop.stop_name;
-        var marker = L.circleMarker([stop.stop_lat, stop.stop_lon], {
-            color: 'white',
-            opacity: 1,
-            weight: 3,
-            fillColor: color,
-            fill: true,
-            fillOpacity: 1,
-            radius: 10
-        })
-        .bindPopup(stopMessage)
-        .addEventListener('click', function(e) {
-            fetchNextArrivalForStop(stop.stop_id).then(function(nextBusData) {
-                var updatedStopMessage = stopMessage;
-                nextBusData.forEach(function(bus) {
-                    updatedStopMessage += '<br/>next bus: ' + bus.estMin + ' min';
-                });
-                marker.bindPopup(updatedStopMessage);
+        var stopMessage = stop.stop_id + ' - ' + stop.stop_name,
+            marker = L.circleMarker([stop.stop_lat, stop.stop_lon], {
+                color: 'white',
+                opacity: 1,
+                weight: 3,
+                fillColor: color,
+                fill: true,
+                fillOpacity: 1,
+                radius: 10
+            })
+            .bindPopup(stopMessage);
+
+        marker.addEventListener('click', function(e) {
+            var routeID = Controls.selectedRoute().route,
+                directionID = Controls.selectedRoute().direction,
+                stopID = stop.stop_id;
+
+            fetchArrivals(routeID, directionID, stopID).then(function(times) {
+                marker.bindPopup(stopMessage + '<br />' + times);
             });
-        }, this)
-        .addTo(lair);
+        }, this);
+
+        marker.addTo(lair);
     });
 }
 

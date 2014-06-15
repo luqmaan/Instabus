@@ -12,10 +12,10 @@ Vehicles.prototype = {
         var deferred = new $.Deferred();
 
         $.ajax({
-            url: "http://query.yahooapis.com/v1/public/yql",
+            url: 'http://query.yahooapis.com/v1/public/yql',
             data:{
-                q: "select * from xml where url='http://www.capmetro.org/planner/s_buslocation.asp?route=*'",
-                format: "xml"
+                q: 'select * from xml where url="http://www.capmetro.org/planner/s_buslocation.asp?route=*"',
+                format: 'xml'
             }
         }).done(function(data) {
             var busLocationResponse = x2js.xml2json(data);
