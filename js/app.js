@@ -26,7 +26,7 @@ function setupMap() {
             position: 'topleft',
             icon: 'icon-location',
             defaultLatLng: [30.267153, -97.743061],
-            defaultZoom: 16,
+            zoom: 16,
         },
         onAdd: function (map) {
             var container = L.DomUtil.create('div', 'locate-control leaflet-bar leaflet-control');
@@ -42,7 +42,7 @@ function setupMap() {
 
                     container.classList.remove('loading');
 
-                    map.setView(e.latlng, 16, {
+                    map.setView(e.latlng, this.zoom, {
                         zoom: {
                             animate: true
                         },
@@ -52,17 +52,15 @@ function setupMap() {
                     });
                     try {
                         locationMarker.setLatLng(e.latlng).update();
-                    } catch(err) {
+                    }
+                    catch(err) {
                         locationMarker = L.marker(e.latlng).addTo(map).bindPopup('You are here').openPopup();
                     }
-                });
+                }.bind(this));
                 map.on('locationerror', function onLocationError(e) {
                     console.log('unable to find location: ', e.message);
-
                     container.classList.remove('loading');
-
-                    map.setView(this.defaultLatLng, this.defaultZoom);
-                }.bind(this));
+                });
 
             }.bind(this);
 
@@ -79,7 +77,8 @@ function setupMap() {
     });
 
     var locateCtrl = new LocateCtrl({
-        position: 'topleft'
+        position: 'bottomright',
+        zoom: ''
     }).addTo(map);
 
 }
