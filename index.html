@@ -3,7 +3,7 @@
 <head>
     <title>MetroRappid v.Ghetto</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimal-ui=yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link rel="shortcut icon" href="favicon.ico">
@@ -18,9 +18,10 @@
 </head>
 <body>
     <div id="controls">
-        <select id="route" data-bind="options: availableRoutes, optionsText: 'name', value: selectedRoute"></select>
-        <button data-bind="click: updateVehicles">refrescar</button>
-        <span data-bind="text: activity"></span>
+        <div class="wrapper">
+            <select id="route" data-bind="options: availableRoutes, optionsText: 'name', value: selectedRoute"></select>
+            <span data-bind="text: activity"></span>
+        </div>
     </div>
     <div id="map"></div>
     <script src="js/libs/leaflet-src.js"></script>
