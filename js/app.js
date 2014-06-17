@@ -7,7 +7,6 @@ var x2js = new X2JS({}),
     fetchShape,
     drawShape,
     vehicles,
-    locationMarker,
     lair;
 
 
@@ -23,16 +22,15 @@ function setupMap() {
 
     var LocateCtrl = L.Control.extend({
         options: {
-            position: 'topleft',
             icon: 'icon-location',
-            defaultLatLng: [30.267153, -97.743061],
-            defaultZoom: 16,
+            position: 'topleft',
+            zoomLevel: 16,
         },
         onAdd: function (map) {
-            var container = L.DomUtil.create('div', 'locate-control leaflet-bar leaflet-control');
-            var link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single ' + this.options.icon, container);
+            var container = L.DomUtil.create('div', 'locate-control leaflet-bar leaflet-control'),
+                link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single ' + this.options.icon, container);
 
-            var locate = function() {
+            this.locate = function() {
                 container.classList.add('loading');
 
                 map.locate({maximumAge: 1000, enableHighAccuracy: true});
@@ -42,7 +40,7 @@ function setupMap() {
 
                     container.classList.remove('loading');
 
-                    map.setView(e.latlng, 16, {
+                    map.setView(e.latlng, this.options.zoomLevel, {
                         zoom: {
                             animate: true
                         },
@@ -50,28 +48,42 @@ function setupMap() {
                             animate: true
                         },
                     });
-                    try {
-                        locationMarker.setLatLng(e.latlng).update();
-                    } catch(err) {
-                        locationMarker = L.marker(e.latlng).addTo(map).bindPopup('You are here').openPopup();
+                    if (!this.locationMarker) {
+                        this.circleMarker = L.circleMarker(e.latlng, {
+                            color: 'rgb(20,130,210)',
+                            opacity: 1,
+                            weight: 2,
+                            fillColor: 'rgb(108,196,253)',
+                            fill: true,
+                            fillOpacity: 0.4,
+                            radius: 15
+                        }).addTo(map);
+                        this.locationMarker = L.circleMarker(e.latlng,{
+                            weight: 0,
+                            fillColor: 'rgb(16,94,251)',
+                            fill: true,
+                            fillOpacity: 1,
+                            radius: 5
+                        }).addTo(map);
+                        this.circleMarker.bindPopup('Current Location');
                     }
-                });
-                map.on('locationerror', function onLocationError(e) {
-                    console.log('unable to find location: ', e.message);
+                    this.locationMarker.setLatLng(e.latlng);
+                    console.log('circle marker', this.circleMarker);
+                    this.circleMarker.setLatLng(e.latlng);
 
-                    container.classList.remove('loading');
-
-                    map.setView(this.defaultLatLng, this.defaultZoom);
                 }.bind(this));
 
-            }.bind(this);
+                map.on('locationerror', function onLocationError(e) {
+                    console.log('unable to find location: ', e.message);
+                    container.classList.remove('loading');
+                });
 
-            this.locate = locate;
+            };
 
             L.DomEvent
                 .on(link, 'click', L.DomEvent.stopPropagation)
                 .on(link, 'click', L.DomEvent.preventDefault)
-                .on(link, 'click', locate)
+                .on(link, 'click', this.locate.bind(this))
                 .on(link, 'dblclick', L.DomEvent.stopPropagation);
 
             return container;
@@ -79,7 +91,8 @@ function setupMap() {
     });
 
     var locateCtrl = new LocateCtrl({
-        position: 'topleft'
+        position: 'bottomright',
+        zoomLevel: undefined,  // null is treated as zoomLevel 0
     }).addTo(map);
 
 }
@@ -128,6 +141,8 @@ var Controls = {
         vehicles.update().then(function() {
             this.activity('');
         }.bind(this));
+
+        setTimeout(this.updateVehicles.bind(this), 15 * 1000);
     },
 };
 
@@ -291,9 +306,7 @@ function start(route, locateUser) {
             drawShape(shape);
             fetchStops(routeID, directionID).then(function(stops) {
                 drawStops(stops);
-                vehicles.update().then(function() {
-                    Controls.activity('');
-                });
+                Controls.updateVehicles();
             });
         });
     });

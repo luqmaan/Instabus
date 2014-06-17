@@ -24,7 +24,8 @@ Vehicles.prototype = {
             this.vehicles = busLocationResponse.query.results.Envelope.Body.BuslocationResponse.Vehicles.Vehicle;
 
             this.vehicles.forEach(function(vehicle) {
-                var posStr = vehicle.Positions.Position[0];
+                var Position = vehicle.Positions.Position,
+                    posStr = Array.isArray(Position) ? Position[0] : Position;
                 vehicle.lat = posStr.split(',')[0];
                 vehicle.lng = posStr.split(',')[1];
             });
