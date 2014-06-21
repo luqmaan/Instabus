@@ -93,7 +93,7 @@ def _save_route_data(curr, route_data):
         filename = os.path.join(DATA_DIR, 'shapes_{}_{}.json'.format(route_id, direction_id))
         print 'writing SHAPE data to {}'.format(filename)
         with open(filename, 'wb') as f:
-            f.write(json.dumps(data, sort_keys=True, indent=4, separators=(',', ': ')) + '\n')
+            f.write(json.dumps(data) + '\n')
 
 
 def _save_stop_data(curr):
@@ -164,7 +164,7 @@ def _save_stop_data(curr):
         filename = os.path.join(DATA_DIR, 'stops_{}_{}.json'.format(route_id, direction_id))
         print 'writing STOP data to {}'.format(filename)
         with open(filename, 'wb') as f:
-            f.write(json.dumps(data, sort_keys=True, indent=4, separators=(',', ': ')) + '\n')
+            f.write(json.dumps(data) + '\n')
 
 
 def parse_gtfs_data(force_refetch=True):
