@@ -1,5 +1,6 @@
 html, body {
   height: 100%;
+  font: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 body {
   background-position: center center;
@@ -7,7 +8,7 @@ body {
   background-image: -webkit-radial-gradient(center, ellipse cover,#FFFFFF 0%,#FAFAFA 50%,#F5F5F5 60%,#BEBEBE 100%);
   margin: 0;
   padding: 0;
-  font-family: "Roboto", sans-serif;
+  font-family:  sans-serif;
 }
 #map {
     position: absolute;
@@ -17,14 +18,16 @@ body {
     height: 100%;
 }
 #controls {
-    color: #fff;
+    color: rgb(199,16,22);
     position: relative;
     display: block;
     top: 0;
     left: 0;
     padding: 0;
     width: 100%;
-    background: rgb(159,12,16);
+    background: rgb(241,241,241);
+    border-bottom: 1px solid rgb(168,168,168);
+    broder-top: 1px solid rgba(199,16,22, 0.5);
     z-index: 1000;
     font-size: 1.2em;
 }
