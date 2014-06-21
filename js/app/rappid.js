@@ -16,14 +16,16 @@ function($, ko, L, when, LocateControl, Vehicles, Shape, Stops) {
         // data
         this.route = ko.observable();
         this.vehicles = ko.observable();
+        this.shape = ko.observable();
+        this.stops = ko.observable();
     }
 
     Rappid.prototype = {
         start: function() {
             this.setupMap();
-            // this.route(this.availableRoutes()[0]);
-            // this.setupRoute();
-            // this.route.subscribe(this.setupRoute.bind(this));
+            this.route(this.availableRoutes()[0]);
+            this.setupRoute();
+            this.route.subscribe(this.setupRoute.bind(this));
         },
         refresh: function() {
             this.activity('refreshing...');
@@ -39,7 +41,8 @@ function($, ko, L, when, LocateControl, Vehicles, Shape, Stops) {
                 zoomCtrl,
                 locateCtrl;
 
-            this.map = L.map('map', {zoomControl: false});
+            this.map = L.map('map', {zoomControl: false,});
+            this.map.setView([30.267153, -97.743061], 12);
 
             tileLayer = L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
                 maxZoom: 18,
@@ -49,7 +52,7 @@ function($, ko, L, when, LocateControl, Vehicles, Shape, Stops) {
                 id: 'examples.map-i86knfo3',
             });
 
-            zoomCtrl = new L.Control.Zoom({ position: 'bottomright' });
+            zoomCtrl = new L.Control.Zoom({position: 'bottomright'});
 
             locateCtrl = new LocateControl({
                 position: 'bottomright',
@@ -62,32 +65,36 @@ function($, ko, L, when, LocateControl, Vehicles, Shape, Stops) {
         },
         setupRoute: function() {
             var route = this.route().id,
-                direction = this.route().id,
+                direction = this.route().direction,
+                routeLayer = this.routeLayer,
                 shape,
                 stops,
                 vehicles;
 
-            this.map.removeLayer(this.routeLayer);
+            if (routeLayer) {
+                this.map.removeLayer(routeLayer);
+            }
 
-            this.routeLayer = L.layerGroup();
-            this.routeLayer.addTo(this.map);
+            routeLayer = L.layerGroup();
+            routeLayer.addTo(this.map);
 
-            this.vehicles = new Vehicles(route, direction);
-
+            vehicles = new Vehicles(route, direction);
             shape = new Shape(route, direction);
             stops = new Stops(route, direction);
 
-            var promises = [shape.fetch(), stops.fetch(), vehicles.fetch()];
+            var promises = [shape.fetch(), stops.fetch()];
 
             when.all(promises).then(function() {
-                shape.draw();
-                stops.draw();
-                vehicles.draw();
+                shape.draw(routeLayer);
+                stops.draw(routeLayer);
             });
+
+            vehicles.fetch().then(vehicles.draw.bind(vehicles, routeLayer));
 
             this.vehicles(vehicles);
             this.shape(shape);
             this.stops(stops);
+            this.routeLayer = routeLayer;
         }
     };
 

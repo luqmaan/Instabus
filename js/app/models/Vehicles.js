@@ -1,10 +1,10 @@
-define(['libs/jquery', 'libs/leaflet', 'libs/when/when', 'libs/underscore', 'libs/xml2json', 'utils'],
+define(['libs/jquery', 'libs/leaflet-src', 'libs/when/when', 'libs/underscore', 'libs/xml2json', 'utils'],
 function($, L, when, _, X2JS, utils) {
     var x2js = new X2JS({});
 
     function Vehicles(route, direction) {
         this.route = route;
-        this.directon = direction;
+        this.direction = direction;
 
         this._vehicles = [];
         this._markers = {};
@@ -42,15 +42,26 @@ function($, L, when, _, X2JS, utils) {
                 deferred.reject();
             });
 
-            return deferred.promise();
+            return deferred.promise;
         },
         draw: function(layer) {
-            var vehicles = this.filter(this._vehicles, this.route, this.direction),
-                vehicleIDs = vehicles.map(function(v) { return v.Vehicleid; }),
+            console.log("_", _);
+
+            var route = this.route,
+                direction = this.direction,
+                matchingVehicles = _.filter(this._vehicles, function(v) {
+                    var _route = parseInt(v.Route),
+                        _dir = utils.getDirectionID(v.Direction);
+                    console.log(route, _route, direction, _dir);
+
+                    return route === _route && direction === _dir;
+                }),
+                vehicleIDs = matchingVehicles.map(function(v) { return v.Vehicleid; }),
                 deletedVehicleIDs = _.filter(Object.keys(this._markers), function(vehicleID) {
                     return !_.find(vehicleIDs, function(vID) { return vID === vehicleID; });
                 });
 
+            console.log('vehicle', matchingVehicles);
             console.log('Deleted vehicles', deletedVehicleIDs.length, deletedVehicleIDs);
 
             deletedVehicleIDs.forEach(function(vID) {
@@ -58,7 +69,7 @@ function($, L, when, _, X2JS, utils) {
                 delete this._markers[vID];
             }.bind(this));
 
-            vehicles.forEach(function(vehicle) {
+            matchingVehicles.forEach(function(vehicle) {
                 var marker = this._markers[vehicle.Vehicleid],
                     popupContent = this.popupContent(vehicle),
                     fillColor = vehicle.Inservice === 'Y' ? 'rgb(34,189,252)' : 'rgb(188,188,188)';
@@ -90,14 +101,6 @@ function($, L, when, _, X2JS, utils) {
                 marker.addTo(layer);
                 this._markers[vehicle.Vehicleid] = marker;
             }.bind(this));
-        },
-        filter: function(vehicles, route, direction) {
-            return _.filter(vehicles, function(v) {
-                var _route = parseInt(v.Route),
-                    _dir = this.utils.getDirectionID(v.Direction);
-
-                return route === _route && direction === _dir;
-            });
         },
         popupContent: function(vehicle) {
             return [

@@ -1,5 +1,5 @@
-define(['libs/jquery', 'libs/leaflet', 'libs/when/when'],
-function($, L, when) {
+define(['libs/jquery', 'libs/leaflet-src', 'libs/when/when'],
+function($, leaflet, when) {
     function Shape(route, direction) {
         this.route = route;
         this.direction = direction;
@@ -15,11 +15,12 @@ function($, L, when) {
             }).done(
                 function(data) {
                     this._shape = data.map(function(el) {
-                        return [el.shape_pt_lat, el.shape_pt_lon];
+                        return new L.LatLng(el.shape_pt_lat, el.shape_pt_lon);
                     });
                     deferred.resolve();
-                }.bind(this),
-                function(a, b, err) {
+                }.bind(this)
+            ).fail(
+                function(xhr, status, err) {
                     console.error(err);
                     deferred.reject(err);
                 }
@@ -28,6 +29,7 @@ function($, L, when) {
             return deferred.promise;
         },
         draw: function(layer) {
+            console.log('meow', layer)
             var color ='rgb(199,16,22)',
                 line = new L.Polyline(this._shape, {
                     color: color,
@@ -36,8 +38,9 @@ function($, L, when) {
                     opacity: 0.9,
                     smoothFactor: 1
                 });
-
             line.addTo(layer);
+            console.log(layer);
+            console.log(line);
         }
     };
 

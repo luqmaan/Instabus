@@ -1,4 +1,4 @@
-define(['libs/jquery', 'libs/leaflet', 'libs/knockout', 'rappid'],
+define(['libs/jquery', 'libs/leaflet-src', 'libs/knockout', 'rappid'],
 function($, L, ko, Rappid) {
     var rappid = window.rappid = new Rappid();
 

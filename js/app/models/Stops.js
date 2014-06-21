@@ -1,4 +1,4 @@
-define(['libs/jquery', 'libs/leaflet', 'libs/when/when'],
+define(['libs/jquery', 'libs/leaflet-src', 'libs/when/when'],
 function($, L, when) {
     function Stops(route, direction) {
         this.route = route;
@@ -14,9 +14,10 @@ function($, L, when) {
                 url: 'data/stops_' + this.route + '_' + this.direction + '.json'
             }).done(
                 function(data) {
-                    this.stops = data;
+                    this._stops = data;
                     deferred.resolve();
-                }.bind(this),
+                }.bind(this)
+            ).fail(
                 function(a, b, err) {
                     console.error(err);
                     deferred.reject(err);

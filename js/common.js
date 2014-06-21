@@ -9,6 +9,9 @@ requirejs.config({
         },
         'libs/xml2json': {
             exports: 'X2JS'
+        },
+        'libs/underscore': {
+            exports: '_'
         }
     }
 });

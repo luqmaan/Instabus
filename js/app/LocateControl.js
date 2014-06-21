@@ -1,4 +1,4 @@
-define(['libs/leaflet'],
+define(['libs/leaflet-src'],
 function(L) {
     var LocateControl = L.Control.extend({
         options: {
