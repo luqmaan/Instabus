@@ -1,0 +1,12 @@
+*.pyc
+.DS_Store
+
+.env
+.build
+.sass-cache/*
+static/css/*
+.bower_components/
+.grunt
+node_modules
+
+npm-debug.log
