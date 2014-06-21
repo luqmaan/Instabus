@@ -16,6 +16,7 @@ ROUTE_IDS = [801, 550]  # only routes with realtime data
 GTFS_DOWNLOAD_FILE = os.path.join(tempfile.gettempdir(), 'capmetro_gtfs.zip')
 GTFS_DB = os.path.join(tempfile.gettempdir(), 'capmetro_gtfs_data.db')
 DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
+DATA_VERSION_FILE = os.path.join(DATA_DIR, 'data_version.txt')
 
 
 def serve():
@@ -26,6 +27,11 @@ def fetch_gfts_data():
     print 'fetching gtfs data....'
     r = requests.get('http://www.gtfs-data-exchange.com/agency/capital-metro/latest.zip', stream=True)
     assert r.ok, 'problem fetching data. status_code={}'.format(r.status_code)
+
+    # looks like 'capital-metro_20140609_0109.zip'
+    with open(DATA_VERSION_FILE, 'wb') as f:
+        data_version = os.path.splitext(os.path.basename(r.url))[0].replace('capital-metro_', '')
+        f.write(data_version + '\n')
 
     with open(GTFS_DOWNLOAD_FILE, 'wb') as f:
         for chunk in r.iter_content(1024):
