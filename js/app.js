@@ -266,27 +266,6 @@ function drawStops(stops, color) {
     });
 }
 
-function fetchRoute(routeID) {
-    var deferred = new $.Deferred();
-
-    if (_routesCache) {
-        return deferred.resolve(_.find(_routesCache, function(r) {
-            return parseInt(r.route_id) === routeID;
-        }));
-        return deferred.promise;
-    }
-    $.ajax({url: 'data/routes.json'}).done(function(data) {
-        _routesCache = data;
-        deferred.resolve(deferred.resolve(_.find(_routesCache, function(r) {
-            return parseInt(r.route_id) === routeID;
-        })));
-    }).fail(function(xhr, status, err) {
-        console.error(err);
-        deferred.reject();
-    });
-    return deferred.promise();
-}
-
 function start(route, locateUser) {
     var routeID = route.route,
         directionID = route.direction;
@@ -301,13 +280,11 @@ function start(route, locateUser) {
 
     vehicles = new Vehicles(lair, [{route: routeID, direction: directionID}], utils);
 
-    fetchRoute(routeID).then(function(route) {
-        fetchShape(routeID, directionID).then(function(shape) {
-            drawShape(shape);
-            fetchStops(routeID, directionID).then(function(stops) {
-                drawStops(stops);
-                Controls.updateVehicles();
-            });
+    fetchShape(routeID, directionID).then(function(shape) {
+        drawShape(shape);
+        fetchStops(routeID, directionID).then(function(stops) {
+            drawStops(stops);
+            Controls.updateVehicles();
         });
     });
 }
