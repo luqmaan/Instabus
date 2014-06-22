@@ -1,3 +1,4 @@
 Fabric==1.8.3
 gtfsdb==0.1.5
 requests==2.3.0
+Twisted==14.0.0
