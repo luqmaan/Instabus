@@ -1,5 +1,5 @@
-define(['libs/jquery', 'libs/leaflet-src', 'libs/when/when'],
-function($, leaflet, when) {
+define(['libs/jquery', 'libs/leaflet-src', 'libs/when/when', 'config'],
+function($, leaflet, when, config) {
     function Shape(route, direction) {
         this.route = route;
         this.direction = direction;
@@ -29,14 +29,14 @@ function($, leaflet, when) {
             return deferred.promise;
         },
         draw: function(layer) {
-            console.log('meow', layer)
             var color ='rgb(199,16,22)',
                 line = new L.Polyline(this._shape, {
                     color: color,
                     stroke: true,
                     weight: 5,
                     opacity: 0.9,
-                    smoothFactor: 1
+                    smoothFactor: 1,
+                    zIndexOffset: config.shapeZIndex
                 });
             line.addTo(layer);
             console.log(layer);

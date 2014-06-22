@@ -66,35 +66,28 @@ function($, ko, L, when, LocateControl, Vehicles, Shape, Stops) {
         setupRoute: function() {
             var route = this.route().id,
                 direction = this.route().direction,
-                routeLayer = this.routeLayer,
                 shape,
                 stops,
                 vehicles;
 
-            if (routeLayer) {
-                this.map.removeLayer(routeLayer);
+            if (this.routeLayer) {
+                this.map.removeLayer(this.routeLayer);
             }
 
-            routeLayer = L.layerGroup();
-            routeLayer.addTo(this.map);
+            this.routeLayer = L.layerGroup();
+            this.routeLayer.addTo(this.map);
 
             vehicles = new Vehicles(route, direction);
             shape = new Shape(route, direction);
             stops = new Stops(route, direction);
 
-            var promises = [shape.fetch(), stops.fetch()];
-
-            when.all(promises).then(function() {
-                shape.draw(routeLayer);
-                stops.draw(routeLayer);
-            });
-
-            vehicles.fetch().then(vehicles.draw.bind(vehicles, routeLayer));
+            shape.fetch().then(shape.draw.bind(shape, this.routeLayer));
+            stops.fetch().then(stops.draw.bind(stops, this.routeLayer));
+            vehicles.fetch().then(vehicles.draw.bind(vehicles, this.routeLayer));
 
             this.vehicles(vehicles);
             this.shape(shape);
             this.stops(stops);
-            this.routeLayer = routeLayer;
         }
     };
 

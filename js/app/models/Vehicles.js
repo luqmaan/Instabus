@@ -1,5 +1,5 @@
-define(['libs/jquery', 'libs/leaflet-src', 'libs/when/when', 'libs/underscore', 'libs/xml2json', 'utils'],
-function($, L, when, _, X2JS, utils) {
+define(['libs/jquery', 'libs/leaflet-src', 'libs/when/when', 'libs/underscore', 'libs/xml2json', 'utils', 'config'],
+function($, L, when, _, X2JS, utils, config) {
     var x2js = new X2JS({});
 
     function Vehicles(route, direction) {
@@ -96,6 +96,7 @@ function($, L, when, _, X2JS, utils) {
                     radius: 12,
                     fillOpacity: '0.9',
                     fillColor: fillColor,
+                    zIndexOffset: config.vehicleZIndex
                 }).bindPopup(popupContent);
 
                 marker.addTo(layer);

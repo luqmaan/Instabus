@@ -1,5 +1,5 @@
-define(['libs/jquery', 'libs/leaflet-src', 'libs/when/when'],
-function($, L, when) {
+define(['libs/jquery', 'libs/leaflet-src', 'libs/when/when', 'config'],
+function($, L, when, config) {
     function Stops(route, direction) {
         this.route = route;
         this.direction = direction;
@@ -38,7 +38,8 @@ function($, L, when) {
                         fillColor: color,
                         fill: true,
                         fillOpacity: 1,
-                        radius: 10
+                        radius: 10,
+                        zIndexOffset: config.stopZIndex
                     });
 
                 marker.bindPopup(stopMessage);
