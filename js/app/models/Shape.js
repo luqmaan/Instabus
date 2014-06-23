@@ -39,8 +39,6 @@ function($, leaflet, when, config) {
                     zIndexOffset: config.shapeZIndex
                 });
             line.addTo(layer);
-            console.log(layer);
-            console.log(line);
         }
     };
 

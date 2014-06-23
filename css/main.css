@@ -12,19 +12,34 @@ body {
 }
 #map {
     position: absolute;
-    top: 0;
-    left: 0;
+    width: 50%;
+    left: 50%;
+    top: 50px;
+    bottom: 0;
+}
+#map.full {
     width: 100%;
-    height: 100%;
+    left: 0;
+}
+#list {
+    position: absolute;
+    width: 50%;
+    top: 50px;
+    bottom: 0;
+    left: 0;
+    background: #fff;
+    float: left;
+    overflow: scroll;
 }
 #controls {
-    color: rgb(199,16,22);
     position: relative;
     display: block;
+    height: 50px;
     top: 0;
     left: 0;
     padding: 0;
     width: 100%;
+    color: rgb(199,16,22);
     background: rgb(241,241,241);
     border-bottom: 1px solid rgb(168,168,168);
     broder-top: 1px solid rgba(199,16,22, 0.5);
@@ -63,4 +78,15 @@ body {
 .icon-location {
     background: url('../icons/locate.png') center center;
     background-size: 50% 50%;
+}
+#list .wrapper {
+    padding: 10px 10px;
+}
+#list ul {
+    padding: 0;
+}
+#list li {
+    border-bottom: 1px solid rgb(241,241,241);
+    list-style: none;
+    padding: 5px 15px;
 }

@@ -3,7 +3,12 @@ function($, L, ko, Rappid) {
     var rappid = window.rappid = new Rappid();
 
     $(document).ready(function() {
-        ko.applyBindings(rappid, document.getElementById('controls'));
+        try {
+            ko.applyBindings(rappid, document.getElementById('lerappid'));
+        }
+        catch (e) {
+            console.error(e);
+        }
         rappid.start();
     });
 });

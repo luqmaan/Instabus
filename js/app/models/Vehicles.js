@@ -45,8 +45,6 @@ function($, L, when, _, X2JS, utils, config) {
             return deferred.promise;
         },
         draw: function(layer) {
-            console.log("_", _);
-
             var route = this.route,
                 direction = this.direction,
                 matchingVehicles = _.filter(this._vehicles, function(v) {
@@ -97,9 +95,11 @@ function($, L, when, _, X2JS, utils, config) {
                     fillOpacity: '0.9',
                     fillColor: fillColor,
                     zIndexOffset: config.vehicleZIndex
-                }).bindPopup(popupContent);
+                });
 
+                marker.bindPopup(popupContent);
                 marker.addTo(layer);
+
                 this._markers[vehicle.Vehicleid] = marker;
             }.bind(this));
         },

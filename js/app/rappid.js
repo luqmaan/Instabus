@@ -14,27 +14,30 @@ function($, ko, L, when, LocateControl, Vehicles, Shape, Stops) {
         this.activity = ko.observable();
 
         // data
+        this.vehicles = null;
+        this.shape = null;
+        this.stops = null;
+
+        // viewmodels
         this.route = ko.observable();
-        this.vehicles = ko.observable();
-        this.shape = ko.observable();
-        this.stops = ko.observable();
+        this.stopsList = ko.observableArray();
     }
 
     Rappid.prototype = {
         start: function() {
             this.setupMap();
+
+            this.route.subscribe(this.initRoute.bind(this));
             this.route(this.availableRoutes()[0]);
-            this.setupRoute();
-            this.route.subscribe(this.setupRoute.bind(this));
         },
         refresh: function() {
             this.activity('refreshing...');
             console.log('refreshing...');
+
             this.vehicles.update().then(function() {
                 this.activity('');
+                setTimeout(this.refresh, 15 * 1000);
             }.bind(this));
-
-            setTimeout(this.refresh, 15 * 1000);
         },
         setupMap: function() {
             var tileLayer,
@@ -62,13 +65,11 @@ function($, ko, L, when, LocateControl, Vehicles, Shape, Stops) {
             tileLayer.addTo(this.map);
             zoomCtrl.addTo(this.map);
             locateCtrl.addTo(this.map);
+
         },
-        setupRoute: function() {
+        initRoute: function() {
             var route = this.route().id,
-                direction = this.route().direction,
-                shape,
-                stops,
-                vehicles;
+                direction = this.route().direction;
 
             if (this.routeLayer) {
                 this.map.removeLayer(this.routeLayer);
@@ -77,18 +78,21 @@ function($, ko, L, when, LocateControl, Vehicles, Shape, Stops) {
             this.routeLayer = L.layerGroup();
             this.routeLayer.addTo(this.map);
 
-            vehicles = new Vehicles(route, direction);
-            shape = new Shape(route, direction);
-            stops = new Stops(route, direction);
+            this.vehicles = new Vehicles(route, direction);
+            this.shape = new Shape(route, direction);
+            this.stops = new Stops(route, direction);
 
-            shape.fetch().then(shape.draw.bind(shape, this.routeLayer));
-            stops.fetch().then(stops.draw.bind(stops, this.routeLayer));
-            vehicles.fetch().then(vehicles.draw.bind(vehicles, this.routeLayer));
-
-            this.vehicles(vehicles);
-            this.shape(shape);
-            this.stops(stops);
-        }
+            this.shape.fetch().then(this.shape.draw.bind(this.shape, this.routeLayer));
+            this.vehicles.fetch().then(this.vehicles.draw.bind(this.vehicles, this.routeLayer));
+            this.stops.fetch().then(function() {
+                try {
+                    this.stops.draw(this.routeLayer);
+                    this.stopsList(this.stops._stops);
+                } catch (e) {
+                    console.error(e);
+                }
+            }.bind(this));
+        },
     };
 
     return Rappid;

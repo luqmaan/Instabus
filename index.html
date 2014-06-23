@@ -18,26 +18,34 @@
 
 </head>
 <body>
-    <div id="controls">
-        <div class="wrapper">
-            <select id="route" data-bind="options: availableRoutes, optionsText: 'name', value: route"></select>
-            <span data-bind="text: activity"></span>
+    <div id="lerappid">
+        <div id="controls">
+            <div class="wrapper">
+                <select id="route" data-bind="options: availableRoutes, optionsText: 'name', value: route"></select>
+                <!-- <input id="include-list" type="checkbox" data-bind="checked: includeList" /><label for="include-list">Show List</label> -->
+                <span data-bind="text: activity"></span>
+            </div>
         </div>
-    </div>
-    <!-- <div id="list">
-        <ul>
-            <li data-bind="foreach: stops">
-                <span data-bind="text: name"></span>
-                <button data-bind="click: loadArrivals">arrivals</button>
-                <button data-bind="click: displayMap">show on map</button>
-                <ul data-bind="if: trips">
-                    <li data-bind="foreach: trips">
-                        <span data-bind="text: arrivalTime"></span>
-                    </li>
+        <div id="list">
+            <div class="wrapper">
+                <ul>
+                    <!-- ko foreach: stopsList() -->
+                        <li>
+                            <span data-bind="text: name"></span><br />
+                            <span data-bind="text: desc"></span>
+                            <button data-bind="click: loadTrips">load trips</button>
+                            <button data-bind="click: showOnMap">show on map</button>
+                            <ul data-bind="if: trips">
+                                <li data-bind="foreach: trips">
+                                    <span data-bind="text: arrivalTime"></span>
+                                </li>
+                            </ul>
+                        </li>
+                    <!-- /ko -->
                 </ul>
-            </li>
-        </ul>
-    </div> -->
-    <div id="map"></div>
+            </div>
+        </div>
+        <div id="map"></div>
+    </div>
 </body>
 </html>

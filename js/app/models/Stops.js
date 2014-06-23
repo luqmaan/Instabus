@@ -1,9 +1,9 @@
-define(['libs/jquery', 'libs/leaflet-src', 'libs/when/when', 'config'],
-function($, L, when, config) {
+define(['libs/jquery', 'libs/knockout', 'libs/leaflet-src', 'libs/when/when', 'config', 'models/Stop'],
+function($, ko, L, when, config, Stop) {
     function Stops(route, direction) {
         this.route = route;
         this.direction = direction;
-        this._stops = [];
+        this._stops = null;
     }
 
     Stops.prototype = {
@@ -14,7 +14,10 @@ function($, L, when, config) {
                 url: 'data/stops_' + this.route + '_' + this.direction + '.json'
             }).done(
                 function(data) {
-                    this._stops = data;
+                    this._stops = data.map(function(stopData) {
+                        return new Stop(stopData);
+                    });
+
                     deferred.resolve();
                 }.bind(this)
             ).fail(
@@ -30,8 +33,8 @@ function($, L, when, config) {
             var color = 'rgb(199,16,22)';
 
             this._stops.forEach(function(stop) {
-                var stopMessage = stop.stop_id + ' - ' + stop.stop_name,
-                    marker = L.circleMarker([stop.stop_lat, stop.stop_lon], {
+                var stopMessage = stop.id() + ' - ' + stop.name(),
+                    marker = L.circleMarker([stop.lat(), stop.lon()], {
                         color: 'white',
                         opacity: 1,
                         weight: 3,
@@ -55,7 +58,10 @@ function($, L, when, config) {
                 //     });
                 // }, this);
             });
-        }
+        },
+        loadTrips: function() {
+        },
+
     };
 
     return Stops;
