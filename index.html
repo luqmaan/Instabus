@@ -28,17 +28,19 @@
         </div>
         <div id="list">
             <div class="wrapper">
-                <ul>
+                <ul class="stops">
                     <!-- ko foreach: stopsList() -->
-                        <li>
-                            <span data-bind="text: name"></span><br />
-                            <span data-bind="text: desc"></span>
+                        <li class="stop">
+                            <span class="name" data-bind="text: name"></span>
+                            <span class="desc" data-bind="text: desc"></span>
                             <button data-bind="click: loadTrips">load trips</button>
                             <button data-bind="click: showOnMap">show on map</button>
-                            <ul data-bind="if: trips">
-                                <li data-bind="foreach: trips">
-                                    <span data-bind="text: arrivalTime"></span>
-                                </li>
+                            <ul class="arrivals" data-bind="if: trips">
+                                <!-- ko foreach: trips() -->
+                                    <li class="arrival">
+                                        <span data-bind="text: tripTime"></span>
+                                    </li>
+                                <!-- /ko -->
                             </ul>
                         </li>
                     <!-- /ko -->

@@ -1,9 +1,9 @@
-define(['libs/knockout'],
-function(ko) {
+define(['libs/knockout', 'models/TripCollection'],
+function(ko, TripCollection) {
     function Stop(data) {
         this.name = ko.observable(data.stop_name);
-        this.direction_id = ko.observable(data.direction_id);
-        this.route_id = ko.observable(data.route_id);
+        this.direction = ko.observable(parseInt(data.direction_id));
+        this.route = ko.observable(parseInt(data.route_id));
         this.code = ko.observable(data.stop_code);
         this.desc = ko.observable(data.stop_desc);
         this.id = ko.observable(data.stop_id);
@@ -18,12 +18,10 @@ function(ko) {
 
     Stop.prototype = {
         loadTrips: function() {
-            this.trips.push({
-                arrivalTime: '3m'
-            }, {
-                arrivalTime: '11m'
-            }, {
-                arrivalTime: '28m'
+            TripCollection.fetch(this.route(), this.direction(), this.id()).then(function(trips) {
+                this.trips(trips);
+            }.bind(this), function(e) {
+                console.error(e);
             });
         },
         showOnMap: function() {
@@ -33,3 +31,4 @@ function(ko) {
 
     return Stop;
 });
+8

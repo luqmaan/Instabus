@@ -30,6 +30,8 @@ body {
     background: #fff;
     float: left;
     overflow: scroll;
+    box-shadow: 10px -10px 10px rgba(0, 0, 0, 0.1);
+    z-index: 100;
 }
 #controls {
     position: relative;
@@ -82,11 +84,34 @@ body {
 #list .wrapper {
     padding: 10px 10px;
 }
-#list ul {
+#list .stops {
+    padding: 0;
+    list-style: none;
+}
+#list .stop {
+    border-left: 3px solid rgb(199,16,22);
+    border-bottom: 1px solid rgb(241,241,241);
+    padding: 5px 15px;
+}
+#list .stop .desc, #list .stop .name {
+    display: block;
+    line-height: 1.5em;
+}
+#list .stop .desc {
+    font-size: 0.8em;
+}
+#list .arrivals {
+    list-style: none;
     padding: 0;
 }
-#list li {
-    border-bottom: 1px solid rgb(241,241,241);
-    list-style: none;
-    padding: 5px 15px;
+#list .arrival {
+    background: rgb(203,233,171);
+    border-radius: 5px;
+    display: inline-block;
+    position: relative;
+    padding: 5px;
+    margin: 5px;
+}
+#list .arrivals {
+    display: block;
 }
