@@ -20,7 +20,7 @@ DATA_VERSION_FILE = os.path.join(DATA_DIR, 'data_version.txt')
 
 
 def serve():
-    fabric.api.local("python -m SimpleHTTPServer 1234")
+    fabric.api.local("twistd -n web -p 1234 --path .")
 
 
 def fetch_gfts_data():

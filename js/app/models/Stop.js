@@ -1,4 +1,4 @@
-define(['libs/knockout', 'libs/when/when', 'models/TripCollection'],
+define(['knockout', 'when', 'models/TripCollection'],
 function(ko, when, TripCollection) {
     function Stop(data) {
         this.name = ko.observable(data.stop_name);

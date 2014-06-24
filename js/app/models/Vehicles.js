@@ -1,4 +1,4 @@
-define(['libs/jquery', 'libs/leaflet-src', 'libs/when/when', 'libs/underscore', 'libs/xml2json', 'utils', 'config'],
+define(['jquery', 'leaflet', 'when', 'underscore', 'xml2json', 'utils', 'config'],
 function($, L, when, _, X2JS, utils, config) {
     var x2js = new X2JS({});
 

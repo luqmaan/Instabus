@@ -1,4 +1,4 @@
-define(['libs/jquery', 'libs/leaflet-src', 'libs/when/when', 'config'],
+define(['jquery', 'leaflet', 'when', 'config'],
 function($, leaflet, when, config) {
     function Shape(route, direction) {
         this.route = route;

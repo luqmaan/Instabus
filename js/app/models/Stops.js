@@ -1,5 +1,5 @@
-define(['libs/jquery', 'libs/knockout', 'libs/leaflet-src', 'libs/when/when', 'config', 'models/Stop'],
-function($, ko, L, when, config, Stop) {
+define(['jquery', 'leaflet', 'when', 'config', 'models/Stop'],
+function($, L, when, config, Stop) {
     function Stops(route, direction) {
         this.route = route;
         this.direction = direction;

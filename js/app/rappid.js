@@ -1,4 +1,4 @@
-define(['libs/knockout', 'libs/leaflet-src', 'libs/when/when', 'LocateControl', 'models/Vehicles', 'models/Shape', 'models/Stops'],
+define(['knockout', 'leaflet', 'when', 'LocateControl', 'models/Vehicles', 'models/Shape', 'models/Stops'],
 function(ko, L, when, LocateControl, Vehicles, Shape, Stops) {
     function Rappid() {
         // leaflet

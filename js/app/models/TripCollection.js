@@ -1,10 +1,9 @@
-define(['libs/jquery', 'libs/when/when', 'libs/xml2json', 'utils', 'models/Trip'],
+define(['jquery', 'when', 'xml2json', 'utils', 'models/Trip'],
 function($, when, X2JS, utils, Trip) {
     var x2js = new X2JS({});
 
     var TripCollection = {
         fetch: function(route, direction, stop) {
-            console.log('arguments', arguments);
             var deferred = when.defer(),
                 url = 'http://query.yahooapis.com/v1/public/yql',
                 cap_url = 'http://www.capmetro.org/planner/s_service.asp?output=xml&opt=2&tool=SI&route=' + route + '&stopid=' + stop;
@@ -33,6 +32,7 @@ function($, when, X2JS, utils, Trip) {
                         services = services.filter(function(s) { return utils.getDirectionID(s.Direction) === direction; })[0];
                     }
 
+                    console.log(trips);
                     trips = services.Tripinfo.map(function(tripData) { return new Trip(tripData); });
 
                     deferred.resolve(trips);

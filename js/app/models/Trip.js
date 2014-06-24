@@ -1,4 +1,4 @@
-define(['libs/knockout'],
+define(['knockout'],
 function(ko) {
     function Trip(data) {
         this.tripTime = ko.observable(data.Triptime);
