@@ -32,7 +32,6 @@ function(ko, when, TripCollection) {
                 function(trips) {
                     this.activityMsg('');
                     this.trips(trips);
-                    this.activity(false);
                     deferred.resolve();
                 }.bind(this),
                 function(e) {
@@ -46,8 +45,8 @@ function(ko, when, TripCollection) {
             return deferred.promise;
         },
         refresh: function() {
-            if (this.loadTrips) {
-                return this.update();
+            if (this.shouldRefresh) {
+                return this.loadTrips();
             }
         },
         showOnMap: function() {

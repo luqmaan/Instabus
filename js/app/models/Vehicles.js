@@ -79,18 +79,19 @@ function($, L, when, _, X2JS, utils, config) {
                     fillColor = vehicle.Inservice === 'Y' ? 'rgb(34,189,252)' : 'rgb(188,188,188)';
 
                 if (marker) {
-                    console.log('Updating existing marker', marker, vehicle);
-
                     var markerLatLng = marker.getLatLng(),
                         start = [markerLatLng.lat, markerLatLng.lng],
-                        stop = [vehicle.lat, vehicle.lng],
+                        stop = [parseFloat(vehicle.lat), parseFloat(vehicle.lng)],
                         steps = 200,
                         delta = [stop[0] - start[0], stop[1] - start[1]];
 
-                    this.animateMarker(marker, 0, steps, start, delta);
-
                     marker._popup.setContent(popupContent);
                     marker.setStyle({fillColor: fillColor});
+
+                    if (!_.isEqual(start, stop)) {
+                        console.log('animating existing vehicle marker', marker);
+                        this.animateMarker(marker, 0, steps, start, delta);
+                    }
 
                     return;
                 }
@@ -102,6 +103,7 @@ function($, L, when, _, X2JS, utils, config) {
                     fillColor: fillColor,
                     zIndexOffset: config.vehicleZIndex
                 });
+                console.log('adding new vehicle marker', marker);
 
                 marker.bindPopup(popupContent);
                 marker.addTo(layer);
@@ -129,7 +131,7 @@ function($, L, when, _, X2JS, utils, config) {
                 y = this.easeInOutCubic(i, startLatLng[1], deltaLatLng[1], steps);
             marker.setLatLng([x, y]);
             if (i < steps) {
-                setTimeout(this.animateFn.bind(this, marker, i+1, steps, startLatLng, deltaLatLng), 10);
+                setTimeout(this.animateMarker.bind(this, marker, i+1, steps, startLatLng, deltaLatLng), 10);
             }
         }
     };
