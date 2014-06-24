@@ -113,7 +113,8 @@ def _save_stop_data(curr):
             stops.parent_station,
             stops.stop_timezone,
             stops.wheelchair_boarding,
-            stops.platform_code
+            stops.platform_code,
+            stop_times.stop_sequence
         FROM
             stop_times, trips, stops
         WHERE
@@ -135,13 +136,14 @@ def _save_stop_data(curr):
             stops.parent_station,
             stops.stop_timezone,
             stops.wheelchair_boarding,
-            stops.platform_code
+            stops.platform_code,
+            stop_times.stop_sequence
         ORDER BY trips.route_id, trips.direction_id, stops.stop_id
     '''.format(','.join('?' for _ in ROUTE_IDS))
     curr.execute(sql, ROUTE_IDS)
 
     data_by_stops = defaultdict(list)
-    for (route_id, direction_id, stop_id, stop_code, stop_name, stop_desc, stop_lat, stop_lon, zone_id, stop_url, location_type, parent_station, stop_timezone, wheelchair_boarding, platform_code) in curr:
+    for (route_id, direction_id, stop_id, stop_code, stop_name, stop_desc, stop_lat, stop_lon, zone_id, stop_url, location_type, parent_station, stop_timezone, wheelchair_boarding, platform_code, stop_sequence) in curr:
         data_by_stops[(route_id, direction_id)].append({
             'route_id': route_id,
             'direction_id': direction_id,
@@ -158,9 +160,11 @@ def _save_stop_data(curr):
             'stop_timezone': stop_timezone,
             'wheelchair_boarding': wheelchair_boarding,
             'platform_code': platform_code,
+            'stop_sequence': stop_sequence,
         })
 
     for (route_id, direction_id), data in data_by_stops.items():
+        data = sorted(data, key=lambda x: int(x['stop_sequence']))  # sort by stop id
         filename = os.path.join(DATA_DIR, 'stops_{}_{}.json'.format(route_id, direction_id))
         print 'writing STOP data to {}'.format(filename)
         with open(filename, 'wb') as f:
