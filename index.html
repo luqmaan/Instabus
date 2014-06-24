@@ -44,9 +44,9 @@
                                 <button data-bind="click: loadTrips">show trips</button>
                             <!-- /ko -->
                             <button data-bind="click: showOnMap">show on map</button>
-                            <ul class="arrivals" data-bind="if: trips">
+                            <ul class="trips" data-bind="if: trips">
                                 <!-- ko foreach: trips() -->
-                                    <li class="arrival">
+                                    <li class="trip">
                                         <span data-bind="text: tripTime"></span>
                                     </li>
                                 <!-- /ko -->

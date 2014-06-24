@@ -33,8 +33,7 @@ function($, L, when, config, Stop) {
             var color = 'rgb(199,16,22)';
 
             this._stops.forEach(function(stop) {
-                var stopMessage = stop.id() + ' - ' + stop.name(),
-                    marker = L.circleMarker([stop.lat(), stop.lon()], {
+                var marker = L.circleMarker([stop.lat(), stop.lon()], {
                         color: 'white',
                         opacity: 1,
                         weight: 3,
@@ -45,18 +44,14 @@ function($, L, when, config, Stop) {
                         zIndexOffset: config.stopZIndex
                     });
 
-                marker.bindPopup(stopMessage);
+                marker.bindPopup(stop.popupContent());
                 marker.addTo(layer);
 
-                // marker.addEventListener('click', function(e) {
-                //     var routeID = Controls.selectedRoute().route,
-                //         directionID = Controls.selectedRoute().direction,
-                //         stopID = stop.stop_id;
-
-                //     fetchArrivals(routeID, directionID, stopID).then(function(times) {
-                //         marker.bindPopup(stopMessage + '<br />' + times);
-                //     });
-                // }, this);
+                marker.addEventListener('click', function(e) {
+                    if (!stop.showTrips()) {
+                        stop.loadTrips();
+                    }
+                });
             });
         }
     };

@@ -1,6 +1,7 @@
 requirejs.config({
     baseUrl: 'js/app',
     paths: {
+        'text': '../../bower_components/requirejs-text/text',
         'jquery': '../../bower_components/jquery/dist/jquery.min',
         'knockout': '../../bower_components/knockout-dist/knockout.min',
         'underscore': '../../bower_components/underscore/underscore',

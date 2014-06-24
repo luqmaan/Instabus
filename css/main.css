@@ -136,18 +136,21 @@ body {
 #list .stop .desc {
     font-size: 0.8em;
 }
-#list .arrivals {
+.trips {
     list-style: none;
+    display: block;
     padding: 0;
 }
-#list .arrival {
+.trip {
     background: rgb(203,233,171);
     border-radius: 5px;
+    border: 1px solid rgb(164,205,139);
     display: inline-block;
     position: relative;
     padding: 5px;
     margin: 5px;
 }
-#list .arrivals {
-    display: block;
+.leaflet-popup .trip {
+    margin: 1px;
 }
+

@@ -1,5 +1,5 @@
-define(['knockout', 'when', 'models/TripCollection'],
-function(ko, when, TripCollection) {
+define(['knockout', 'when', 'models/TripCollection', 'text!templates/stop-popup.html'],
+function(ko, when, TripCollection, stopPopupHTML) {
     function Stop(data) {
         this.name = ko.observable(data.stop_name);
         this.direction = ko.observable(parseInt(data.direction_id));
@@ -58,9 +58,14 @@ function(ko, when, TripCollection) {
         },
         dismissError: function() {
             this.errorMsg('');
+        },
+        popupContent: function() {
+            var div = document.createElement('div');
+            div.innerHTML = stopPopupHTML;
+            ko.applyBindings(this, div);
+            return div;
         }
     };
 
     return Stop;
 });
-8
