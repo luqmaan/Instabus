@@ -24,6 +24,7 @@ function($, when, X2JS, utils, Trip) {
                     if (fault) {
                         console.error(fault);
                         deferred.reject(new Error(fault.faultstring));
+                        return;
                     }
 
                     services = doc.query.results.Envelope.Body.SchedulenearbyResponse.Atstop.Service;

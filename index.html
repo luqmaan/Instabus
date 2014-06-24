@@ -40,8 +40,17 @@
                         <li class="stop">
                             <span class="name" data-bind="text: name"></span>
                             <span class="desc" data-bind="text: desc"></span>
-                            <button data-bind="click: loadTrips">load trips</button>
+                            <!-- ko ifnot: showTrips -->
+                                <button data-bind="click: loadTrips">show trips</button>
+                            <!-- /ko -->
                             <button data-bind="click: showOnMap">show on map</button>
+                            <ul class="arrivals" data-bind="if: trips">
+                                <!-- ko foreach: trips() -->
+                                    <li class="arrival">
+                                        <span data-bind="text: tripTime"></span>
+                                    </li>
+                                <!-- /ko -->
+                            </ul>
                             <div class="status" data-bind="visible: activityMsg, click: dismissActivity">
                                 <span data-bind="text: activityMsg"></span>
                                 <span class="close">x</span>
@@ -50,13 +59,6 @@
                                 <span data-bind="text: errorMsg"></span>
                                 <span class="close">x</span>
                             </div>
-                            <ul class="arrivals" data-bind="if: trips">
-                                <!-- ko foreach: trips() -->
-                                    <li class="arrival">
-                                        <span data-bind="text: tripTime"></span>
-                                    </li>
-                                <!-- /ko -->
-                            </ul>
                         </li>
                     <!-- /ko -->
                 </ul>

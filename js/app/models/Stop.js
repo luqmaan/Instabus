@@ -18,14 +18,15 @@ function(ko, when, TripCollection) {
         this.activityMsg = ko.observable();
         this.errorMsg = ko.observable();
 
-        this.shouldRefresh = false;
+        this.showTrips = ko.observable(false);
     }
 
     Stop.prototype = {
         loadTrips: function() {
             var deferred = when.defer();
 
-            this.shouldRefresh = true;
+            this.showTrips(true);
+            this.errorMsg('');
             this.activityMsg('Loading...');
 
             TripCollection.fetch(this.route(), this.direction(), this.id()).then(
@@ -45,7 +46,7 @@ function(ko, when, TripCollection) {
             return deferred.promise;
         },
         refresh: function() {
-            if (this.shouldRefresh) {
+            if (this.showTrips()) {
                 return this.loadTrips();
             }
         },
