@@ -14,7 +14,7 @@ body {
     position: absolute;
     width: 50%;
     left: 50%;
-    top: 50px;
+    top: 40px;
     bottom: 0;
 }
 #map.full {
@@ -24,7 +24,7 @@ body {
 #list {
     position: absolute;
     width: 50%;
-    top: 50px;
+    top: 40px;
     bottom: 0;
     left: 0;
     background: #fff;
@@ -36,7 +36,8 @@ body {
 #controls {
     position: relative;
     display: block;
-    height: 50px;
+    min-height: 40px;
+    text-align: center;
     top: 0;
     left: 0;
     padding: 0;
@@ -45,14 +46,49 @@ body {
     background: rgb(241,241,241);
     border-bottom: 1px solid rgb(168,168,168);
     broder-top: 1px solid rgba(199,16,22, 0.5);
-    z-index: 1000;
-    font-size: 1.2em;
+    z-index: 110;
+    font-size: 1em;
 }
 #controls .wrapper {
     padding: 5px;
 }
 #controls select {
-    font-size: 0.8em;
+    font-size: 1em;
+}
+.status {
+    padding: 4px 10px 2px;
+    margin: 3px 10px;
+    display: inline-block;
+    border-radius: 15px;
+    background-color: rgb(254,254,254);
+    border: 1px solid rgb(220,220,220);
+    text-align: center;
+    cursor: pointer;
+}
+.status.error {
+    background-color: rgb(199,16,22);
+    color: #fff;
+    border-color: rgb(142,4,14);
+}
+.status:hover {
+    opacity: 0.7;
+}
+.status .close {
+    background: rgba(156,156,156, 0.5);
+    color: #fff;
+    border: 1px solid rgb(237,237,237);
+    height: 10px;
+    width: 10px;
+    border-radius: 5px;
+    display: inline-block;
+    font-size: 11px;
+    width: 15px;
+    height: 15px;
+    position: relative;
+    top: -2px;
+}
+.status .close:hover {
+    background-color: rgba(0,0,0, 0.4);
 }
 .locate-control {
     background-color: #FFF;

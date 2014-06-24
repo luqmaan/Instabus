@@ -6,14 +6,13 @@ function($, when, X2JS, utils, Trip) {
         fetch: function(route, direction, stop) {
             console.log('arguments', arguments);
             var deferred = when.defer(),
-                url = 'http://www.capmetro.org/planner/s_service.asp?output=xml&opt=2&tool=SI&route=' + route + '&stopid=' + stop;
-
-            console.log('Fetching next arrival', url);
+                url = 'http://query.yahooapis.com/v1/public/yql',
+                cap_url = 'http://www.capmetro.org/planner/s_service.asp?output=xml&opt=2&tool=SI&route=' + route + '&stopid=' + stop;
 
             $.ajax({
-                url: 'http://query.yahooapis.com/v1/public/yql',
+                url: url,
                 data: {
-                    q: 'select * from xml where url="' + url + '"',
+                    q: 'select * from xml where url="' + cap_url + '"',
                     format: 'xml'
                 }
             }).done(
@@ -25,7 +24,7 @@ function($, when, X2JS, utils, Trip) {
 
                     if (fault) {
                         console.error(fault);
-                        deferred.reject(fault);
+                        deferred.reject(new Error(fault.faultstring));
                     }
 
                     services = doc.query.results.Envelope.Body.SchedulenearbyResponse.Atstop.Service;

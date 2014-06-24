@@ -58,10 +58,7 @@ function($, ko, L, when, config, Stop) {
                 //     });
                 // }, this);
             });
-        },
-        loadTrips: function() {
-        },
-
+        }
     };
 
     return Stops;

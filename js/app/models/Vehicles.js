@@ -21,9 +21,15 @@ function($, L, when, _, X2JS, utils, config) {
                     format: 'xml'
                 }
             }).done(function(data) {
-                var xml = x2js.xml2json(data);
+                var xml = x2js.xml2json(data),
+                    BuslocationResponse = xml.query.results.Envelope.Body.BuslocationResponse;
 
-                this._vehicles = xml.query.results.Envelope.Body.BuslocationResponse.Vehicles.Vehicle;
+                if (!BuslocationResponse.Vehicles) {
+                    deferred.reject(new Error('Zero active vehicles'));
+                    return;
+                }
+
+                this._vehicles = BuslocationResponse.Vehicles.Vehicle;
 
                 if (! Array.isArray(this._vehicles)) {  // not sure if this happens, but just in case
                     this._vehicles = [this._vehicles];

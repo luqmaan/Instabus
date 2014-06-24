@@ -11,7 +11,8 @@ function(ko, L, when, LocateControl, Vehicles, Shape, Stops) {
             {id: 550, direction: 1, name: '550 MetroRail North'},
             {id: 550, direction: 0, name: '550 MetroRail South'},
         ]);
-        this.activity = ko.observable();
+        this.activityMsg = ko.observable();
+        this.errorMsg = ko.observable();
 
         // data
         this.vehicles = null;
@@ -31,13 +32,16 @@ function(ko, L, when, LocateControl, Vehicles, Shape, Stops) {
             this.route(this.availableRoutes()[0]);
         },
         refresh: function() {
-            this.activity('refreshing...');
-            console.log('refreshing...');
+            this.activityMsg('Refreshing...');
 
             this.vehicles.update().then(function() {
-                this.activity('');
+                this.activityMsg('');
                 setTimeout(this.refresh, 15 * 1000);
             }.bind(this));
+
+            this.stopsList().forEach(function(stop) {
+                stop.refresh();
+            });
         },
         setupMap: function() {
             var tileLayer,
@@ -82,17 +86,26 @@ function(ko, L, when, LocateControl, Vehicles, Shape, Stops) {
             this.shape = new Shape(route, direction);
             this.stops = new Stops(route, direction);
 
-            this.shape.fetch().then(this.shape.draw.bind(this.shape, this.routeLayer));
-            this.vehicles.fetch().then(this.vehicles.draw.bind(this.vehicles, this.routeLayer));
-            this.stops.fetch().then(function() {
-                try {
+            this.shape.fetch().then(this.shape.draw.bind(this.shape, this.routeLayer), this.errorHandler.bind(this));
+            this.vehicles.fetch().then(this.vehicles.draw.bind(this.vehicles, this.routeLayer), this.errorHandler.bind(this));
+            this.stops.fetch().then(
+                function() {
                     this.stops.draw(this.routeLayer);
                     this.stopsList(this.stops._stops);
-                } catch (e) {
-                    console.error(e);
-                }
-            }.bind(this));
+                }.bind(this),
+                this.errorHandler.bind(this)
+            );
         },
+        errorHandler: function(e) {
+            console.error(e);
+            this.errorMsg(e);
+        },
+        dismissActivity: function() {
+            this.activityMsg('');
+        },
+        dismissError: function() {
+            this.errorMsg('');
+        }
     };
 
     return Rappid;
