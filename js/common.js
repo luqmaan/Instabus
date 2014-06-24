@@ -1,20 +1,25 @@
 requirejs.config({
     baseUrl: 'js/app',
     paths: {
-        libs: '../libs'
+        'jquery': '../../bower_components/jquery/dist/jquery.min',
+        'knockout': '../../bower_components/knockout-dist/knockout.min',
+        'underscore': '../../bower_components/underscore/underscore',
+        'xml2json': '../../bower_components/x2js/xml2json.min',
+        'leaflet': '../../bower_components/leaflet/dist/leaflet-src',
+        'Leaflet.label': '../../bower_components/Leaflet.label/dist/leaflet.label-src'
     },
+    packages: [
+        {
+            name: 'when',
+            location: '../../bower_components/when',
+            main: 'when'
+        }
+    ],
     shim: {
-        'libs/jquery': {
-            exports: '$'
-        },
-        'libs/xml2json': {
-            exports: 'X2JS'
-        },
-        'libs/underscore': {
-            exports: '_'
+        "xml2json" : {
+          exports : "X2JS"
         }
     }
 });
 
 requirejs(['main']);
-1

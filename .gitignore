@@ -5,8 +5,9 @@
 .build
 .sass-cache/*
 static/css/*
-.bower_components/
+bower_components/
 .grunt
 node_modules
+twistd.pid
 
 npm-debug.log
