@@ -18,7 +18,8 @@ function($, when, X2JS, utils, Trip) {
                 function(data) {
                     var doc = x2js.xml2json(data),
                         fault = doc.query.results.Envelope.Body.Fault,
-                        services,
+                        Services,
+                        Tripinfo,
                         trips;
 
                     if (fault) {
@@ -27,14 +28,19 @@ function($, when, X2JS, utils, Trip) {
                         return;
                     }
 
-                    services = doc.query.results.Envelope.Body.SchedulenearbyResponse.Atstop.Service;
-                    if (Array.isArray(services)) {
+                    Services = doc.query.results.Envelope.Body.SchedulenearbyResponse.Atstop.Service;
+                    if (Array.isArray(Services)) {
                         // filter out the wrong direction
-                        services = services.filter(function(s) { return utils.getDirectionID(s.Direction) === direction; })[0];
+                        Services = Services.filter(function(s) { return utils.getDirectionID(s.Direction) === direction; })[0];
                     }
 
-                    console.log(trips);
-                    trips = services.Tripinfo.map(function(tripData) { return new Trip(tripData); });
+                    Tripinfo = Services.Tripinfo;
+                    if (!Array.isArray(Tripinfo)) {
+                        Tripinfo = [Tripinfo];
+                    }
+
+                    console.log(Services);
+                    trips = Tripinfo.map(function(tripData) { return new Trip(tripData); });
 
                     deferred.resolve(trips);
                 }.bind(this))
