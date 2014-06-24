@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>MetroRappid v.Ghetto</title>
+    <title>GhettoRappid</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimal-ui=yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -14,23 +14,57 @@
     <link href="css/main.css" rel="stylesheet">
     <link href="css/leaflet.css" rel="stylesheet">
     <link href="css/leaflet-label.css" rel="stylesheet">
-    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <script data-main="js/common" src="bower_components/requirejs/require.js"></script>
+
 </head>
 <body>
-    <div id="controls">
-        <div class="wrapper">
-            <select id="route" data-bind="options: availableRoutes, optionsText: 'name', value: selectedRoute"></select>
-            <span data-bind="text: activity"></span>
+    <div id="lerappid">
+        <div id="controls">
+            <div class="wrapper">
+                <select id="route" data-bind="options: availableRoutes, optionsText: 'name', value: route"></select>
+                <!-- <input id="include-list" type="checkbox" data-bind="checked: includeList" /><label for="include-list">Show List</label> -->
+                <div class="status" data-bind="visible: activityMsg, click: dismissActivity">
+                    <span data-bind="text: activityMsg"></span>
+                    <span class="close">x</span>
+                </div>
+                <div class="status error" data-bind="visible: errorMsg, click: dismissError">
+                    <span data-bind="text: errorMsg"></span>
+                    <span class="close">x</span>
+                </div>
+            </div>
         </div>
+        <div id="list">
+            <div class="wrapper">
+                <ul class="stops">
+                    <!-- ko foreach: stopsList() -->
+                        <li class="stop">
+                            <span class="name" data-bind="text: name"></span>
+                            <span class="desc" data-bind="text: desc"></span>
+                            <!-- ko ifnot: showTrips -->
+                                <button data-bind="click: loadTrips">show trips</button>
+                            <!-- /ko -->
+                            <button data-bind="click: showOnMap">show on map</button>
+                            <ul class="trips" data-bind="if: trips">
+                                <!-- ko foreach: trips() -->
+                                    <li class="trip">
+                                        <span data-bind="text: tripTime"></span>
+                                    </li>
+                                <!-- /ko -->
+                            </ul>
+                            <div class="status" data-bind="visible: activityMsg, click: dismissActivity">
+                                <span data-bind="text: activityMsg"></span>
+                                <span class="close">x</span>
+                            </div>
+                            <div class="status error" data-bind="visible: errorMsg, click: dismissError">
+                                <span data-bind="text: errorMsg"></span>
+                                <span class="close">x</span>
+                            </div>
+                        </li>
+                    <!-- /ko -->
+                </ul>
+            </div>
+        </div>
+        <div id="map"></div>
     </div>
-    <div id="map"></div>
-    <script src="js/libs/leaflet-src.js"></script>
-    <script src="js/libs/leaflet-label-src.js"></script>
-    <script src="js/libs/jquery.js"></script>
-    <script src="js/libs/xml2json.js"></script>
-    <script src="js/libs/knockout.js"></script>
-    <script src="js/libs/underscore.js"></script>
-    <script src="js/vehicles.js"></script>
-    <script src="js/app.js"></script>
 </body>
 </html>

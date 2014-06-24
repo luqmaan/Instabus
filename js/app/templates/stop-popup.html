@@ -1,0 +1,17 @@
+<h3 data-bind="text: name"></h3>
+<div class="status" data-bind="visible: activityMsg, click: dismissActivity">
+    <span data-bind="text: activityMsg"></span>
+    <span class="close">x</span>
+</div>
+<div class="status error" data-bind="visible: errorMsg, click: dismissError">
+    <span data-bind="text: errorMsg"></span>
+    <span class="close">x</span>
+</div>
+
+<ul class="trips">
+    <!-- ko foreach: trips() -->
+        <li class="trip">
+            <span data-bind="text: tripTime"></span>
+        </li>
+    <!-- /ko -->
+</ul>
