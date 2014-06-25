@@ -8,8 +8,8 @@ function(ko, L, when, LocateControl, Vehicles, Shape, Stops) {
         this.availableRoutes = ko.observableArray([
             {id: 801, direction: 0, name: '801 MetroRapid North'},
             {id: 801, direction: 1, name: '801 MetroRapid South'},
-            {id: 550, direction: 0, name: '550 MetroRail North'},
-            {id: 550, direction: 1, name: '550 MetroRail South'},
+            {id: 550, direction: 1, name: '550 MetroRail North'},
+            {id: 550, direction: 0, name: '550 MetroRail South'},
         ]);
         this.activityMsg = ko.observable();
         this.errorMsg = ko.observable();
