@@ -1,5 +1,5 @@
-define(['jquery', 'leaflet', 'when', 'underscore', 'xml2json', 'utils'],
-function($, L, when, _, X2JS, utils) {
+define(['jquery', 'leaflet', 'when', 'underscore', 'xml2json', 'utils', 'config'],
+function($, L, when, _, X2JS, utils, config) {
     var x2js = new X2JS({});
 
     function Vehicles(route, direction) {
@@ -21,9 +21,15 @@ function($, L, when, _, X2JS, utils) {
                     format: 'xml'
                 }
             }).done(function(data) {
-                var xml = x2js.xml2json(data);
+                var xml = x2js.xml2json(data),
+                    BuslocationResponse = xml.query.results.Envelope.Body.BuslocationResponse;
 
-                this._vehicles = xml.query.results.Envelope.Body.BuslocationResponse.Vehicles.Vehicle;
+                if (!BuslocationResponse.Vehicles) {
+                    deferred.reject(new Error('Zero active vehicles'));
+                    return;
+                }
+
+                this._vehicles = BuslocationResponse.Vehicles.Vehicle;
 
                 if (! Array.isArray(this._vehicles)) {  // not sure if this happens, but just in case
                     this._vehicles = [this._vehicles];
@@ -45,8 +51,6 @@ function($, L, when, _, X2JS, utils) {
             return deferred.promise;
         },
         draw: function(layer) {
-            console.log("_", _);
-
             var route = this.route,
                 direction = this.direction,
                 matchingVehicles = _.filter(this._vehicles, function(v) {
@@ -75,18 +79,19 @@ function($, L, when, _, X2JS, utils) {
                     fillColor = vehicle.Inservice === 'Y' ? 'rgb(34,189,252)' : 'rgb(188,188,188)';
 
                 if (marker) {
-                    console.log('Updating existing marker', marker, vehicle);
-
                     var markerLatLng = marker.getLatLng(),
                         start = [markerLatLng.lat, markerLatLng.lng],
-                        stop = [vehicle.lat, vehicle.lng],
+                        stop = [parseFloat(vehicle.lat), parseFloat(vehicle.lng)],
                         steps = 200,
                         delta = [stop[0] - start[0], stop[1] - start[1]];
 
-                    this.animateMarker(marker, 0, steps, start, delta);
-
                     marker._popup.setContent(popupContent);
                     marker.setStyle({fillColor: fillColor});
+
+                    if (!_.isEqual(start, stop)) {
+                        console.log('animating existing vehicle marker', marker);
+                        this.animateMarker(marker, 0, steps, start, delta);
+                    }
 
                     return;
                 }
@@ -96,9 +101,13 @@ function($, L, when, _, X2JS, utils) {
                     radius: 12,
                     fillOpacity: '0.9',
                     fillColor: fillColor,
-                }).bindPopup(popupContent);
+                    zIndexOffset: config.vehicleZIndex
+                });
+                console.log('adding new vehicle marker', marker);
 
+                marker.bindPopup(popupContent);
                 marker.addTo(layer);
+
                 this._markers[vehicle.Vehicleid] = marker;
             }.bind(this));
         },
@@ -122,7 +131,7 @@ function($, L, when, _, X2JS, utils) {
                 y = this.easeInOutCubic(i, startLatLng[1], deltaLatLng[1], steps);
             marker.setLatLng([x, y]);
             if (i < steps) {
-                setTimeout(this.animateFn.bind(this, marker, i+1, steps, startLatLng, deltaLatLng), 10);
+                setTimeout(this.animateMarker.bind(this, marker, i+1, steps, startLatLng, deltaLatLng), 10);
             }
         }
     };

@@ -1,9 +1,9 @@
-define(['jquery', 'leaflet', 'when'],
-function($, L, when) {
+define(['jquery', 'leaflet', 'when', 'config', 'models/Stop'],
+function($, L, when, config, Stop) {
     function Stops(route, direction) {
         this.route = route;
         this.direction = direction;
-        this._stops = [];
+        this._stops = null;
     }
 
     Stops.prototype = {
@@ -14,7 +14,10 @@ function($, L, when) {
                 url: 'data/stops_' + this.route + '_' + this.direction + '.json'
             }).done(
                 function(data) {
-                    this._stops = data;
+                    this._stops = data.map(function(stopData) {
+                        return new Stop(stopData);
+                    });
+
                     deferred.resolve();
                 }.bind(this)
             ).fail(
@@ -30,29 +33,25 @@ function($, L, when) {
             var color = 'rgb(199,16,22)';
 
             this._stops.forEach(function(stop) {
-                var stopMessage = stop.stop_id + ' - ' + stop.stop_name,
-                    marker = L.circleMarker([stop.stop_lat, stop.stop_lon], {
+                var marker = L.circleMarker([stop.lat(), stop.lon()], {
                         color: 'white',
                         opacity: 1,
                         weight: 3,
                         fillColor: color,
                         fill: true,
                         fillOpacity: 1,
-                        radius: 10
+                        radius: 10,
+                        zIndexOffset: config.stopZIndex
                     });
 
-                marker.bindPopup(stopMessage);
+                marker.bindPopup(stop.popupContent());
                 marker.addTo(layer);
 
-                // marker.addEventListener('click', function(e) {
-                //     var routeID = Controls.selectedRoute().route,
-                //         directionID = Controls.selectedRoute().direction,
-                //         stopID = stop.stop_id;
-
-                //     fetchArrivals(routeID, directionID, stopID).then(function(times) {
-                //         marker.bindPopup(stopMessage + '<br />' + times);
-                //     });
-                // }, this);
+                marker.addEventListener('click', function(e) {
+                    if (!stop.showTrips()) {
+                        stop.loadTrips();
+                    }
+                });
             });
         }
     };
