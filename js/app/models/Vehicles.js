@@ -90,15 +90,22 @@ function($, L, when, _, X2JS, utils, config) {
 
                     if (!_.isEqual(start, stop)) {
                         console.log('animating existing vehicle marker', marker);
-                        this.animateMarker(marker, 0, steps, start, delta);
+
+                        if (document.visibilityState === 'visible') {
+                            this.animateMarker(marker, 0, steps, start, delta);
+                        } else {
+                            marker.setLatLng(stop);
+                        }
                     }
 
                     return;
                 }
 
                 marker = L.circleMarker([vehicle.lat, vehicle.lng], {
-                    weight: 0,
+                    color: '#fff',
+                    weight: 3,
                     radius: 12,
+                    opacity: 1,
                     fillOpacity: '0.9',
                     fillColor: fillColor,
                     zIndexOffset: config.vehicleZIndex

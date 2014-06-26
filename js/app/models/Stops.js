@@ -40,7 +40,7 @@ function($, L, when, config, Stop) {
                         fillColor: color,
                         fill: true,
                         fillOpacity: 1,
-                        radius: 10,
+                        radius: 8,
                         zIndexOffset: config.stopZIndex
                     });
 
