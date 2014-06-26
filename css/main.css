@@ -112,6 +112,7 @@ body {
 .locate-control.loading {
     cursor: progress;
     opacity: 0.5;
+    color: rgb(241,241,241);
 }
 .icon-location {
     background: url('../icons/locate.png') center center;

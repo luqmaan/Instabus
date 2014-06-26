@@ -65,7 +65,7 @@ function(ko, L, when, LocateControl, Vehicles, Shape, Stops) {
 
             locateCtrl = new LocateControl({
                 position: 'bottomright',
-                zoomLevel: undefined,  // null is treated as zoomLevel 0
+                zoomLevel: 13,
             });
 
             tileLayer.addTo(this.map);
