@@ -44,8 +44,7 @@ function($, L, when, _, X2JS, utils, config) {
 
                 deferred.resolve();
             }.bind(this)).fail(function(xhr, status, err) {
-                console.error(err);
-                deferred.reject();
+                deferred.reject(err);
             });
 
             return deferred.promise;
@@ -55,7 +54,7 @@ function($, L, when, _, X2JS, utils, config) {
                 direction = this.direction,
                 matchingVehicles = _.filter(this._vehicles, function(v) {
                     var _route = parseInt(v.Route),
-                        _dir = utils.getDirectionID(v.Direction);
+                        _dir = utils.getDirectionID(v.Route, v.Direction);
                     console.log(route, _route, direction, _dir);
 
                     return route === _route && direction === _dir;
@@ -122,7 +121,7 @@ function($, L, when, _, X2JS, utils, config) {
             return [
                 'Vehicle ' + vehicle.Vehicleid,
                 'Updated at ' + vehicle.Updatetime,
-                'Moving ' + utils.formatDirection(vehicle.Direction) + ' at ' + vehicle.Speed + 'mph',
+                'Moving ' + utils.formatDirection(vehicle.Route, vehicle.Direction) + ' at ' + vehicle.Speed + 'mph',
                 'Reliable? ' + vehicle.Reliable,
                 'Stopped? ' + vehicle.Stopped,
                 'Off Route? ' + vehicle.Offroute,

@@ -1,26 +1,52 @@
 define([],
 function() {
     var utils = {
-        formatDirection: function(direction) {
-            switch (direction) {
-                case 0:
-                    return 'South';
-                case 1:
+        // 550 uses 1 for NB, 801 uses 0 ...thats just how capmetro rolls
+        formatDirection: function(route, direction) {
+            route = parseInt(route);
+            if (direction === 0) {
+                if (route === 801) {
                     return 'North';
-                case 'S':
+                }
+                if (route === 550) {
                     return 'South';
-                case 'N':
+                }
+                return 'South';
+            }
+            if (direction === 1) {
+                if (route === 801) {
+                    return 'South';
+                }
+                if (route === 550) {
                     return 'North';
+                }
+            }
+            if (direction === 'S') {
+                return 'South';
+            }
+            if (direction === 'N') {
+                return 'North';
             }
         },
-        getDirectionID: function(direction) {
+        getDirectionID: function(route, direction) {
+            route = parseInt(route);
             direction = direction.toLowerCase().replace('/', '');
 
             if (direction === 'north' || direction === 'n') {
-                return 1;
+                if (route === 801) {
+                    return 0;
+                }
+                if (route === 550) {
+                    return 1;
+                }
             }
             if (direction === 'south' || direction === 's') {
-                return 0;
+                if (route === 801) {
+                    return 1;
+                }
+                if (route === 550) {
+                    return 0;
+                }
             }
 
             return 0;

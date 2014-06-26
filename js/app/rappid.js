@@ -35,11 +35,14 @@ function(ko, L, when, LocateControl, Vehicles, Shape, Stops) {
         refresh: function() {
             this.activityMsg('Refreshing...');
 
-            this.vehicles.fetch().then(function() {
-                this.vehicles.draw(this.routeLayer);
-                this.activityMsg('');
-                setTimeout(this.refresh.bind(this), 15 * 1000);
-            }.bind(this));
+            this.vehicles.fetch().then(
+                function() {
+                    this.vehicles.draw(this.routeLayer);
+                    this.activityMsg('');
+                    setTimeout(this.refresh.bind(this), 15 * 1000);
+                }.bind(this),
+                this.errorHandler
+            );
 
             this.stopsList().forEach(function(stop) {
                 stop.refresh();
