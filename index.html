@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html>
 <head>
     <title>GhettoRappid</title>
@@ -46,8 +46,8 @@
                             <button data-bind="click: showOnMap">show on map</button>
                             <ul class="trips" data-bind="if: trips">
                                 <!-- ko foreach: trips() -->
-                                    <li class="trip">
-                                        <span data-bind="text: tripTime"></span>
+                                    <li class="trip" data-bind="css: { old: old }">
+                                        <span data-bind="text: prettyTime"></span>
                                     </li>
                                 <!-- /ko -->
                             </ul>
@@ -64,7 +64,9 @@
                 </ul>
             </div>
         </div>
-        <div id="map"></div>
+        <div id="map-wrapper">
+            <div id="map"></div>
+        </div>
     </div>
 </body>
 </html>

@@ -7,7 +7,8 @@ requirejs.config({
         'underscore': '../../bower_components/underscore/underscore',
         'xml2json': '../../bower_components/x2js/xml2json.min',
         'leaflet': '../../bower_components/leaflet/dist/leaflet-src',
-        'Leaflet.label': '../../bower_components/Leaflet.label/dist/leaflet.label-src'
+        'Leaflet.label': '../../bower_components/Leaflet.label/dist/leaflet.label-src',
+        'moment': '../../bower_components/moment/min/moment.min'
     },
     packages: [
         {
@@ -17,8 +18,8 @@ requirejs.config({
         }
     ],
     shim: {
-        "xml2json" : {
-          exports : "X2JS"
+        'xml2json' : {
+          exports : 'X2JS'
         }
     }
 });

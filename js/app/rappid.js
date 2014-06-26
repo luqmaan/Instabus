@@ -23,6 +23,9 @@ function(ko, L, when, LocateControl, Vehicles, Shape, Stops) {
         // viewmodels
         this.route = ko.observable();
         this.stopsList = ko.observableArray();
+
+        this.includeList = ko.observable(true);
+        this.includeMap = ko.observable(true);
     }
 
     Rappid.prototype = {
@@ -35,11 +38,14 @@ function(ko, L, when, LocateControl, Vehicles, Shape, Stops) {
         refresh: function() {
             this.activityMsg('Refreshing...');
 
-            this.vehicles.fetch().then(function() {
-                this.vehicles.draw(this.routeLayer);
-                this.activityMsg('');
-                setTimeout(this.refresh.bind(this), 15 * 1000);
-            }.bind(this));
+            this.vehicles.fetch().then(
+                function() {
+                    this.vehicles.draw(this.routeLayer);
+                    this.activityMsg('');
+                    setTimeout(this.refresh.bind(this), 15 * 1000);
+                }.bind(this),
+                this.errorHandler
+            );
 
             this.stopsList().forEach(function(stop) {
                 stop.refresh();
@@ -65,7 +71,7 @@ function(ko, L, when, LocateControl, Vehicles, Shape, Stops) {
 
             locateCtrl = new LocateControl({
                 position: 'bottomright',
-                zoomLevel: undefined,  // null is treated as zoomLevel 0
+                zoomLevel: 16,
             });
 
             tileLayer.addTo(this.map);

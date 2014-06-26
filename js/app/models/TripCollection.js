@@ -29,10 +29,14 @@ function($, when, X2JS, utils, Trip) {
                     }
 
                     Services = doc.query.results.Envelope.Body.SchedulenearbyResponse.Atstop.Service;
-                    if (Array.isArray(Services)) {
-                        // filter out the wrong direction
-                        Services = Services.filter(function(s) { return utils.getDirectionID(s.Direction) === direction; })[0];
+                    if (!Array.isArray(Services)) {
+                        Services = [Services];
                     }
+
+                    // filter out the wrong direction
+                    Services = Services.filter(function(s) {
+                        return utils.getDirectionID(s.Route, s.Direction) === direction;
+                    })[0];
 
                     Tripinfo = Services.Tripinfo;
                     if (!Array.isArray(Tripinfo)) {

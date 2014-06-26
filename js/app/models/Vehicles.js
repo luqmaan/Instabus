@@ -44,8 +44,7 @@ function($, L, when, _, X2JS, utils, config) {
 
                 deferred.resolve();
             }.bind(this)).fail(function(xhr, status, err) {
-                console.error(err);
-                deferred.reject();
+                deferred.reject(err);
             });
 
             return deferred.promise;
@@ -55,8 +54,7 @@ function($, L, when, _, X2JS, utils, config) {
                 direction = this.direction,
                 matchingVehicles = _.filter(this._vehicles, function(v) {
                     var _route = parseInt(v.Route),
-                        _dir = utils.getDirectionID(v.Direction);
-                    console.log(route, _route, direction, _dir);
+                        _dir = utils.getDirectionID(v.Route, v.Direction);
 
                     return route === _route && direction === _dir;
                 }),
@@ -90,15 +88,22 @@ function($, L, when, _, X2JS, utils, config) {
 
                     if (!_.isEqual(start, stop)) {
                         console.log('animating existing vehicle marker', marker);
-                        this.animateMarker(marker, 0, steps, start, delta);
+
+                        if (document.visibilityState === 'visible') {
+                            this.animateMarker(marker, 0, steps, start, delta);
+                        } else {
+                            marker.setLatLng(stop);
+                        }
                     }
 
                     return;
                 }
 
                 marker = L.circleMarker([vehicle.lat, vehicle.lng], {
-                    weight: 0,
+                    color: '#fff',
+                    weight: 3,
                     radius: 12,
+                    opacity: 1,
                     fillOpacity: '0.9',
                     fillColor: fillColor,
                     zIndexOffset: config.vehicleZIndex
@@ -115,7 +120,7 @@ function($, L, when, _, X2JS, utils, config) {
             return [
                 'Vehicle ' + vehicle.Vehicleid,
                 'Updated at ' + vehicle.Updatetime,
-                'Moving ' + utils.formatDirection(vehicle.Direction) + ' at ' + vehicle.Speed + 'mph',
+                'Moving ' + utils.formatDirection(vehicle.Route, vehicle.Direction) + ' at ' + vehicle.Speed + 'mph',
                 'Reliable? ' + vehicle.Reliable,
                 'Stopped? ' + vehicle.Stopped,
                 'Off Route? ' + vehicle.Offroute,

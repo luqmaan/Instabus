@@ -1,72 +1,84 @@
-define(['leaflet'],
-function(L) {
-    var LocateControl = L.Control.extend({
+define(['leaflet', 'when'],
+function(leaflet, when) {
+    var LocateControl = leaflet.Control.extend({
+        userLatLng: [0, 0],
+        innerMarker: null,
+        outerMarker: null,
+        map: null,
         options: {
             icon: 'icon-location',
             position: 'topleft',
             zoomLevel: 16,
+            pollInterval: 30 * 1000
         },
         onAdd: function (map) {
-            var container = L.DomUtil.create('div', 'locate-control leaflet-bar leaflet-control'),
-                link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single ' + this.options.icon, container);
+            this.container = leaflet.DomUtil.create('div', 'locate-control leaflet-bar leaflet-control');
+            this.map = map; // i wonder if this will cause memory leak
 
-            this.locate = function() {
-                container.classList.add('loading');
+            var link = leaflet.DomUtil .create('a', 'leaflet-bar-part leaflet-bar-part-single ' + this.options.icon, this.container);
 
-                map.locate({maximumAge: 1000, enableHighAccuracy: true});
-                map.on('locationfound', function onLocationFound(e) {
-                    var radius = e.accuracy / 2;
-                    console.log('found location:', e.latlng, 'accuracy:', e.accuracy);
+            leaflet.DomEvent
+                .on(link, 'click', leaflet.DomEvent.stopPropagation)
+                .on(link, 'click', leaflet.DomEvent.preventDefault)
+                .on(link, 'click', this.zoomToLocation.bind(this))
+                .on(link, 'dblclick', leaflet.DomEvent.stopPropagation);
 
-                    container.classList.remove('loading');
+            this.locate();
 
-                    map.setView(e.latlng, this.options.zoomLevel, {
-                        zoom: {
-                            animate: true
-                        },
-                        pan: {
-                            animate: true
-                        },
-                    });
-                    if (!this.locationMarker) {
-                        this.circleMarker = L.circleMarker(e.latlng, {
-                            color: 'rgb(20,130,210)',
-                            opacity: 1,
-                            weight: 2,
-                            fillColor: 'rgb(108,196,253)',
-                            fill: true,
-                            fillOpacity: 0.4,
-                            radius: 15
-                        }).addTo(map);
-                        this.locationMarker = L.circleMarker(e.latlng,{
-                            weight: 0,
-                            fillColor: 'rgb(16,94,251)',
-                            fill: true,
-                            fillOpacity: 1,
-                            radius: 5
-                        }).addTo(map);
-                        this.circleMarker.bindPopup('Current Location');
-                    }
-                    this.locationMarker.setLatLng(e.latlng);
-                    console.log('circle marker', this.circleMarker);
-                    this.circleMarker.setLatLng(e.latlng);
+            return this.container;
+        },
+        zoomToLocation: function(map) {
+            this.map.setView(this.userLatLng, this.options.zoomLevel);
+        },
+        locate: function() {
+            this.container.classList.add('loading');
 
-                }.bind(this));
+            this.map.locate({
+                maximumAge: 1000,
+                enableHighAccuracy: true,
+                watch: true
+            });
 
-                map.on('locationerror', function onLocationError(e) {
-                    console.log('unable to find location: ', e.message);
-                    container.classList.remove('loading');
-                });
+            this.map.on('locationfound', function(e) {
+                console.log('Found location', e.latlng, 'Accuracy', e.accuracy);
+                this.userLatLng = e.latlng;
+                this.updateMarkers();
+                this.container.classList.remove('loading');
+             }.bind(this));
 
-            };
+            this.map.on('locationerror', function(e) {
+                console.error('Unable to find location', e.message);
+                this.container.classList.remove('loading');
+            }.bind(this));
+        },
+        updateMarkers: function() {
+            if (!this.innerMarker || !this.outerMarker) {
+                this.createMarkers(this.map);
+            }
 
-            L.DomEvent
-                .on(link, 'click', L.DomEvent.stopPropagation)
-                .on(link, 'click', L.DomEvent.preventDefault)
-                .on(link, 'click', this.locate.bind(this))
-                .on(link, 'dblclick', L.DomEvent.stopPropagation);
-
-            return container;
+            this.innerMarker.setLatLng(this.userLatLng);
+            this.outerMarker.setLatLng(this.userLatLng);
+        },
+        createMarkers: function() {
+            this.innerMarker = leaflet.circleMarker(this.userLatLng,{
+                weight: 0,
+                fillColor: 'rgb(16,94,251)',
+                fill: true,
+                fillOpacity: 1,
+                radius: 5
+            });
+            this.outerMarker = leaflet.circleMarker(this.userLatLng, {
+                color: 'rgb(20,130,210)',
+                opacity: 1,
+                weight: 2,
+                fillColor: 'rgb(108,196,253)',
+                fill: true,
+                fillOpacity: 0.4,
+                radius: 15
+            });
+            this.outerMarker.addTo(this.map);
+            this.outerMarker.bindPopup('Current Location');
+            this.innerMarker.addTo(this.map);
         }
     });
 
