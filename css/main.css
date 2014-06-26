@@ -151,6 +151,10 @@ body {
     padding: 5px;
     margin: 5px;
 }
+.trip.old {
+    background-color: rgb(209,209,209);
+    border-color: rgb(122,122,122);
+}
 .leaflet-popup .trip {
     margin: 1px;
 }

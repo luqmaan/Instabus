@@ -10,8 +10,8 @@
 
 <ul class="trips">
     <!-- ko foreach: trips() -->
-        <li class="trip">
-            <span data-bind="text: tripTime"></span>
+        <li class="trip" data-bind="css: { old: old }">
+            <span data-bind="text: prettyTime"></span>
         </li>
     <!-- /ko -->
 </ul>
