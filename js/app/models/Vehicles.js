@@ -55,7 +55,6 @@ function($, L, when, _, X2JS, utils, config) {
                 matchingVehicles = _.filter(this._vehicles, function(v) {
                     var _route = parseInt(v.Route),
                         _dir = utils.getDirectionID(v.Route, v.Direction);
-                    console.log(route, _route, direction, _dir);
 
                     return route === _route && direction === _dir;
                 }),
