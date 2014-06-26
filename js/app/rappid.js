@@ -23,6 +23,9 @@ function(ko, L, when, LocateControl, Vehicles, Shape, Stops) {
         // viewmodels
         this.route = ko.observable();
         this.stopsList = ko.observableArray();
+
+        this.includeList = ko.observable(true);
+        this.includeMap = ko.observable(true);
     }
 
     Rappid.prototype = {
@@ -68,7 +71,7 @@ function(ko, L, when, LocateControl, Vehicles, Shape, Stops) {
 
             locateCtrl = new LocateControl({
                 position: 'bottomright',
-                zoomLevel: 13,
+                zoomLevel: 16,
             });
 
             tileLayer.addTo(this.map);
