@@ -33,7 +33,7 @@
                 </div>
             </div>
         </div>
-        <div id="list">
+        <div id="list" data-bind="if: includeList">
             <div class="wrapper">
                 <ul class="stops">
                     <!-- ko foreach: stopsList() -->
@@ -64,7 +64,7 @@
                 </ul>
             </div>
         </div>
-        <div id="map-wrapper">
+        <div id="map-wrapper" data-bind="if: includeMap">
             <div id="map"></div>
         </div>
     </div>

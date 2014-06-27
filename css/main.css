@@ -30,10 +30,11 @@ body {
     background: #fff;
     overflow: scroll;
     box-shadow: 10px -10px 10px rgba(0, 0, 0, 0.1);
+    border-right: 1px solid rgb(241,241,241);
     z-index: 100;
 }
 #controls {
-    position: relative;
+    position: fixed;
     display: block;
     min-height: 40px;
     text-align: center;
@@ -47,7 +48,7 @@ body {
     broder-top: 1px solid rgba(199,16,22, 0.5);
     z-index: 110;
     font-size: 1em;
-    box-shadow: -10px 0px 10px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.2);
     z-index: 1000;
 }
 #controls .wrapper {
@@ -55,6 +56,22 @@ body {
 }
 #controls select {
     font-size: 1em;
+}
+/* iPhone 5 in portrait & landscape */
+@media only screen
+and (min-device-width: 320px)
+and (max-device-width: 568px)
+{
+    #list {
+        width: 100%;
+        position: relative;
+        top: 40px;
+        bottom: auto;
+    }
+    #map, #map-wrapper {
+        width: 100%;
+        margin: 0;
+    }
 }
 .status {
     padding: 4px 10px 2px;
