@@ -41,31 +41,23 @@
                             <div class="data">
                                 <span class="name" data-bind="text: name"></span>
                                 <span class="desc" data-bind="text: desc"></span>
-                                <!-- ko if: trips().length > 0 -->
-                                    <ul class="trips">
-                                        <div>Next <span data-bind="text: $root.route().vehicleType"></span> arrives</div>
-                                        <!-- ko foreach: trips() -->
-                                            <li class="trip" data-bind="css: { old: old }">
-                                                <span data-bind="text: prettyTime"></span>
-                                            </li>
-                                        <!-- /ko -->
-                                    </ul>
-                                <!-- /ko -->
-                                <div class="status" data-bind="visible: activityMsg, click: dismissActivity">
-                                    <span data-bind="text: activityMsg"></span>
-                                    <span class="close">x</span>
-                                </div>
-                                <div class="status error" data-bind="visible: errorMsg, click: dismissError">
-                                    <span data-bind="text: errorMsg"></span>
-                                    <span class="close">x</span>
-                                </div>
                             </div>
                             <div class="buttons">
                                 <!-- ko ifnot: showTrips -->
-                                    <button data-bind="click: loadTrips">Load Arrivals</button>
+                                    <button data-bind="click: loadTrips">Arrivals</button>
                                 <!-- /ko -->
-                                <button data-bind="click: showOnMap">Show On Map</button>
+                                <button data-bind="click: showOnMap">Map</button>
                             </div>
+                            <!-- ko if: showTrips -->
+                                <ul class="trips">
+                                    <h4>Next <span data-bind="text: $root.route().vehicleType"></span> Arrives</h4>
+                                    <!-- ko foreach: trips() -->
+                                        <li class="trip" data-bind="css: { old: old }">
+                                            <span data-bind="text: prettyTime"></span>
+                                        </li>
+                                    <!-- /ko -->
+                                </ul>
+                            <!-- /ko -->
                         </li>
                     <!-- /ko -->
                 </ul>

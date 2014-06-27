@@ -1,4 +1,4 @@
-@import url(http://fonts.googleapis.com/css?family=Roboto:400,300);
+@import url(http://fonts.googleapis.com/css?family=Roboto:500,400,300);
 
 html, body {
   height: 100%;
@@ -16,19 +16,19 @@ button, body {
 }
 #map-wrapper {
     position: absolute;
-    margin-left: 450px;
+    margin-left: 470px;
     width: 100%;
     top: 40px;
     bottom: 0;
 }
 #map {
     position: relative;
-    margin-right: 450px;
+    margin-right: 470px;
     height: 100%;
 }
 #list {
     position: absolute;
-    width: 450px;
+    width: 470px;
     top: 40px;
     bottom: 0;
     background: #fff;
@@ -49,7 +49,7 @@ button, body {
     color: rgb(199,16,22);
     background: rgb(241,241,241);
     border-bottom: 1px solid rgb(168,168,168);
-    broder-top: 1px solid rgba(199,16,22, 0.5);
+    border-top: 1px solid rgba(199,16,22, 0.5);
     z-index: 110;
     font-size: 1em;
     box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.2);
@@ -60,22 +60,6 @@ button, body {
 }
 #controls select {
     font-size: 1em;
-}
-/* iPhone 5 in portrait & landscape */
-@media only screen
-and (min-device-width: 320px)
-and (max-device-width: 568px)
-{
-    #list {
-        width: 100%;
-        position: relative;
-        top: 40px;
-        bottom: auto;
-    }
-    #map, #map-wrapper {
-        width: 100%;
-        margin: 0;
-    }
 }
 .status {
     padding: 4px 10px 2px;
@@ -157,19 +141,23 @@ and (max-device-width: 568px)
     line-height: 1.5em;
 }
 #list .stop .name {
+    font-weight: 500;
     color: rgb(71,55,57);
 }
 #list .stop .desc {
-    font-weight: 300;
+    font-weight: 400;
     font-size: 0.8em;
     color: rgb(123,123,123);
 }
 #list .stop button {
-    color: #fff;
-    background: linear-gradient(to bottom, #A23573 0%, #B43B3B 100%);
-    border: 1px solid rgb(97,16,31);
-    border-radius: 2px;
-    font-size: 0.8em;
+    color: #473739;
+    background: #F7F7F7;
+    border: none;
+    border-radius: 1px;
+    font-size: 0.9em;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    border: 1px solid #D5D3D3;
+    text-align: center;
 }
 #list .data {
     display: inline-block;;
@@ -177,30 +165,64 @@ and (max-device-width: 568px)
 }
 #list .buttons {
     display: inline-block;
-    width: 100px;
-    text-align: center;
+    width: 120px;
+    text-align: right;
     vertical-align: top;
+    margin-top: 5px;
 }
 .trips {
     list-style: none;
     display: block;
     padding: 0;
 }
+.trips h4 {
+    font-weight: 400;
+    margin: 0.8em 0;
+    font-size: 1em;
+    border-bottom: 1px solid #E0E0E0;
+    padding-bottom: 5px;
+    color: #6E6E6E;
+}
 .trip {
-    background: rgb(203,233,171);
+    background: rgb(237,254,219);
+    border: 1px solid rgb(177,231,121);
+    color: rgb(97,110,82);
     border-radius: 5px;
-    border: 1px solid rgb(164,205,139);
     display: inline-block;
     position: relative;
     padding: 5px;
-    margin: 5px;
+    margin: 0 5px 10px 0;
     font-size: 0.8em;
+    font-weight: 500;
 }
 .trip.old {
-    background-color: rgb(209,209,209);
-    border-color: rgb(174,172,173);
+    background-color: rgb(246,246,246);
+    border-color: rgb(235,235,235);
+    color: rgb(200,200,200);
+    font-weight: 300;
 }
 .leaflet-popup .trip {
     margin: 1px;
 }
 
+
+/* iPhone 5 in portrait & landscape */
+@media only screen
+and (min-device-width: 320px)
+and (max-device-width: 568px)
+{
+    #list {
+        width: 100%;
+        position: relative;
+        top: 40px;
+        bottom: auto;
+    }
+    #map, #map-wrapper {
+        width: 100%;
+        margin: 0;
+    }
+    #list .data, #list .buttons {
+        display: block;
+        width: auto;
+    }
+}
