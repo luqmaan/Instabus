@@ -1,6 +1,7 @@
+@import url(http://fonts.googleapis.com/css?family=Roboto:400,300);
+
 html, body {
   height: 100%;
-  font: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 body {
   background-position: center center;
@@ -8,23 +9,26 @@ body {
   background-image: -webkit-radial-gradient(center, ellipse cover,#FFFFFF 0%,#FAFAFA 50%,#F5F5F5 60%,#BEBEBE 100%);
   margin: 0;
   padding: 0;
-  font-family:  sans-serif;
+}
+button, body {
+  font-family: Roboto, "Helvetica NeueRobot", Helvetica, Arial, sans-serif;
+
 }
 #map-wrapper {
     position: absolute;
-    margin-left: 400px;
+    margin-left: 450px;
     width: 100%;
     top: 40px;
     bottom: 0;
 }
 #map {
     position: relative;
-    margin-right: 400px;
+    margin-right: 450px;
     height: 100%;
 }
 #list {
     position: absolute;
-    width: 400px;
+    width: 450px;
     top: 40px;
     bottom: 0;
     background: #fff;
@@ -146,14 +150,36 @@ and (max-device-width: 568px)
 #list .stop {
     border-left: 3px solid rgb(199,16,22);
     border-bottom: 1px solid rgb(241,241,241);
-    padding: 5px 15px;
+    padding: 5px 0 5px 10px;
 }
 #list .stop .desc, #list .stop .name {
     display: block;
     line-height: 1.5em;
 }
+#list .stop .name {
+    color: rgb(71,55,57);
+}
 #list .stop .desc {
+    font-weight: 300;
     font-size: 0.8em;
+    color: rgb(123,123,123);
+}
+#list .stop button {
+    color: #fff;
+    background: linear-gradient(to bottom, #A23573 0%, #B43B3B 100%);
+    border: 1px solid rgb(97,16,31);
+    border-radius: 2px;
+    font-size: 0.8em;
+}
+#list .data {
+    display: inline-block;;
+    width: 300px;
+}
+#list .buttons {
+    display: inline-block;
+    width: 100px;
+    text-align: center;
+    vertical-align: top;
 }
 .trips {
     list-style: none;
@@ -168,10 +194,11 @@ and (max-device-width: 568px)
     position: relative;
     padding: 5px;
     margin: 5px;
+    font-size: 0.8em;
 }
 .trip.old {
     background-color: rgb(209,209,209);
-    border-color: rgb(122,122,122);
+    border-color: rgb(174,172,173);
 }
 .leaflet-popup .trip {
     margin: 1px;
