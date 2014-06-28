@@ -12,6 +12,9 @@ body {
 }
 button, body {
   font-family: Roboto, "Helvetica NeueRobot", Helvetica, Arial, sans-serif;
+}
+.leaflet-container {
+    font-family: Roboto, "Helvetica NeueRobot", Helvetica, Arial, sans-serif;
 
 }
 #map-wrapper {
@@ -34,7 +37,7 @@ button, body {
     background: #fff;
     overflow: scroll;
     box-shadow: 10px -10px 10px rgba(0, 0, 0, 0.1);
-    border-right: 1px solid rgb(241,241,241);
+    border-right: 1px solid rgb(201,201,201);
     z-index: 100;
 }
 #controls {
@@ -136,15 +139,16 @@ button, body {
     border-bottom: 1px solid rgb(241,241,241);
     padding: 5px 0 5px 10px;
 }
-#list .stop .desc, #list .stop .name {
+.stop-name .desc, .stop-name .name {
     display: block;
     line-height: 1.5em;
 }
-#list .stop .name {
+.stop-name .name {
+    font-size: 1.1em;
     font-weight: 500;
     color: rgb(71,55,57);
 }
-#list .stop .desc {
+.stop-name .desc {
     font-weight: 400;
     font-size: 0.8em;
     color: rgb(123,123,123);
@@ -157,16 +161,17 @@ button, body {
     font-size: 0.9em;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
     border: 1px solid #D5D3D3;
-    text-align: center;
+    display: block;
+    margin: 0 auto 10px;
 }
-#list .data {
+#list .stop-name {
     display: inline-block;;
     width: 300px;
 }
 #list .buttons {
     display: inline-block;
     width: 120px;
-    text-align: right;
+    text-align: center;
     vertical-align: top;
     margin-top: 5px;
 }
@@ -201,10 +206,6 @@ button, body {
     color: rgb(200,200,200);
     font-weight: 300;
 }
-.leaflet-popup .trip {
-    margin: 1px;
-}
-
 
 /* iPhone 5 in portrait & landscape */
 @media only screen
@@ -221,8 +222,20 @@ and (max-device-width: 568px)
         width: 100%;
         margin: 0;
     }
-    #list .data, #list .buttons {
+    #list .stop-name, #list .buttons {
         display: block;
         width: auto;
     }
+}
+
+.leaflet-popup-content-wrapper {
+    border-radius: 2px;
+    border: 1px solid rgb(241,241,241);
+    border-bottom-color: rgb(232,232,232);
+    font-size: 1em;
+}
+
+.leaflet-popup-content {
+    font-size: 1.1em;
+    margin: 10px 18px 0px 10px;
 }
