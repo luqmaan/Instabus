@@ -166,11 +166,11 @@ button, body {
 }
 #list .stop-name {
     display: inline-block;;
-    width: 300px;
+    width: 330px;
 }
 #list .buttons {
     display: inline-block;
-    width: 120px;
+    width: 100px;
     text-align: center;
     vertical-align: top;
     margin-top: 5px;
@@ -231,11 +231,12 @@ and (max-device-width: 568px)
 .leaflet-popup-content-wrapper {
     border-radius: 2px;
     border: 1px solid rgb(241,241,241);
-    border-bottom-color: rgb(232,232,232);
+    border-top: 1px solid rgb(220,220,220);
+    border-bottom: none;
     font-size: 1em;
 }
 
 .leaflet-popup-content {
     font-size: 1.1em;
-    margin: 10px 18px 0px 10px;
+    margin: 10px 18px 5px 10px;
 }
