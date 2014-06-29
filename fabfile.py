@@ -14,8 +14,8 @@ import fabric.api
 
 # only routes with realtime data
 ROUTE_IDS = {
-    801: 'MetroRapid',
-    550: 'MetroRail',
+    801: ('MetroRapid', 'Bus'),
+    550: ('MetroRail', 'Train'),
 }
 
 GTFS_DOWNLOAD_FILE = os.path.join(tempfile.gettempdir(), 'capmetro_gtfs.zip')
@@ -56,10 +56,12 @@ def _save_route_data(curr):
     data = []
     for row in curr:
         route_id, direction_id, direction = int(row[0]), int(row[1]), row[2].title().replace('bound', '')
+        route_name, vehicle_type = ROUTE_IDS[route_id]
         data.append({
             'id': route_id,
             'direction': direction_id,
-            'name': '{} {} {}'.format(route_id, ROUTE_IDS[route_id], direction),
+            'name': '{} {} {}'.format(route_id, route_name, direction),
+            'vehicle_type': vehicle_type,
         })
 
     filename = os.path.join(DATA_DIR, 'routes.json')
