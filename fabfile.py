@@ -12,7 +12,12 @@ import requests
 import fabric.api
 
 
-ROUTE_IDS = [801, 550]  # only routes with realtime data
+# only routes with realtime data
+ROUTE_IDS = {
+    801: 'MetroRapid',
+    550: 'MetroRail',
+}
+
 GTFS_DOWNLOAD_FILE = os.path.join(tempfile.gettempdir(), 'capmetro_gtfs.zip')
 GTFS_DB = os.path.join(tempfile.gettempdir(), 'capmetro_gtfs_data.db')
 DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
@@ -39,7 +44,31 @@ def fetch_gtfs_data():
     print 'saved to {}'.format(GTFS_DOWNLOAD_FILE)
 
 
-def _get_route_data(curr):
+def _save_route_data(curr):
+    sql = '''
+        SELECT DISTINCT route_id, direction_id, trip_headsign
+        FROM trips
+        WHERE route_id IN ({})
+        ORDER BY route_id DESC, trip_headsign ASC
+    '''.format(','.join('?' for _ in ROUTE_IDS))
+    curr.execute(sql, ROUTE_IDS.keys())
+
+    data = []
+    for row in curr:
+        route_id, direction_id, direction = int(row[0]), int(row[1]), row[2].title().replace('bound', '')
+        data.append({
+            'id': route_id,
+            'direction': direction_id,
+            'name': '{} {} {}'.format(route_id, ROUTE_IDS[route_id], direction),
+        })
+
+    filename = os.path.join(DATA_DIR, 'routes.json')
+    print 'writing ROUTE data to {}'.format(filename)
+    with open(filename, 'wb') as f:
+        f.write(json.dumps(data) + '\n')
+
+
+def _get_shape_data(curr):
     sql = '''
         SELECT shapes.shape_id, count(*) as num_shapes, trips.direction_id, trips.route_id, trips.*
         FROM
@@ -54,7 +83,7 @@ def _get_route_data(curr):
         GROUP BY shapes.shape_id
         ORDER BY num_shapes DESC
     '''.format(','.join('?' for _ in ROUTE_IDS))
-    curr.execute(sql, ROUTE_IDS)
+    curr.execute(sql, ROUTE_IDS.keys())
 
     biggest_data_by_route = {}
     for row in curr:
@@ -70,8 +99,8 @@ def _get_route_data(curr):
     return biggest_data_by_route
 
 
-def _save_route_data(curr, route_data):
-    for (route_id, direction_id), val in route_data.items():
+def _save_shape_data(curr, shape_data):
+    for (route_id, direction_id), val in shape_data.items():
         sql = '''
             SELECT *
             FROM shapes
@@ -140,7 +169,7 @@ def _save_stop_data(curr):
             stop_times.stop_sequence
         ORDER BY stop_times.stop_sequence
     '''.format(','.join('?' for _ in ROUTE_IDS))
-    curr.execute(sql, ROUTE_IDS)
+    curr.execute(sql, ROUTE_IDS.keys())
 
     data_by_stops = defaultdict(list)
     for (route_id, direction_id, stop_id, stop_code, stop_name, stop_desc, stop_lat, stop_lon, zone_id, stop_url, location_type, parent_station, stop_timezone, wheelchair_boarding, platform_code, stop_sequence) in curr:
@@ -179,6 +208,7 @@ def parse_gtfs_data(force_refetch=True):
 
     with sqlite3.connect(GTFS_DB) as conn:
         curr = conn.cursor()
-        route_data = _get_route_data(curr)
-        _save_route_data(curr, route_data)
+        _save_route_data(curr)
+        shape_data = _get_shape_data(curr)
+        _save_shape_data(curr, shape_data)
         _save_stop_data(curr)
