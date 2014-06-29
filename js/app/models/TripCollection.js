@@ -35,6 +35,7 @@ function($, when, X2JS, utils, Trip) {
 
                     // filter out the wrong direction
                     Services = Services.filter(function(s) {
+                        // `Direction` in the xml is N or S, not 0 or 1. convert it to something sane
                         return utils.getDirectionID(s.Route, s.Direction) === direction;
                     })[0];
 
