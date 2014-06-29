@@ -23,7 +23,7 @@ def serve():
     fabric.api.local("twistd -n web -p 1234 --path .")
 
 
-def fetch_gfts_data():
+def fetch_gtfs_data():
     print 'fetching gtfs data....'
     r = requests.get('http://www.gtfs-data-exchange.com/agency/capital-metro/latest.zip', stream=True)
     assert r.ok, 'problem fetching data. status_code={}'.format(r.status_code)
@@ -172,7 +172,7 @@ def _save_stop_data(curr):
 
 def parse_gtfs_data(force_refetch=True):
     if int(force_refetch):
-        fetch_gfts_data()
+        fetch_gtfs_data()
 
     print 'loading gtfs data into db ({})...'.format(GTFS_DB)
     fabric.api.local('gtfsdb-load --database_url sqlite:///{} {}'.format(GTFS_DB, GTFS_DOWNLOAD_FILE))
