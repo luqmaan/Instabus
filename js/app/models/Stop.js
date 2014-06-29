@@ -1,7 +1,8 @@
-define(['knockout', 'when', 'models/TripCollection', 'text!templates/stop-popup.html'],
-function(ko, when, TripCollection, stopPopupHTML) {
+define(['knockout', 'when', 'leaflet', 'models/TripCollection', 'text!templates/stop-popup.html', 'config'],
+function(ko, when, leaflet, TripCollection, stopPopupHTML, config) {
     function Stop(data) {
-        this.name = ko.observable(data.stop_name);
+        var stop_name = data.stop_name.replace('(SB)', '').replace('(NB)', '');
+        this.name = ko.observable(stop_name);
         this.direction = ko.observable(parseInt(data.direction_id));
         this.route = ko.observable(parseInt(data.route_id));
         this.code = ko.observable(data.stop_code);
@@ -9,36 +10,65 @@ function(ko, when, TripCollection, stopPopupHTML) {
         this.id = ko.observable(data.stop_id);
         this.lat = ko.observable(data.stop_lat);
         this.lon = ko.observable(data.stop_lon);
-        this.name = ko.observable(data.stop_name);
         this.timezone = ko.observable(data.stop_timezone);
         this.url = ko.observable(data.url);
 
         this.trips = ko.observableArray();
 
-        this.activityMsg = ko.observable();
-        this.errorMsg = ko.observable();
-
         this.showTrips = ko.observable(false);
+        this.loadedTrips = ko.observable(false);
+        this.loading = ko.observable(false);
+        this.showProgress = ko.computed(function() {
+            // don't show after the first load
+            return this.loading() && !this.loadedTrips();
+        }.bind(this));
+
+        this.color = 'rgb(199,16,22)';
+
+        this.marker = leaflet.circleMarker([this.lat(), this.lon()], {
+                color: 'white',
+                opacity: 1,
+                weight: 3,
+                fillColor: this.color,
+                fill: true,
+                fillOpacity: 1,
+                radius: 8,
+                zIndexOffset: config.stopZIndex
+            });
+
+        this.marker.bindPopup(this.popupContent());
+
+        this.marker.addEventListener('click', function(e) {
+            if (!this.loadedTrips()) {
+                this.loadTrips();
+            }
+        }.bind(this));
     }
 
     Stop.prototype = {
+        toggleTrips: function() {
+            this.showTrips(!this.showTrips());
+            if (!this.loadedTrips()) {
+                this.loadTrips();
+            }
+            this.marker.openPopup();
+        },
         loadTrips: function() {
             var deferred = when.defer();
 
             this.showTrips(true);
-            this.errorMsg('');
-            this.activityMsg('Loading...');
+            this.loading(true);
 
             TripCollection.fetch(this.route(), this.direction(), this.id()).then(
                 function(trips) {
-                    this.activityMsg('');
                     this.trips(trips);
+                    this.loading(false);
+                    this.loadedTrips(true);
                     deferred.resolve();
                 }.bind(this),
                 function(e) {
-                    this.activityMsg('');
-                    this.errorMsg(e);
                     console.error(e);
+                    this.loading(false);
                     deferred.reject(e);
                 }.bind(this)
             );
@@ -51,13 +81,9 @@ function(ko, when, TripCollection, stopPopupHTML) {
             }
         },
         showOnMap: function() {
+            // FIXME:
             // perhaps publish a message that indicates this stop wants to be shown on the map?
-        },
-        dismissActivity: function() {
-            this.activityMsg('');
-        },
-        dismissError: function() {
-            this.errorMsg('');
+            // or change the url
         },
         popupContent: function() {
             var div = document.createElement('div');

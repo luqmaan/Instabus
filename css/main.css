@@ -1,6 +1,7 @@
+@import url(http://fonts.googleapis.com/css?family=Roboto:500,400,300);
+
 html, body {
   height: 100%;
-  font: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 body {
   background-position: center center;
@@ -8,32 +9,39 @@ body {
   background-image: -webkit-radial-gradient(center, ellipse cover,#FFFFFF 0%,#FAFAFA 50%,#F5F5F5 60%,#BEBEBE 100%);
   margin: 0;
   padding: 0;
-  font-family:  sans-serif;
+}
+button, body {
+  font-family: Roboto, "Helvetica NeueRobot", Helvetica, Arial, sans-serif;
+}
+.leaflet-container {
+    font-family: Roboto, "Helvetica NeueRobot", Helvetica, Arial, sans-serif;
+
 }
 #map-wrapper {
     position: absolute;
-    margin-left: 400px;
+    margin-left: 470px;
     width: 100%;
     top: 40px;
     bottom: 0;
 }
 #map {
     position: relative;
-    margin-right: 400px;
+    margin-right: 470px;
     height: 100%;
 }
 #list {
     position: absolute;
-    width: 400px;
+    width: 470px;
     top: 40px;
     bottom: 0;
     background: #fff;
     overflow: scroll;
     box-shadow: 10px -10px 10px rgba(0, 0, 0, 0.1);
+    border-right: 1px solid rgb(201,201,201);
     z-index: 100;
 }
 #controls {
-    position: relative;
+    position: fixed;
     display: block;
     min-height: 40px;
     text-align: center;
@@ -44,10 +52,10 @@ body {
     color: rgb(199,16,22);
     background: rgb(241,241,241);
     border-bottom: 1px solid rgb(168,168,168);
-    broder-top: 1px solid rgba(199,16,22, 0.5);
+    border-top: 1px solid rgba(199,16,22, 0.5);
     z-index: 110;
     font-size: 1em;
-    box-shadow: -10px 0px 10px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.2);
     z-index: 1000;
 }
 #controls .wrapper {
@@ -129,34 +137,106 @@ body {
 #list .stop {
     border-left: 3px solid rgb(199,16,22);
     border-bottom: 1px solid rgb(241,241,241);
-    padding: 5px 15px;
+    padding: 5px 0 5px 10px;
 }
-#list .stop .desc, #list .stop .name {
+.stop-name .desc, .stop-name .name {
     display: block;
     line-height: 1.5em;
 }
-#list .stop .desc {
+.stop-name .name {
+    font-size: 1.1em;
+    font-weight: 500;
+    color: rgb(71,55,57);
+}
+.stop-name .desc {
+    font-weight: 400;
     font-size: 0.8em;
+    color: rgb(123,123,123);
+}
+#list .stop button {
+    color: #473739;
+    background: #F7F7F7;
+    border: none;
+    border-radius: 1px;
+    font-size: 0.9em;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    border: 1px solid #D5D3D3;
+    display: block;
+    margin: 0 auto 10px;
+}
+#list .stop-name {
+    display: inline-block;;
+    width: 330px;
+}
+#list .buttons {
+    display: inline-block;
+    width: 100px;
+    text-align: center;
+    vertical-align: top;
+    margin-top: 5px;
 }
 .trips {
     list-style: none;
     display: block;
     padding: 0;
 }
+.trips h4 {
+    font-weight: 400;
+    margin: 0.8em 0;
+    font-size: 1em;
+    border-bottom: 1px solid #E0E0E0;
+    padding-bottom: 5px;
+    color: #6E6E6E;
+}
 .trip {
-    background: rgb(203,233,171);
+    background: rgb(237,254,219);
+    border: 1px solid rgb(177,231,121);
+    color: rgb(97,110,82);
     border-radius: 5px;
-    border: 1px solid rgb(164,205,139);
     display: inline-block;
     position: relative;
     padding: 5px;
-    margin: 5px;
+    margin: 0 5px 10px 0;
+    font-size: 0.8em;
+    font-weight: 500;
 }
 .trip.old {
-    background-color: rgb(209,209,209);
-    border-color: rgb(122,122,122);
-}
-.leaflet-popup .trip {
-    margin: 1px;
+    background-color: rgb(246,246,246);
+    border-color: rgb(235,235,235);
+    color: rgb(200,200,200);
+    font-weight: 300;
 }
 
+/* iPhone 5 in portrait & landscape */
+@media only screen
+and (min-device-width: 320px)
+and (max-device-width: 568px)
+{
+    #list {
+        width: 100%;
+        position: relative;
+        top: 40px;
+        bottom: auto;
+    }
+    #map, #map-wrapper {
+        width: 100%;
+        margin: 0;
+    }
+    #list .stop-name, #list .buttons {
+        display: block;
+        width: auto;
+    }
+}
+
+.leaflet-popup-content-wrapper {
+    border-radius: 2px;
+    border: 1px solid rgb(241,241,241);
+    border-top: 1px solid rgb(220,220,220);
+    border-bottom: none;
+    font-size: 1em;
+}
+
+.leaflet-popup-content {
+    font-size: 1.1em;
+    margin: 10px 18px 5px 10px;
+}

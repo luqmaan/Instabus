@@ -7,10 +7,10 @@ function(ko, L, when, LocateControl, Vehicles, Shape, Stops) {
 
         this.availableRoutes = ko.observableArray([
             // 550 uses 1 for NB, 801 uses 0 ...thats just how capmetro rolls
-            {id: 801, direction: 0, name: '801 MetroRapid North'},
-            {id: 801, direction: 1, name: '801 MetroRapid South'},
-            {id: 550, direction: 1, name: '550 MetroRail North'},
-            {id: 550, direction: 0, name: '550 MetroRail South'},
+            {id: 801, direction: 0, name: '801 MetroRapid North', vehicleType: 'Bus'},
+            {id: 801, direction: 1, name: '801 MetroRapid South', vehicleType: 'Bus'},
+            {id: 550, direction: 1, name: '550 MetroRail North', vehicleType: 'Train'},
+            {id: 550, direction: 0, name: '550 MetroRail South', vehicleType: 'Train'},
         ]);
         this.activityMsg = ko.observable();
         this.errorMsg = ko.observable();
