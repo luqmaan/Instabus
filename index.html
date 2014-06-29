@@ -11,9 +11,10 @@
     <link rel="apple-touch-icon" sizes="76x76" href="icons/icon-76.png">
     <link rel="apple-touch-icon" sizes="120x120" href="icons/icon-60@2x.png">
     <link rel="apple-touch-icon" sizes="152x152" href="icons/icon-76@2x.png">
-    <link href="css/main.css" rel="stylesheet">
     <link href="css/leaflet.css" rel="stylesheet">
     <link href="css/leaflet-label.css" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet">
+    <link href="css/progress.css" rel="stylesheet">
     <script data-main="js/common" src="bower_components/requirejs/require.js"></script>
 
 </head>
@@ -33,38 +34,45 @@
                 </div>
             </div>
         </div>
-        <div id="list">
+        <div id="list" data-bind="if: includeList">
             <div class="wrapper">
                 <ul class="stops">
                     <!-- ko foreach: stopsList() -->
                         <li class="stop">
-                            <span class="name" data-bind="text: name"></span>
-                            <span class="desc" data-bind="text: desc"></span>
-                            <!-- ko ifnot: showTrips -->
-                                <button data-bind="click: loadTrips">show trips</button>
-                            <!-- /ko -->
-                            <button data-bind="click: showOnMap">show on map</button>
-                            <ul class="trips" data-bind="if: trips">
-                                <!-- ko foreach: trips() -->
-                                    <li class="trip" data-bind="css: { old: old }">
-                                        <span data-bind="text: prettyTime"></span>
-                                    </li>
+                            <div class="stop-name">
+                                <span class="name" data-bind="text: name"></span>
+                                <span class="desc" data-bind="text: desc"></span>
+                            </div>
+                            <div class="buttons">
+                                <!-- ko ifnot: showTrips -->
+                                    <button data-bind="click: toggleTrips">Arrivals</button>
                                 <!-- /ko -->
-                            </ul>
-                            <div class="status" data-bind="visible: activityMsg, click: dismissActivity">
-                                <span data-bind="text: activityMsg"></span>
-                                <span class="close">x</span>
+                                <!-- ko if: showTrips -->
+                                    <button data-bind="click: toggleTrips">Hide Arrivals</button>
+                                <!-- /ko -->
                             </div>
-                            <div class="status error" data-bind="visible: errorMsg, click: dismissError">
-                                <span data-bind="text: errorMsg"></span>
-                                <span class="close">x</span>
-                            </div>
+                            <!-- ko if: showTrips -->
+                                <ul class="trips">
+                                    <h4>Next <span data-bind="text: $root.route().vehicleType"></span> Arrives</h4>
+                                    <div class="progress large" data-bind="visible: showProgress">
+                                        <div class="spinner">
+                                            <div class="double-bounce1"></div>
+                                            <div class="double-bounce2"></div>
+                                        </div>
+                                    </div>
+                                    <!-- ko foreach: trips() -->
+                                        <li class="trip" data-bind="css: { old: old }">
+                                            <span data-bind="text: prettyTime"></span>
+                                        </li>
+                                    <!-- /ko -->
+                                </ul>
+                            <!-- /ko -->
                         </li>
                     <!-- /ko -->
                 </ul>
             </div>
         </div>
-        <div id="map-wrapper">
+        <div id="map-wrapper" data-bind="if: includeMap">
             <div id="map"></div>
         </div>
     </div>

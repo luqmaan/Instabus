@@ -30,28 +30,8 @@ function($, L, when, config, Stop) {
             return deferred.promise;
         },
         draw: function(layer) {
-            var color = 'rgb(199,16,22)';
-
             this._stops.forEach(function(stop) {
-                var marker = L.circleMarker([stop.lat(), stop.lon()], {
-                        color: 'white',
-                        opacity: 1,
-                        weight: 3,
-                        fillColor: color,
-                        fill: true,
-                        fillOpacity: 1,
-                        radius: 8,
-                        zIndexOffset: config.stopZIndex
-                    });
-
-                marker.bindPopup(stop.popupContent());
-                marker.addTo(layer);
-
-                marker.addEventListener('click', function(e) {
-                    if (!stop.showTrips()) {
-                        stop.loadTrips();
-                    }
-                });
+                stop.marker.addTo(layer);
             });
         }
     };
