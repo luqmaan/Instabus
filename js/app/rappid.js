@@ -1,17 +1,18 @@
-define(['knockout', 'leaflet', 'when', 'LocateControl', 'models/Vehicles', 'models/Shape', 'models/Stops'],
-function(ko, L, when, LocateControl, Vehicles, Shape, Stops) {
+define(['knockout', 'leaflet', 'when', 'LocateControl', 'models/Routes', 'models/Vehicles', 'models/Shape', 'models/Stops'],
+function(ko, L, when, LocateControl, Routes, Vehicles, Shape, Stops) {
     function Rappid() {
         // leaflet
         this.map = null;
         this.routeLayer = null;
 
-        this.availableRoutes = ko.observableArray([
-            // 550 uses 1 for NB, 801 uses 0 ...thats just how capmetro rolls
-            {id: 801, direction: 0, name: '801 MetroRapid North', vehicleType: 'Bus'},
-            {id: 801, direction: 1, name: '801 MetroRapid South', vehicleType: 'Bus'},
-            {id: 550, direction: 1, name: '550 MetroRail North', vehicleType: 'Train'},
-            {id: 550, direction: 0, name: '550 MetroRail South', vehicleType: 'Train'},
-        ]);
+        this.availableRoutes = ko.observableArray([]);
+        var routes = new Routes();
+        routes.fetch().then(
+            function() {
+                this.availableRoutes(routes._routes);
+            }.bind(this)
+        );
+
         this.activityMsg = ko.observable();
         this.errorMsg = ko.observable();
 

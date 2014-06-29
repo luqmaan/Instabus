@@ -54,6 +54,7 @@ function($, L, when, _, X2JS, utils, config) {
                 direction = this.direction,
                 matchingVehicles = _.filter(this._vehicles, function(v) {
                     var _route = parseInt(v.Route),
+                        // `Direction` in the xml is N or S, not 0 or 1. convert it to something sane
                         _dir = utils.getDirectionID(v.Route, v.Direction);
 
                     return route === _route && direction === _dir;
