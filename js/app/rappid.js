@@ -21,6 +21,9 @@ function(ko, L, when, LocateControl, Routes, Vehicles, Shape, Stops) {
 
         this.includeList = ko.observable(true);
         this.includeMap = ko.observable(true);
+        this.includeToggleBtn = ko.computed(function() {
+            return !this.includeList() || !this.includeMap();
+        }.bind(this));
 
         window.addEventListener('resize', this.resize.bind(this));
     }

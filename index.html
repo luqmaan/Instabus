@@ -23,11 +23,13 @@
         <div id="controls">
             <div class="wrapper">
                 <select id="route" data-bind="options: availableRoutes, optionsText: 'name', value: route"></select>
-                <button data-bind="click: toggleMap">
-                    Show
-                    <span data-bind="ifnot: includeMap"> Map</span>
-                    <span data-bind="ifnot: includeList"> List</span>
-                </button>
+                <!-- ko if: includeToggleBtn -->
+                    <button data-bind="click: toggleMap">
+                        Show
+                        <span data-bind="ifnot: includeMap"> Map</span>
+                        <span data-bind="ifnot: includeList"> List</span>
+                    </button>
+                <!-- /ko -->
                 <div class="status" data-bind="visible: activityMsg, click: dismissActivity">
                     <span data-bind="text: activityMsg"></span>
                     <span class="close">x</span>
