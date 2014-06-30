@@ -3,6 +3,11 @@
 html, body {
   height: 100%;
 }
+@media only screen and (max-device-width: 480px) {
+    html {
+        -webkit-text-size-adjust: none;
+    }
+}
 body {
   background-position: center center;
   background-repeat: no-repeat;
@@ -21,7 +26,7 @@ button, body {
     position: absolute;
     margin-left: 470px;
     width: 100%;
-    top: 40px;
+    top: 50px;
     bottom: 0;
 }
 #map {
@@ -32,7 +37,7 @@ button, body {
 #list {
     position: absolute;
     width: 470px;
-    top: 40px;
+    top: 50px;
     bottom: 0;
     background: #fff;
     overflow: scroll;
@@ -43,7 +48,7 @@ button, body {
 #controls {
     position: fixed;
     display: block;
-    min-height: 40px;
+    height: 50px;
     text-align: center;
     top: 0;
     left: 0;
@@ -52,17 +57,27 @@ button, body {
     color: rgb(199,16,22);
     background: rgb(241,241,241);
     border-bottom: 1px solid rgb(168,168,168);
-    border-top: 1px solid rgba(199,16,22, 0.5);
+    border-top: 1px solid rgb(199,16,22);
     z-index: 110;
     font-size: 1em;
     box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.2);
     z-index: 1000;
+    overflow: hidden;
 }
 #controls .wrapper {
-    padding: 5px;
+    padding: 0;
+    padding-top: 13px;
 }
-#controls select {
+#controls select, #controls button {
+    font-size: 16px;
+}
+#controls .spinner {
+    width: 1.8em;
+    height: 1.8em;
     font-size: 1em;
+    margin: 0;
+    display: inline-block;
+
 }
 .status {
     padding: 4px 10px 2px;
@@ -212,10 +227,16 @@ button, body {
 and (min-device-width: 320px)
 and (max-device-width: 568px)
 {
+    #controls .wrapper {
+        padding-top: 10px;
+    }
+    #controls select, #controls button{
+        font-size: 15px;
+    }
     #list {
         width: 100%;
         position: relative;
-        top: 40px;
+        top: 50px;
         bottom: auto;
     }
     #map, #map-wrapper {
