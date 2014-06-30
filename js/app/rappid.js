@@ -5,13 +5,7 @@ function(ko, L, when, LocateControl, Routes, Vehicles, Shape, Stops) {
         this.map = null;
         this.routeLayer = null;
 
-        this.availableRoutes = ko.observableArray([]);
-        var routes = new Routes();
-        routes.fetch().then(
-            function() {
-                this.availableRoutes(routes._routes);
-            }.bind(this)
-        );
+        this.availableRoutes = ko.observableArray();
 
         this.activityMsg = ko.observable();
         this.errorMsg = ko.observable();
@@ -27,14 +21,23 @@ function(ko, L, when, LocateControl, Routes, Vehicles, Shape, Stops) {
 
         this.includeList = ko.observable(true);
         this.includeMap = ko.observable(true);
+
+        window.addEventListener('resize', this.resize.bind(this));
     }
 
     Rappid.prototype = {
         start: function() {
+            this.resize();
             this.setupMap();
 
-            this.route.subscribe(this.initRoute.bind(this));
-            this.route(this.availableRoutes()[0]);
+            var routes = new Routes();
+            routes.fetch().then(
+                function() {
+                    this.availableRoutes(routes._routes);
+                    this.route.subscribe(this.initRoute.bind(this));
+                    this.route(this.availableRoutes()[0]);
+                }.bind(this)
+            );
         },
         refresh: function() {
             this.activityMsg('Refreshing...');
@@ -78,7 +81,6 @@ function(ko, L, when, LocateControl, Routes, Vehicles, Shape, Stops) {
             tileLayer.addTo(this.map);
             zoomCtrl.addTo(this.map);
             locateCtrl.addTo(this.map);
-
         },
         initRoute: function() {
             var route = this.route().id,
@@ -95,8 +97,14 @@ function(ko, L, when, LocateControl, Routes, Vehicles, Shape, Stops) {
             this.shape = new Shape(route, direction);
             this.stops = new Stops(route, direction);
 
-            this.shape.fetch().then(this.shape.draw.bind(this.shape, this.routeLayer), this.errorHandler.bind(this));
-            this.vehicles.fetch().then(this.vehicles.draw.bind(this.vehicles, this.routeLayer), this.errorHandler.bind(this));
+            this.shape.fetch().then(
+                this.shape.draw.bind(this.shape, this.routeLayer),
+                this.errorHandler.bind(this)
+            );
+            this.vehicles.fetch().then(this.vehicles.draw.bind(
+                this.vehicles, this.routeLayer),
+                this.errorHandler.bind(this)
+            );
             this.stops.fetch().then(
                 function() {
                     this.stops.draw(this.routeLayer);
@@ -116,6 +124,21 @@ function(ko, L, when, LocateControl, Routes, Vehicles, Shape, Stops) {
         },
         dismissError: function() {
             this.errorMsg('');
+        },
+        resize: function(e) {
+            if (window.screen.width <= 640) {
+                this.includeMap(false);
+                this.includeList(true);
+            }
+            else {
+                this.includeMap(true);
+                this.includeList(true);
+            }
+        },
+        toggleMap: function() {
+            this.includeList(!this.includeList());
+            this.includeMap(!this.includeMap());
+            this.map.invalidateSize();
         }
     };
 

@@ -23,7 +23,11 @@
         <div id="controls">
             <div class="wrapper">
                 <select id="route" data-bind="options: availableRoutes, optionsText: 'name', value: route"></select>
-                <!-- <input id="include-list" type="checkbox" data-bind="checked: includeList" /><label for="include-list">Show List</label> -->
+                <button data-bind="click: toggleMap">
+                    Show
+                    <span data-bind="ifnot: includeMap"> Map</span>
+                    <span data-bind="ifnot: includeList"> List</span>
+                </button>
                 <div class="status" data-bind="visible: activityMsg, click: dismissActivity">
                     <span data-bind="text: activityMsg"></span>
                     <span class="close">x</span>
@@ -34,7 +38,7 @@
                 </div>
             </div>
         </div>
-        <div id="list" data-bind="if: includeList">
+        <div id="list" data-bind="visible: includeList">
             <div class="wrapper">
                 <ul class="stops">
                     <!-- ko foreach: stopsList() -->
@@ -72,7 +76,7 @@
                 </ul>
             </div>
         </div>
-        <div id="map-wrapper" data-bind="if: includeMap">
+        <div id="map-wrapper" data-bind="visible: includeMap">
             <div id="map"></div>
         </div>
     </div>
