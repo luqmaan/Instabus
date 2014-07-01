@@ -3,7 +3,7 @@
 <head>
     <title>GhettoRappid</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimal-ui=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, minimal-ui=yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link rel="shortcut icon" href="favicon.ico">
@@ -39,22 +39,21 @@
             <div class="wrapper">
                 <ul class="stops">
                     <!-- ko foreach: stopsList() -->
-                        <li class="stop">
+                        <li class="stop" data-bind="click: toggleTrips">
                             <div class="stop-name">
                                 <span class="name" data-bind="text: name"></span>
                                 <span class="desc" data-bind="text: desc"></span>
                             </div>
                             <div class="buttons">
                                 <!-- ko ifnot: showTrips -->
-                                    <button data-bind="click: toggleTrips">Arrivals</button>
+                                    <button>+</button>
                                 <!-- /ko -->
                                 <!-- ko if: showTrips -->
-                                    <button data-bind="click: toggleTrips">Hide Arrivals</button>
+                                    <button>-</button>
                                 <!-- /ko -->
                             </div>
                             <!-- ko if: showTrips -->
                                 <ul class="trips">
-                                    <h4>Next <span data-bind="text: $root.route().vehicleType"></span> Arrives</h4>
                                     <div data-bind="visible: showProgress">
                                         <div class="spinner">
                                             <div class="double-bounce1"></div>

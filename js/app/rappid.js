@@ -142,6 +142,7 @@ function(ko, L, when, LocateControl, Routes, Vehicles, Shape, Stops) {
             this.includeList(!this.includeList());
             this.includeMap(!this.includeMap());
             this.map.invalidateSize();
+            this.map.closePopup();
             document.body.scrollTop = document.documentElement.scrollTop = 0;
         }
     };

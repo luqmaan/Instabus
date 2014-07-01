@@ -2,11 +2,7 @@
 
 html, body {
   height: 100%;
-}
-@media only screen and (max-device-width: 480px) {
-    html {
-        -webkit-text-size-adjust: none;
-    }
+  -webkit-text-size-adjust: 100%;
 }
 body {
   background-position: center center;
@@ -24,19 +20,20 @@ button, body {
 }
 #map-wrapper {
     position: absolute;
-    margin-left: 470px;
+    margin-left: 400px;
     width: 100%;
     top: 50px;
+    margin-top: 0px;
     bottom: 0;
 }
 #map {
     position: relative;
-    margin-right: 470px;
+    margin-right: 400px;
     height: 100%;
 }
 #list {
     position: absolute;
-    width: 470px;
+    width: 400px;
     top: 50px;
     bottom: 0;
     background: #fff;
@@ -55,9 +52,8 @@ button, body {
     padding: 0;
     width: 100%;
     color: rgb(199,16,22);
-    background: rgb(241,241,241);
+    background: rgba(241,241,241,0.99);
     border-bottom: 1px solid rgb(168,168,168);
-    border-top: 1px solid rgb(199,16,22);
     z-index: 110;
     font-size: 1em;
     box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.2);
@@ -143,52 +139,77 @@ button, body {
     background-size: 50% 50%;
 }
 #list .wrapper {
-    padding: 10px 10px;
+    padding: 0;
 }
 #list .stops {
     padding: 0;
     list-style: none;
 }
 #list .stop {
-    border-left: 3px solid rgb(199,16,22);
+    position: relative;
     border-bottom: 1px solid rgb(241,241,241);
-    padding: 5px 0 5px 10px;
+    padding: 8px 15px;
+    cursor: pointer;
+    background-color: #fff;
+    transition: background-color 0.25s;
+}
+#list .stop:last-child {
+    border-bottom: none;
+}
+#list .stop:hover {
+    background-color: rgb(246,246,246);
 }
 .stop-name .desc, .stop-name .name {
     display: block;
-    line-height: 1.5em;
+    margin-bottom: 0.2em;
 }
 .stop-name .name {
     font-size: 1.1em;
     font-weight: 500;
-    color: rgb(71,55,57);
+    color: #6B6969;
+}
+#list .stop:hover .stop-name .name {
+    color: #473739;
 }
 .stop-name .desc {
     font-weight: 400;
     font-size: 0.8em;
     color: rgb(123,123,123);
 }
-#list .stop button {
-    color: #473739;
-    background: #F7F7F7;
-    border: none;
-    border-radius: 1px;
-    font-size: 0.9em;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-    border: 1px solid #D5D3D3;
-    display: block;
-    margin: 0 auto 10px;
-}
 #list .stop-name {
     display: inline-block;;
     width: 330px;
 }
-#list .buttons {
-    display: inline-block;
-    width: 100px;
+#list .stop .buttons {
+/*    display: inline-block;
+    width: 25px;
     text-align: center;
     vertical-align: top;
-    margin-top: 5px;
+    margin-top: 5px;*/
+    float: right;
+    margin-right: 0px;
+}
+#list .stop button {
+    color: #473739;
+    background: #F7F7F7;
+    border: none;
+    font-size: 0.9em;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    border: 1px solid #D5D3D3;
+    display: block;
+    margin: 0 auto;
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    padding: 1px 3px 2px 3px;
+    line-height: 13px;
+    font-size: 15px;
+    transition: box-shadow 0.5s;
+}
+#list .stop:hover button {
+    /*background: rgb(215,213,213);*/
+    /*color: rgb(199,16,22);*/
+    box-shadow:  0px 4px 8px rgba(0, 0, 0, 0.2);
 }
 .trips {
     list-style: none;
@@ -211,7 +232,7 @@ button, body {
     display: inline-block;
     position: relative;
     padding: 5px;
-    margin: 0 5px 10px 0;
+    margin: 5px 5px 0 0;
     font-size: 0.8em;
     font-weight: 500;
 }
@@ -241,11 +262,30 @@ and (max-device-width: 568px)
     }
     #map, #map-wrapper {
         width: 100%;
-        margin: 0;
+        margin-left: auto;
+        margin-right: auto;
     }
     #list .stop-name, #list .buttons {
-        display: block;
         width: auto;
+    }
+    #list .buttons {
+        float: right;
+        margin-right: 10px;
+    }
+
+}
+/* iPhone 5 in portrait */
+@media only screen
+and (min-device-width : 320px)
+and (max-device-width : 568px)
+and (orientation : portrait) {
+    #list .stop-name {
+        width: 260px;
+        display: inline-block;
+    }
+    #list .buttons {
+        top: 15px;
+        position: relative;
     }
 }
 
@@ -255,9 +295,12 @@ and (max-device-width: 568px)
     border-top: 1px solid rgb(220,220,220);
     border-bottom: none;
     font-size: 1em;
+    max-width: 90%;
+    max-height: 90%;
+
 }
 
 .leaflet-popup-content {
-    font-size: 1.1em;
+    font-size: 1.3em;
     margin: 10px 18px 5px 10px;
 }
