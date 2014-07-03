@@ -3,7 +3,7 @@
 <head>
     <title>GhettoRappid</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, minimal-ui=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, minimal-ui=yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link rel="shortcut icon" href="favicon.ico">
@@ -26,12 +26,9 @@
                 <!-- ko if: includeToggleBtn -->
                     <button data-bind="click: toggleMap">
                         Show
-                        <span data-bind="ifnot: includeMap"> Map</span>
-                        <span data-bind="ifnot: includeList"> List</span>
+                        <span data-bind="if: includeList"> Map</span>
+                        <span data-bind="if: includeMap"> List</span>
                     </button>
-                <!-- /ko -->
-                <!-- ko if: true -->
-
                 <!-- /ko -->
             </div>
         </div>

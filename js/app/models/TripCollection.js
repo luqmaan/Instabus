@@ -46,15 +46,15 @@ function($, when, X2JS, utils, Trip) {
 
                     trips = Tripinfo.map(function(tripData) { return new Trip(tripData); });
 
-                    var lastOldTrip = trips.filter(function(t) {
-                        return t.old();
-                    }).slice(-1)[0];
-
-                    trips = trips.filter(function(t) {
-                        return ! t.old();
-                    });
-
-                    trips.unshift(lastOldTrip);
+                    // show only the most recent old trip
+                    for (var i = 0; i < trips.length; i++) {
+                        if (! trips[i].old()) {
+                            if (i > 0) {
+                                trips = trips.slice(i-1);
+                            }
+                            break;
+                        }
+                    }
 
                     deferred.resolve(trips);
                 }.bind(this))

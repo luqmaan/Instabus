@@ -7,8 +7,6 @@ function(ko, L, when, LocateControl, Routes, Vehicles, Shape, Stops) {
 
         this.availableRoutes = ko.observableArray();
 
-        this.activityMsg = ko.observable();
-        this.errorMsg = ko.observable();
 
         // data
         this.vehicles = null;
@@ -24,8 +22,6 @@ function(ko, L, when, LocateControl, Routes, Vehicles, Shape, Stops) {
         this.includeToggleBtn = ko.computed(function() {
             return !this.includeList() || !this.includeMap();
         }.bind(this));
-
-        window.addEventListener('resize', this.resize.bind(this));
     }
 
     Rappid.prototype = {
@@ -43,12 +39,10 @@ function(ko, L, when, LocateControl, Routes, Vehicles, Shape, Stops) {
             );
         },
         refresh: function() {
-            this.activityMsg('Refreshing...');
 
             this.vehicles.fetch().then(
                 function() {
                     this.vehicles.draw(this.routeLayer);
-                    this.activityMsg('');
                     setTimeout(this.refresh.bind(this), 15 * 1000);
                 }.bind(this),
                 this.errorHandler
@@ -120,13 +114,6 @@ function(ko, L, when, LocateControl, Routes, Vehicles, Shape, Stops) {
         },
         errorHandler: function(e) {
             console.error(e);
-            this.errorMsg(e);
-        },
-        dismissActivity: function() {
-            this.activityMsg('');
-        },
-        dismissError: function() {
-            this.errorMsg('');
         },
         resize: function(e) {
             if (window.screen.width <= 640) {

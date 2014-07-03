@@ -118,15 +118,17 @@ function($, L, when, _, X2JS, utils, config) {
             }.bind(this));
         },
         popupContent: function(vehicle) {
-            return [
-                'Vehicle ' + vehicle.Vehicleid,
-                'Updated at ' + vehicle.Updatetime,
-                'Moving ' + utils.formatDirection(vehicle.Route, vehicle.Direction) + ' at ' + vehicle.Speed + 'mph',
-                'Reliable? ' + vehicle.Reliable,
-                'Stopped? ' + vehicle.Stopped,
-                'Off Route? ' + vehicle.Offroute,
-                'In Service? ' + vehicle.Inservice,
-            ].join('<br />');
+            // FIXME: Bind this with ko like Stop
+            var vehicleId = '<span class="id">Vehicle ' + vehicle.Vehicleid + '</span>',
+                inner = [
+                    'Updated at ' + vehicle.Updatetime,
+                    'Moving ' + utils.formatDirection(vehicle.Route, vehicle.Direction) + ' at ' + vehicle.Speed + 'mph',
+                    'Reliable? ' + vehicle.Reliable,
+                    'Stopped? ' + vehicle.Stopped,
+                    'Off Route? ' + vehicle.Offroute,
+                    'In Service? ' + vehicle.Inservice,
+                ].join('<br />');
+            return '<div class="vehicle">' + vehicleId + inner + '</div>';
         },
         easeInOutCubic: function(t, b, c, d) {
             if ((t/=d/2) < 1) return c/2*t*t*t + b;
