@@ -16,7 +16,6 @@
     <link href="css/progress.css" rel="stylesheet">
     <link href="css/main.css" rel="stylesheet">
     <script data-main="js/common" src="bower_components/requirejs/require.js"></script>
-
 </head>
 <body>
     <div id="lerappid">
@@ -25,9 +24,8 @@
                 <select id="route" data-bind="options: availableRoutes, optionsText: 'name', value: route"></select>
                 <!-- ko if: includeToggleBtn -->
                     <button data-bind="click: toggleMap">
-                        Show
-                        <span data-bind="if: includeList"> Map</span>
-                        <span data-bind="if: includeMap"> List</span>
+                        <span data-bind="if: includeList">Map</span>
+                        <span data-bind="if: includeMap">List</span>
                     </button>
                 <!-- /ko -->
             </div>
@@ -61,6 +59,9 @@
                                         <li class="trip" data-bind="css: { old: old }">
                                             <span data-bind="text: prettyTime"></span>
                                         </li>
+                                    <!-- /ko -->
+                                    <!-- ko if: !showProgress() && !trips().length -->
+                                        <li>No Arrivals ☹</li>
                                     <!-- /ko -->
                                 </ul>
                             <!-- /ko -->

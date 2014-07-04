@@ -40,7 +40,7 @@ function(ko, when, leaflet, TripCollection, stopPopupHTML, config) {
 
         this.marker.addEventListener('click', function(e) {
             if (!this.loadedTrips()) {
-                this.loadTrips();
+                this.loadTrips().catch(console.error);
             }
         }.bind(this));
     }
@@ -49,9 +49,12 @@ function(ko, when, leaflet, TripCollection, stopPopupHTML, config) {
         toggleTrips: function() {
             this.showTrips(!this.showTrips());
             if (!this.loadedTrips()) {
-                this.loadTrips().then(function() {
-                    this.marker.openPopup();
-                }.bind(this));
+                this.loadTrips().then(
+                    function() {
+                        this.marker.openPopup();
+                    }.bind(this),
+                    console.error
+                );
             }
             this.marker.openPopup();
         },
@@ -69,8 +72,11 @@ function(ko, when, leaflet, TripCollection, stopPopupHTML, config) {
                     deferred.resolve();
                 }.bind(this),
                 function(e) {
-                    console.error(e);
                     this.loading(false);
+                    if (e.message.indexOf('20005') !== -1) {
+                        // fault 20005 = #20005--No service at origin at the date/time specified
+                        this.loadedTrips(true);
+                    }
                     deferred.reject(e);
                 }.bind(this)
             );

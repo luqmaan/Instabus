@@ -5,18 +5,17 @@ function(ko, L, when, LocateControl, Routes, Vehicles, Shape, Stops) {
         this.map = null;
         this.routeLayer = null;
 
-        this.availableRoutes = ko.observableArray();
-
-
         // data
         this.vehicles = null;
         this.shape = null;
         this.stops = null;
 
         // viewmodels
+        this.availableRoutes = ko.observableArray();
         this.route = ko.observable();
         this.stopsList = ko.observableArray();
 
+        // options
         this.includeList = ko.observable(true);
         this.includeMap = ko.observable(true);
         this.includeToggleBtn = ko.computed(function() {
@@ -39,7 +38,6 @@ function(ko, L, when, LocateControl, Routes, Vehicles, Shape, Stops) {
             );
         },
         refresh: function() {
-
             this.vehicles.fetch().then(
                 function() {
                     this.vehicles.draw(this.routeLayer);

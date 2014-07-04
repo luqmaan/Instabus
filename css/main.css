@@ -1,4 +1,4 @@
-@import url(http://fonts.googleapis.com/css?family=Roboto:500,400,300);
+@import url(http://fonts.googleapis.com/css?family=Roboto:500,400);
 
 html, body {
   height: 100%;
@@ -16,13 +16,12 @@ button, body {
 }
 .leaflet-container {
     font-family: Roboto, "Helvetica NeueRobot", Helvetica, Arial, sans-serif;
-
 }
 #map-wrapper {
     position: absolute;
     margin-left: 400px;
     width: 100%;
-    top: 50px;
+    top: 40px;
     margin-top: 0px;
     bottom: 0;
 }
@@ -34,7 +33,7 @@ button, body {
 #list {
     position: absolute;
     width: 400px;
-    top: 50px;
+    top: 40px;
     bottom: 0;
     background: #fff;
     overflow: scroll;
@@ -45,7 +44,7 @@ button, body {
 #controls {
     position: fixed;
     display: block;
-    height: 50px;
+    height: 40px;
     text-align: center;
     top: 0;
     left: 0;
@@ -62,7 +61,7 @@ button, body {
 }
 #controls .wrapper {
     padding: 0;
-    padding-top: 13px;
+    padding-top: 8px;
 }
 #controls select, #controls button {
     font-size: 16px;
@@ -239,8 +238,8 @@ button, body {
 .trip.old {
     background-color: rgb(246,246,246);
     border-color: rgb(235,235,235);
-    color: rgb(200,200,200);
-    font-weight: 300;
+    color: rgb(150,150,150);
+    font-weight: 400;
 }
 
 /* iPhone 5 in portrait & landscape */
@@ -248,16 +247,30 @@ button, body {
 and (min-device-width: 320px)
 and (max-device-width: 568px)
 {
+    #controls {
+        box-shadow: none;
+    }
     #controls .wrapper {
-        padding-top: 10px;
+        padding: 0 0 0 10px;
     }
     #controls select, #controls button{
         font-size: 15px;
+        line-height: 35px;
+    }
+    #controls select {
+        float: left;
+        margin-top: 7px;
+    }
+    #controls button {
+        color: rgb(227,15,26);
+        border: none;
+        text-align: right;
+        float: right;
     }
     #list {
         width: 100%;
         position: relative;
-        top: 50px;
+        top: 40px;
         bottom: auto;
     }
     #map, #map-wrapper {
