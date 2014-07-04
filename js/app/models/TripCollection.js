@@ -18,7 +18,7 @@ function($, when, X2JS, utils, Trip) {
                 function(data) {
                     var doc = x2js.xml2json(data),
                         fault = doc.query.results.Envelope.Body.Fault,
-                        Services,
+                        Service,
                         Tripinfo,
                         trips;
 
@@ -28,24 +28,33 @@ function($, when, X2JS, utils, Trip) {
                         return;
                     }
 
-                    Services = doc.query.results.Envelope.Body.SchedulenearbyResponse.Atstop.Service;
-                    if (!Array.isArray(Services)) {
-                        Services = [Services];
+                    Service = doc.query.results.Envelope.Body.SchedulenearbyResponse.Atstop.Service;
+                    if (Array.isArray(Service)) {
+                        // Filter out the wrong direction
+                        // But don't filter out the wrong direction if only one service is returned: this happens at the last stop in a route
+                        Service = Service.filter(function(s) {
+                            // `Direction` in the xml is N or S, not 0 or 1. convert it to something sane
+                            return utils.getDirectionID(s.Route, s.Direction) === direction;
+                        })[0];
                     }
 
-                    // filter out the wrong direction
-                    Services = Services.filter(function(s) {
-                        // `Direction` in the xml is N or S, not 0 or 1. convert it to something sane
-                        return utils.getDirectionID(s.Route, s.Direction) === direction;
-                    })[0];
 
-                    Tripinfo = Services.Tripinfo;
+                    Tripinfo = Service.Tripinfo;
                     if (!Array.isArray(Tripinfo)) {
                         Tripinfo = [Tripinfo];
                     }
 
-                    console.log(Services);
                     trips = Tripinfo.map(function(tripData) { return new Trip(tripData); });
+
+                    // show only the most recent old trip
+                    for (var i = 0; i < trips.length; i++) {
+                        if (! trips[i].old()) {
+                            if (i > 0) {
+                                trips = trips.slice(i-1);
+                            }
+                            break;
+                        }
+                    }
 
                     deferred.resolve(trips);
                 }.bind(this))

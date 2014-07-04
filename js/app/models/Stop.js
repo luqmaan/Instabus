@@ -49,7 +49,9 @@ function(ko, when, leaflet, TripCollection, stopPopupHTML, config) {
         toggleTrips: function() {
             this.showTrips(!this.showTrips());
             if (!this.loadedTrips()) {
-                this.loadTrips();
+                this.loadTrips().then(function() {
+                    this.marker.openPopup();
+                }.bind(this));
             }
             this.marker.openPopup();
         },
@@ -79,11 +81,6 @@ function(ko, when, leaflet, TripCollection, stopPopupHTML, config) {
             if (this.showTrips()) {
                 return this.loadTrips();
             }
-        },
-        showOnMap: function() {
-            // FIXME:
-            // perhaps publish a message that indicates this stop wants to be shown on the map?
-            // or change the url
         },
         popupContent: function() {
             var div = document.createElement('div');
