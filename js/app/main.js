@@ -1,14 +1,10 @@
-define(['jquery', 'leaflet', 'knockout', 'rappid'],
-function($, L, ko, Rappid) {
+define(['jquery', 'knockout', 'rappid'],
+function($, ko, Rappid) {
     var rappid = window.rappid = new Rappid();
+    window.ko = ko;
 
     $(document).ready(function() {
-        try {
-            ko.applyBindings(rappid, document.getElementById('lerappid'));
-        }
-        catch (e) {
-            console.error(e);
-        }
+        ko.applyBindings(rappid, document.getElementById('lerappid'));
         rappid.start();
     });
 });

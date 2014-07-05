@@ -1,5 +1,5 @@
-define(['knockout', 'leaflet', 'when', 'LocateControl', 'models/Routes', 'models/Vehicles', 'models/Shape', 'models/Stops'],
-function(ko, L, when, LocateControl, Routes, Vehicles, Shape, Stops) {
+define(['knockout', 'leaflet', 'when', 'LocateControl', 'models/RoutesCollection', 'models/Vehicles', 'models/Shape', 'models/Stops'],
+function(ko, L, when, LocateControl, RoutesCollection, Vehicles, Shape, Stops) {
     function Rappid() {
         // leaflet
         this.map = null;
@@ -28,14 +28,30 @@ function(ko, L, when, LocateControl, Routes, Vehicles, Shape, Stops) {
             this.resize();
             this.setupMap();
 
-            var routes = new Routes();
-            routes.fetch().then(
-                function() {
-                    this.availableRoutes(routes._routes);
-                    this.route.subscribe(this.initRoute.bind(this));
-                    this.route(this.availableRoutes()[0]);
-                }.bind(this)
+            RoutesCollection.fetch().then(
+                function(routes) {
+                    try {
+                        this.availableRoutes(routes);
+
+                        var cachedRoute = JSON.parse(localStorage.getItem('rappid:route')),
+                            defaultRoute = this.availableRoutes()[0];
+
+                        if (cachedRoute) {
+                            defaultRoute = this.availableRoutes().filter(function(r) {return cachedRoute.id === r.id && cachedRoute.direction === r.direction; })[0];
+                        }
+
+                        this.route(defaultRoute);
+                        this.setupRoute();
+                    } catch(e) {
+                        console.error(e);
+                    }
+                }.bind(this),
+                console.error
             );
+        },
+        selectRoute: function() {
+            this.setupRoute();
+            localStorage.setItem('rappid:route', ko.toJSON(this.route()));
         },
         refresh: function() {
             this.vehicles.fetch().then(
@@ -77,9 +93,11 @@ function(ko, L, when, LocateControl, Routes, Vehicles, Shape, Stops) {
             zoomCtrl.addTo(this.map);
             locateCtrl.addTo(this.map);
         },
-        initRoute: function() {
+        setupRoute: function() {
             var route = this.route().id,
                 direction = this.route().direction;
+
+            console.log("init route", route, direction);
 
             if (this.routeLayer) {
                 this.map.removeLayer(this.routeLayer);

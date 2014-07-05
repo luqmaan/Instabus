@@ -1,11 +1,6 @@
 define(['jquery', 'when'],
 function($, when) {
-
-    function Routes(routes) {
-        this._routes = routes;
-    }
-
-    Routes.prototype = {
+    var RoutesCollection = {
         fetch: function() {
             var deferred = when.defer();
 
@@ -13,11 +8,11 @@ function($, when) {
                 url: 'data/routes.json'
             }).done(
                 function(data) {
-                    this._routes = data.map(function(row) {
+                    var routes = data.map(function(row) {
                         return row;
                     });
 
-                    deferred.resolve();
+                    deferred.resolve(routes);
                 }.bind(this)
             ).fail(
                 function(xhr, status, err) {
@@ -29,5 +24,6 @@ function($, when) {
             return deferred.promise;
         }
     };
-    return Routes;
+
+    return RoutesCollection;
 });

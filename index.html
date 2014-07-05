@@ -21,7 +21,7 @@
     <div id="lerappid">
         <div id="controls">
             <div class="wrapper">
-                <select id="route" data-bind="options: availableRoutes, optionsText: 'name', value: route"></select>
+                <select id="route" data-bind="options: availableRoutes, optionsText: 'name', value: route, valueAllowUnset: true, event: {change: selectRoute}"></select>
                 <!-- ko if: includeToggleBtn -->
                     <button data-bind="click: toggleMap">
                         <span data-bind="if: includeList">Map</span>

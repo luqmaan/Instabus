@@ -64,8 +64,7 @@ function($, L, when, _, X2JS, utils, config) {
                     return !_.find(vehicleIDs, function(vID) { return vID === vehicleID; });
                 });
 
-            console.log('vehicle', matchingVehicles);
-            console.log('Deleted vehicles', deletedVehicleIDs.length, deletedVehicleIDs);
+            console.log('Vehicles', matchingVehicles.length, 'Deleted', deletedVehicleIDs.length);
 
             deletedVehicleIDs.forEach(function(vID) {
                 layer.removeLayer(this._markers[vID]);
@@ -88,7 +87,6 @@ function($, L, when, _, X2JS, utils, config) {
                     marker.setStyle({fillColor: fillColor});
 
                     if (!_.isEqual(start, stop)) {
-                        console.log('animating existing vehicle marker', marker);
 
                         if (document.visibilityState === 'visible') {
                             this.animateMarker(marker, 0, steps, start, delta);
@@ -109,7 +107,6 @@ function($, L, when, _, X2JS, utils, config) {
                     fillColor: fillColor,
                     zIndexOffset: config.vehicleZIndex
                 });
-                console.log('adding new vehicle marker', marker);
 
                 marker.bindPopup(popupContent);
                 marker.addTo(layer);
