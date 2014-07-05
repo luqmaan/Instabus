@@ -5,7 +5,9 @@ function($, ko, Rappid) {
 
     $(document).ready(function() {
         ko.applyBindings(rappid, document.getElementById('lerappid'));
-        rappid.start();
+        rappid.start().done(null, function(e) {
+            console.error(e);
+        });
     });
 });
 

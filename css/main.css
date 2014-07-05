@@ -137,11 +137,9 @@ button, body {
     background: url('../icons/locate.png') center center;
     background-size: 50% 50%;
 }
-#list .wrapper {
-    padding: 0;
-}
 #list .stops {
     padding: 0;
+    margin: 0;
     list-style: none;
 }
 #list .stop {
@@ -151,6 +149,9 @@ button, body {
     cursor: pointer;
     background-color: #fff;
     transition: background-color 0.25s;
+}
+#list .stop:first-child {
+    padding-top: 20px;
 }
 #list .stop:last-child {
     border-bottom: none;
