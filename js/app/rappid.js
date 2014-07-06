@@ -4,11 +4,12 @@ function(ko, L, when, LocateControl, RoutesCollection, Vehicles, Shape, Stops) {
         // leaflet
         this.map = null;
         this.routeLayer = null;
+        this.latlng = null;
 
         // data
         this.vehicles = null;
         this.shape = null;
-        this.stops = null;
+        this.stopsCollection = null;
 
         // viewmodels
         this.availableRoutes = ko.observableArray();
@@ -52,26 +53,30 @@ function(ko, L, when, LocateControl, RoutesCollection, Vehicles, Shape, Stops) {
             return deferred.promise;
         },
         refresh: function() {
-            var vehiclesPromise = this.vehicles.fetch(),
-                stopPromises,
-                promises;
+            var deferred = when.defer(),
+                vehiclesPromise = this.vehicles.fetch(),
+                promises = [vehiclesPromise],
+                stopPromises;
 
-            promises = this.stopsList().map(function(stop) {
-                return stop.refresh();
-            });
+            stopPromises = this.stopsList().map(function(stop) { return stop.refresh(); });
+            promises.push(stopPromises);
 
             vehiclesPromise.then(this.vehicles.draw.bind(this.vehicles, this.routeLayer));
-
-            promises.push(vehiclesPromise);
 
             when.all(promises).done(
                 function() {
                     setTimeout(this.refresh.bind(this), 15 * 1000);
+                    deferred.resolve(true);
                 }.bind(this),
                 function(e) {
                     console.error(e);
+                    deferred.resolve(false);
                 }
             );
+
+            // always resolves to true (success) or false (error)
+            // doesn't not reject because we don't want an error to propogate from here since it is self scheduling
+            return deferred.promise;
         },
         setupMap: function() {
             var tileLayer,
@@ -99,6 +104,10 @@ function(ko, L, when, LocateControl, RoutesCollection, Vehicles, Shape, Stops) {
             tileLayer.addTo(this.map);
             zoomCtrl.addTo(this.map);
             locateCtrl.addTo(this.map);
+
+            this.map.on('locationfound', function(e) {
+                this.latlng = e.latlng;
+            });
         },
         selectRoute:function() {
             this.setupRoute().then(null, console.error);
@@ -124,7 +133,7 @@ function(ko, L, when, LocateControl, RoutesCollection, Vehicles, Shape, Stops) {
 
             this.vehicles = new Vehicles(route, direction);
             this.shape = new Shape(route, direction);
-            this.stops = new Stops(route, direction);
+            this.stopsCollection = new Stops(route, direction);
 
             shapePromise = this.shape.fetch();
             shapePromise.then(this.shape.draw.bind(this.shape, this.routeLayer));
@@ -134,9 +143,13 @@ function(ko, L, when, LocateControl, RoutesCollection, Vehicles, Shape, Stops) {
 
             stopsPromise = this.stops.fetch();
             stopsPromise.then(
-                function() {
+                function(stops) {
                     this.stops.draw(this.routeLayer);
                     this.stopsList(this.stops._stops);
+
+                    if (this.latlng) {
+
+                    }
                 }.bind(this)
             );
 

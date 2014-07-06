@@ -1,25 +1,19 @@
 define(['jquery', 'leaflet', 'when', 'config', 'models/Stop'],
 function($, L, when, config, Stop) {
-    function Stops(route, direction) {
-        this.route = route;
-        this.direction = direction;
-        this._stops = null;
-    }
-
-    Stops.prototype = {
-        fetch: function() {
+    var StopsCollection = {
+        fetch: function(route, direction) {
             var deferred = when.defer();
 
             $.ajax({
-                url: 'data/stops_' + this.route + '_' + this.direction + '.json'
+                url: 'data/stops_' + route + '_' + direction + '.json'
             }).done(
                 function(data) {
-                    this._stops = data.map(function(stopData) {
+                    var stops = data.map(function(stopData) {
                         return new Stop(stopData);
                     });
 
-                    deferred.resolve();
-                }.bind(this)
+                    deferred.resolve(stops);
+                }
             ).fail(
                 function(a, b, err) {
                     console.error(err);
@@ -29,12 +23,15 @@ function($, L, when, config, Stop) {
 
             return deferred.promise;
         },
-        draw: function(layer) {
-            this._stops.forEach(function(stop) {
+        draw: function(stops, layer) {
+            stops.forEach(function(stop) {
                 stop.marker.addTo(layer);
             });
+        },
+        closest: function(stops, latlng) {
+            return ;  // return the closest stop in stops
         }
     };
 
-    return Stops;
+    return StopsCollection;
 });
