@@ -38,7 +38,8 @@ function($, L, when, geolib, config, Stop) {
             stop = stops[nearestPoint.key];
 
             stop.closest(true);
-            document.getElementById('list').scrollTop = document.getElementById(stop.cssId()).offsetTop;
+            document.body.scrollTop = document.getElementById(stop.cssId()).offsetTop;  // mobile
+            document.getElementById('list').scrollTop = document.getElementById(stop.cssId()).offsetTop;  // desktop
             stop.toggleTrips();
 
             return stop;
