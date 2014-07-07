@@ -8,7 +8,8 @@ requirejs.config({
         'xml2json': '../../bower_components/x2js/xml2json.min',
         'leaflet': '../../bower_components/leaflet/dist/leaflet-src',
         'Leaflet.label': '../../bower_components/Leaflet.label/dist/leaflet.label-src',
-        'moment': '../../bower_components/moment/min/moment.min'
+        'moment': '../../bower_components/moment/min/moment.min',
+        'geolib': '../../bower_components/geolib/dist/geolib'
     },
     packages: [
         {

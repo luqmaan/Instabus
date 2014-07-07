@@ -15,6 +15,9 @@ function(ko, when, leaflet, TripCollection, stopPopupHTML, config) {
 
         this.trips = ko.observableArray();
 
+        this.closest = ko.observable(false);
+        this.cssId = ko.observable('stop-' + data.stop_id);
+
         this.showTrips = ko.observable(false);
         this.loadedTrips = ko.observable(false);
         this.loading = ko.observable(false);

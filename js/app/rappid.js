@@ -1,5 +1,5 @@
-define(['knockout', 'leaflet', 'when', 'LocateControl', 'models/RoutesCollection', 'models/Vehicles', 'models/Shape', 'models/Stops'],
-function(ko, L, when, LocateControl, RoutesCollection, Vehicles, Shape, Stops) {
+define(['knockout', 'leaflet', 'when', 'LocateControl', 'models/RoutesCollection', 'models/Vehicles', 'models/Shape', 'models/StopCollection'],
+function(ko, L, when, LocateControl, RoutesCollection, Vehicles, Shape, StopCollection) {
     function Rappid() {
         // leaflet
         this.map = null;
@@ -9,12 +9,11 @@ function(ko, L, when, LocateControl, RoutesCollection, Vehicles, Shape, Stops) {
         // data
         this.vehicles = null;
         this.shape = null;
-        this.stopsCollection = null;
 
         // viewmodels
         this.availableRoutes = ko.observableArray();
         this.route = ko.observable();
-        this.stopsList = ko.observableArray();
+        this.stops = ko.observableArray();
 
         // options
         this.includeList = ko.observable(true);
@@ -58,7 +57,7 @@ function(ko, L, when, LocateControl, RoutesCollection, Vehicles, Shape, Stops) {
                 promises = [vehiclesPromise],
                 stopPromises;
 
-            stopPromises = this.stopsList().map(function(stop) { return stop.refresh(); });
+            stopPromises = this.stops().map(function(stop) { return stop.refresh(); });
             promises.push(stopPromises);
 
             vehiclesPromise.then(this.vehicles.draw.bind(this.vehicles, this.routeLayer));
@@ -106,11 +105,14 @@ function(ko, L, when, LocateControl, RoutesCollection, Vehicles, Shape, Stops) {
             locateCtrl.addTo(this.map);
 
             this.map.on('locationfound', function(e) {
+                if (!this.latlng) {
+                    StopCollection.closest(this.stops(), e.latlng);
+                }
                 this.latlng = e.latlng;
-            });
+            }.bind(this));
         },
-        selectRoute:function() {
-            this.setupRoute().then(null, console.error);
+        selectRoute: function() {
+            this.setupRoute().done(null, console.error);
         },
         setupRoute: function() {
             var deferred = when.defer(),
@@ -133,7 +135,6 @@ function(ko, L, when, LocateControl, RoutesCollection, Vehicles, Shape, Stops) {
 
             this.vehicles = new Vehicles(route, direction);
             this.shape = new Shape(route, direction);
-            this.stopsCollection = new Stops(route, direction);
 
             shapePromise = this.shape.fetch();
             shapePromise.then(this.shape.draw.bind(this.shape, this.routeLayer));
@@ -141,14 +142,14 @@ function(ko, L, when, LocateControl, RoutesCollection, Vehicles, Shape, Stops) {
             vehiclesPromise = this.vehicles.fetch();
             vehiclesPromise.then(this.vehicles.draw.bind(this.vehicles, this.routeLayer));
 
-            stopsPromise = this.stops.fetch();
+            stopsPromise = StopCollection.fetch(route, direction);
             stopsPromise.then(
                 function(stops) {
-                    this.stops.draw(this.routeLayer);
-                    this.stopsList(this.stops._stops);
+                    StopCollection.draw(stops, this.routeLayer);
+                    this.stops(stops);
 
                     if (this.latlng) {
-
+                        StopCollection.closest(stops, this.latlng);
                     }
                 }.bind(this)
             );
@@ -181,7 +182,7 @@ function(ko, L, when, LocateControl, RoutesCollection, Vehicles, Shape, Stops) {
             this.map.invalidateSize();
             this.map.closePopup();
             document.body.scrollTop = document.documentElement.scrollTop = 0;
-        }
+        },
     };
 
     return Rappid;

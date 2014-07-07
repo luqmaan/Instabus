@@ -33,10 +33,15 @@
         <div id="list" data-bind="visible: includeList">
             <div class="wrapper">
                 <ul class="stops">
-                    <!-- ko foreach: stopsList() -->
-                        <li class="stop" data-bind="click: toggleTrips">
+                    <!-- ko foreach: stops() -->
+                        <li class="stop" data-bind="click: toggleTrips, attr: {id: cssId}">
                             <div class="stop-name">
-                                <span class="name" data-bind="text: name"></span>
+                                <div class="name" >
+                                    <span data-bind="text: name"></span>
+                                    <!-- ko if: closest -->
+                                        <div class="closest"></div>
+                                    <!-- /ko -->
+                                </div>
                                 <span class="desc" data-bind="text: desc"></span>
                             </div>
                             <div class="buttons">

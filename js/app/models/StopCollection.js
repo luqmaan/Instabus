@@ -1,6 +1,6 @@
-define(['jquery', 'leaflet', 'when', 'config', 'models/Stop'],
-function($, L, when, config, Stop) {
-    var StopsCollection = {
+define(['jquery', 'leaflet', 'when', 'geolib', 'config', 'models/Stop'],
+function($, L, when, geolib, config, Stop) {
+    var StopCollection = {
         fetch: function(route, direction) {
             var deferred = when.defer();
 
@@ -29,9 +29,21 @@ function($, L, when, config, Stop) {
             });
         },
         closest: function(stops, latlng) {
-            return ;  // return the closest stop in stops
+            var points = stops.map(function(s) { return { latitude: s.lat(), longitude: s.lon()}; }),
+                _latlng = {latitude: latlng.lat, longitude: latlng.lng },
+                nearestPoint,
+                stop;
+
+            nearestPoint = geolib.findNearest(_latlng, points, 1);
+            stop = stops[nearestPoint.key];
+
+            stop.closest(true);
+            document.getElementById('list').scrollTop = document.getElementById(stop.cssId()).offsetTop;
+            stop.toggleTrips();
+
+            return stop;
         }
     };
 
-    return StopsCollection;
+    return StopCollection;
 });

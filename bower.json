@@ -18,7 +18,8 @@
     "when": "~3.2.3",
     "leaflet": "~0.7.3",
     "Leaflet.label": "~0.2.1",
-    "moment": "~2.7.0"
+    "moment": "~2.7.0",
+    "geolib": "~2.0.9"
   },
   "devDependencies": {
     "requirejs": "~2.1.14",

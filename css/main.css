@@ -181,11 +181,6 @@ button, body {
     width: 330px;
 }
 #list .stop .buttons {
-/*    display: inline-block;
-    width: 25px;
-    text-align: center;
-    vertical-align: top;
-    margin-top: 5px;*/
     float: right;
     margin-right: 0px;
 }
@@ -207,9 +202,21 @@ button, body {
     transition: box-shadow 0.5s;
 }
 #list .stop:hover button {
-    /*background: rgb(215,213,213);*/
-    /*color: rgb(199,16,22);*/
     box-shadow:  0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+#list .stop .closest {
+    display: inline-block;
+    margin: 7px 0 0 1px;
+    background: rgb(149,210,253);
+    border-radius: 7px;
+    height: 12px;
+    width: 12px;
+    border: 1px solid rgb(19,124,207);
+    transition: background-color 0.5s, border-color 0.5s;
+}
+#list .stop:hover .closest {
+    background: rgb(59,163,238);
+    border-color: rgb(3,52,86);
 }
 .trips {
     list-style: none;
