@@ -15,6 +15,11 @@
  limitations under the License.
  */
 
+/*
+ I can't figure out how to get the bower version to work with almond,
+ since it isn't doesn't do any of this AMD stuff. So, here it goes.
+ */
+
 define('X2JS', [], function() {
 
     function X2JS(config) {

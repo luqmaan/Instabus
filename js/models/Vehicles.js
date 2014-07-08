@@ -1,13 +1,5 @@
 define(['jquery', 'leaflet', 'when', 'underscore', 'X2JS', 'utils', 'config'],
 function($, L, when, _, X2JS, utils, config) {
-    console.log("X2JS", X2JS);
-    console.log("$", $);
-    console.log("L", L);
-    console.log("when", when);
-    console.log("_", _);
-    console.log("X2JS", X2JS);
-    console.log("utils", utils);
-    console.log("config", config);
     var x2js = new X2JS({});
 
     function Vehicles(route, direction) {
