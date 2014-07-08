@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html>
 <head>
-    <title>MetroRappid v.Ghetto</title>
+    <title>GhettoRappid</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimal-ui=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, minimal-ui=yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link rel="shortcut icon" href="favicon.ico">
@@ -11,26 +11,78 @@
     <link rel="apple-touch-icon" sizes="76x76" href="icons/icon-76.png">
     <link rel="apple-touch-icon" sizes="120x120" href="icons/icon-60@2x.png">
     <link rel="apple-touch-icon" sizes="152x152" href="icons/icon-76@2x.png">
-    <link href="css/main.css" rel="stylesheet">
     <link href="css/leaflet.css" rel="stylesheet">
     <link href="css/leaflet-label.css" rel="stylesheet">
-    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <link href="css/progress.css" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet">
+    <!-- development -->
+        <!-- <script data-main="js/build" src="bower_components/requirejs/require.js"></script> -->
+    <!-- /development -->
+    <!-- production -->
+        <script src="js/built.js"></script>
+    <!-- /production -->
 </head>
 <body>
-    <div id="controls">
-        <div class="wrapper">
-            <select id="route" data-bind="options: availableRoutes, optionsText: 'name', value: selectedRoute"></select>
-            <span data-bind="text: activity"></span>
+    <div id="lerappid">
+        <div id="controls">
+            <div class="wrapper">
+                <select id="route" data-bind="options: availableRoutes, optionsText: 'name', value: route, valueAllowUnset: true, event: {change: selectRoute}"></select>
+                <!-- ko if: includeToggleBtn -->
+                    <button data-bind="click: toggleMap">
+                        <span data-bind="if: includeList">Map</span>
+                        <span data-bind="if: includeMap">List</span>
+                    </button>
+                <!-- /ko -->
+            </div>
+        </div>
+        <div id="list" data-bind="visible: includeList">
+            <div class="wrapper">
+                <ul class="stops">
+                    <!-- ko foreach: stops() -->
+                        <li class="stop" data-bind="click: toggleTrips, attr: {id: cssId}">
+                            <div class="stop-name">
+                                <div class="name" >
+                                    <span data-bind="text: name"></span>
+                                    <!-- ko if: closest -->
+                                        <div class="closest"></div>
+                                    <!-- /ko -->
+                                </div>
+                                <span class="desc" data-bind="text: desc"></span>
+                            </div>
+                            <div class="buttons">
+                                <!-- ko ifnot: showTrips -->
+                                    <button>+</button>
+                                <!-- /ko -->
+                                <!-- ko if: showTrips -->
+                                    <button>-</button>
+                                <!-- /ko -->
+                            </div>
+                            <!-- ko if: showTrips -->
+                                <ul class="trips">
+                                    <div data-bind="visible: showProgress">
+                                        <div class="spinner">
+                                            <div class="double-bounce1"></div>
+                                            <div class="double-bounce2"></div>
+                                        </div>
+                                    </div>
+                                    <!-- ko foreach: trips() -->
+                                        <li class="trip" data-bind="css: { old: old }">
+                                            <span data-bind="text: prettyTime"></span>
+                                        </li>
+                                    <!-- /ko -->
+                                    <!-- ko if: !showProgress() && !trips().length -->
+                                        <li>No Arrivals ☹</li>
+                                    <!-- /ko -->
+                                </ul>
+                            <!-- /ko -->
+                        </li>
+                    <!-- /ko -->
+                </ul>
+            </div>
+        </div>
+        <div id="map-wrapper" data-bind="visible: includeMap">
+            <div id="map"></div>
         </div>
     </div>
-    <div id="map"></div>
-    <script src="js/libs/leaflet-src.js"></script>
-    <script src="js/libs/leaflet-label-src.js"></script>
-    <script src="js/libs/jquery.js"></script>
-    <script src="js/libs/xml2json.js"></script>
-    <script src="js/libs/knockout.js"></script>
-    <script src="js/libs/underscore.js"></script>
-    <script src="js/vehicles.js"></script>
-    <script src="js/app.js"></script>
 </body>
 </html>

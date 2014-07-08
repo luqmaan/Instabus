@@ -1,0 +1,17 @@
+<div class="stop-name">
+    <span class="name" data-bind="text: name"></span>
+    <span class="desc" data-bind="text: desc"></span>
+</div>
+<ul class="trips">
+    <div class="progress large" data-bind="visible: showProgress">
+        <div class="spinner">
+            <div class="double-bounce1"></div>
+            <div class="double-bounce2"></div>
+        </div>
+    </div>
+    <!-- ko foreach: trips() -->
+        <li class="trip" data-bind="css: { old: old }">
+            <span data-bind="text: prettyTime"></span>
+        </li>
+    <!-- /ko -->
+</ul>

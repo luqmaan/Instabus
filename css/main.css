@@ -1,5 +1,8 @@
+@import url(http://fonts.googleapis.com/css?family=Roboto:500,400);
+
 html, body {
   height: 100%;
+  -webkit-text-size-adjust: 100%;
 }
 body {
   background-position: center center;
@@ -7,32 +10,104 @@ body {
   background-image: -webkit-radial-gradient(center, ellipse cover,#FFFFFF 0%,#FAFAFA 50%,#F5F5F5 60%,#BEBEBE 100%);
   margin: 0;
   padding: 0;
-  font-family: "Roboto", sans-serif;
+}
+button, body {
+  font-family: Roboto, "Helvetica NeueRobot", Helvetica, Arial, sans-serif;
+}
+.leaflet-container {
+    font-family: Roboto, "Helvetica NeueRobot", Helvetica, Arial, sans-serif;
+}
+#map-wrapper {
+    position: absolute;
+    margin-left: 400px;
+    width: 100%;
+    top: 40px;
+    margin-top: 0px;
+    bottom: 0;
 }
 #map {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
+    position: relative;
+    margin-right: 400px;
     height: 100%;
 }
+#list {
+    position: absolute;
+    width: 400px;
+    top: 40px;
+    bottom: 0;
+    background: #fff;
+    overflow: scroll;
+    box-shadow: 10px -10px 10px rgba(0, 0, 0, 0.1);
+    border-right: 1px solid rgb(201,201,201);
+    z-index: 100;
+}
 #controls {
-    color: #fff;
-    position: relative;
+    position: fixed;
     display: block;
+    height: 40px;
+    text-align: center;
     top: 0;
     left: 0;
     padding: 0;
     width: 100%;
-    background: rgb(159,12,16);
+    color: rgb(199,16,22);
+    background: rgba(241,241,241,0.99);
+    border-bottom: 1px solid rgb(168,168,168);
+    z-index: 110;
+    font-size: 1em;
+    box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.2);
     z-index: 1000;
-    font-size: 1.2em;
+    overflow: hidden;
 }
 #controls .wrapper {
-    padding: 5px;
+    padding: 0;
+    padding-top: 8px;
 }
-#controls select {
-    font-size: 0.8em;
+#controls select, #controls button {
+    font-size: 16px;
+}
+#controls .spinner {
+    width: 1.8em;
+    height: 1.8em;
+    font-size: 1em;
+    margin: 0;
+    display: inline-block;
+
+}
+.status {
+    padding: 4px 10px 2px;
+    margin: 3px 10px;
+    display: inline-block;
+    border-radius: 15px;
+    background-color: rgb(254,254,254);
+    border: 1px solid rgb(220,220,220);
+    text-align: center;
+    cursor: pointer;
+}
+.status.error {
+    background-color: rgb(199,16,22);
+    color: #fff;
+    border-color: rgb(142,4,14);
+}
+.status:hover {
+    opacity: 0.7;
+}
+.status .close {
+    background: rgba(156,156,156, 0.5);
+    color: #fff;
+    border: 1px solid rgb(237,237,237);
+    height: 10px;
+    width: 10px;
+    border-radius: 5px;
+    display: inline-block;
+    font-size: 11px;
+    width: 15px;
+    height: 15px;
+    position: relative;
+    top: -2px;
+}
+.status .close:hover {
+    background-color: rgba(0,0,0, 0.4);
 }
 .locate-control {
     background-color: #FFF;
@@ -56,8 +131,211 @@ body {
 .locate-control.loading {
     cursor: progress;
     opacity: 0.5;
+    color: rgb(241,241,241);
 }
 .icon-location {
     background: url('../icons/locate.png') center center;
     background-size: 50% 50%;
+}
+#list .stops {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+#list .stop {
+    position: relative;
+    border-bottom: 1px solid rgb(241,241,241);
+    padding: 8px 15px;
+    cursor: pointer;
+    background-color: #fff;
+    transition: background-color 0.25s;
+}
+#list .stop:first-child {
+    padding-top: 20px;
+}
+#list .stop:last-child {
+    border-bottom: none;
+}
+#list .stop:hover {
+    background-color: rgb(246,246,246);
+}
+.stop-name .desc, .stop-name .name {
+    display: block;
+    margin-bottom: 0.2em;
+}
+.stop-name .name {
+    font-size: 1.1em;
+    font-weight: 500;
+    color: #6B6969;
+}
+#list .stop:hover .stop-name .name {
+    color: #473739;
+}
+.stop-name .desc {
+    font-weight: 400;
+    font-size: 0.8em;
+    color: rgb(123,123,123);
+}
+#list .stop-name {
+    display: inline-block;;
+    width: 330px;
+}
+#list .stop .buttons {
+    float: right;
+    margin-right: 0px;
+}
+#list .stop button {
+    color: #473739;
+    background: #F7F7F7;
+    border: none;
+    font-size: 0.9em;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    border: 1px solid #D5D3D3;
+    display: block;
+    margin: 0 auto;
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    padding: 1px 3px 2px 3px;
+    line-height: 13px;
+    font-size: 15px;
+    transition: box-shadow 0.5s;
+}
+#list .stop:hover button {
+    box-shadow:  0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+#list .stop .closest {
+    display: inline-block;
+    margin: 7px 0 0 1px;
+    background: rgb(149,210,253);
+    border-radius: 7px;
+    height: 12px;
+    width: 12px;
+    border: 1px solid rgb(19,124,207);
+    transition: background-color 0.5s, border-color 0.5s;
+}
+#list .stop:hover .closest {
+    background: rgb(59,163,238);
+    border-color: rgb(3,52,86);
+}
+.trips {
+    list-style: none;
+    display: block;
+    padding: 0;
+}
+.trips h4 {
+    font-weight: 400;
+    margin: 0.8em 0;
+    font-size: 1em;
+    border-bottom: 1px solid #E0E0E0;
+    padding-bottom: 5px;
+    color: #6E6E6E;
+}
+.trip {
+    background: rgb(237,254,219);
+    border: 1px solid rgb(177,231,121);
+    color: rgb(97,110,82);
+    border-radius: 5px;
+    display: inline-block;
+    position: relative;
+    padding: 5px;
+    margin: 5px 0 0 0;
+    font-size: 0.8em;
+    font-weight: 500;
+}
+.trip.old {
+    background-color: rgb(246,246,246);
+    border-color: rgb(235,235,235);
+    color: rgb(150,150,150);
+    font-weight: 400;
+}
+
+/* iPhone 5 in portrait & landscape */
+@media only screen
+and (min-device-width: 320px)
+and (max-device-width: 568px)
+{
+    #controls {
+        box-shadow: none;
+    }
+    #controls .wrapper {
+        padding: 0 0 0 10px;
+    }
+    #controls select, #controls button{
+        font-size: 15px;
+        line-height: 35px;
+    }
+    #controls select {
+        float: left;
+        margin-top: 7px;
+    }
+    #controls button {
+        color: rgb(227,15,26);
+        border: none;
+        text-align: right;
+        float: right;
+    }
+    #list {
+        width: 100%;
+        position: relative;
+        top: 40px;
+        bottom: auto;
+    }
+    #map, #map-wrapper {
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    #list .stop-name, #list .buttons {
+        width: auto;
+    }
+    #list .buttons {
+        float: right;
+        margin-right: 10px;
+    }
+    .leaflet-popup-content {
+        max-width: 90%;
+        max-height: 90%;
+        width: 250px !important;
+    }
+}
+/* iPhone 5 in portrait */
+@media only screen
+and (min-device-width : 320px)
+and (max-device-width : 568px)
+and (orientation : portrait) {
+    #list .stop-name {
+        width: 260px;
+        display: inline-block;
+    }
+    #list .buttons {
+        top: 15px;
+        position: relative;
+    }
+}
+
+.leaflet-popup-content-wrapper {
+    border-radius: 2px;
+    border: 1px solid rgb(241,241,241);
+    border-top: 1px solid rgb(220,220,220);
+    border-bottom: none;
+    font-size: 1em;
+    padding: 10px 5px 5px 10px;
+}
+
+.leaflet-popup-content {
+    margin: 0;
+    font-size: 1.3em;
+}
+
+.leaflet-popup-content .vehicle {
+    color: #6B6969;
+    font-size: 0.9em;
+}
+.leaflet-popup-content .vehicle .id {
+    font-size: 1.1em;
+    font-weight: 500;
+    margin-bottom: 0.4em;
+    display: block;
+    color: rgb(71,55,57);
 }
