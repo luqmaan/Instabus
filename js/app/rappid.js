@@ -1,22 +1,21 @@
-define(['knockout', 'leaflet', 'when', 'LocateControl', 'models/Routes', 'models/Vehicles', 'models/Shape', 'models/Stops'],
-function(ko, L, when, LocateControl, Routes, Vehicles, Shape, Stops) {
+define(['knockout', 'leaflet', 'when', 'LocateControl', 'models/RoutesCollection', 'models/Vehicles', 'models/Shape', 'models/StopCollection'],
+function(ko, L, when, LocateControl, RoutesCollection, Vehicles, Shape, StopCollection) {
     function Rappid() {
         // leaflet
         this.map = null;
         this.routeLayer = null;
-
-        this.availableRoutes = ko.observableArray();
-
+        this.latlng = null;
 
         // data
         this.vehicles = null;
         this.shape = null;
-        this.stops = null;
 
         // viewmodels
+        this.availableRoutes = ko.observableArray();
         this.route = ko.observable();
-        this.stopsList = ko.observableArray();
+        this.stops = ko.observableArray();
 
+        // options
         this.includeList = ko.observable(true);
         this.includeMap = ko.observable(true);
         this.includeToggleBtn = ko.computed(function() {
@@ -26,31 +25,57 @@ function(ko, L, when, LocateControl, Routes, Vehicles, Shape, Stops) {
 
     Rappid.prototype = {
         start: function() {
+            var deferred = when.defer();
+
             this.resize();
             this.setupMap();
 
-            var routes = new Routes();
-            routes.fetch().then(
-                function() {
-                    this.availableRoutes(routes._routes);
-                    this.route.subscribe(this.initRoute.bind(this));
-                    this.route(this.availableRoutes()[0]);
-                }.bind(this)
+            RoutesCollection.fetch().then(
+                function(routes) {
+                    this.availableRoutes(routes);
+
+                    var cachedRoute = JSON.parse(localStorage.getItem('rappid:route')),
+                        defaultRoute = this.availableRoutes()[0];
+
+                    if (cachedRoute) {
+                        defaultRoute = this.availableRoutes().filter(function(r) { return cachedRoute.id === r.id && cachedRoute.direction === r.direction; })[0];
+                    }
+
+                    this.route(defaultRoute);
+                    this.setupRoute().then(null, console.error);
+
+                    deferred.resolve();
+                }.bind(this),
+                deferred.reject
             );
+
+            return deferred.promise;
         },
         refresh: function() {
+            var deferred = when.defer(),
+                vehiclesPromise = this.vehicles.fetch(),
+                stopPromises = this.stops().map(function(stop) { return stop.refresh(); }),
+                promises;
 
-            this.vehicles.fetch().then(
+            vehiclesPromise.then(this.vehicles.draw.bind(this.vehicles, this.routeLayer));
+
+            promises = [vehiclesPromise];
+            promises = promises.concat(stopPromises);
+
+            when.all(promises).done(
                 function() {
-                    this.vehicles.draw(this.routeLayer);
                     setTimeout(this.refresh.bind(this), 15 * 1000);
+                    deferred.resolve(true);
                 }.bind(this),
-                this.errorHandler
+                function(e) {
+                    console.error(e);
+                    deferred.resolve(false);
+                }
             );
 
-            this.stopsList().forEach(function(stop) {
-                stop.refresh();
-            });
+            // always resolves to true (success) or false (error)
+            // doesn't not reject because we don't want an error to propogate from here since it is self scheduling
+            return deferred.promise;
         },
         setupMap: function() {
             var tileLayer,
@@ -78,10 +103,28 @@ function(ko, L, when, LocateControl, Routes, Vehicles, Shape, Stops) {
             tileLayer.addTo(this.map);
             zoomCtrl.addTo(this.map);
             locateCtrl.addTo(this.map);
+
+            this.map.on('locationfound', function(e) {
+                if (!this.latlng) {
+                    StopCollection.closest(this.stops(), e.latlng);
+                }
+                this.latlng = e.latlng;
+            }.bind(this));
         },
-        initRoute: function() {
-            var route = this.route().id,
-                direction = this.route().direction;
+        selectRoute: function() {
+            this.setupRoute().done(null, console.error);
+        },
+        setupRoute: function() {
+            var deferred = when.defer(),
+                route = this.route().id,
+                direction = this.route().direction,
+                promises,
+                shapePromise,
+                vehiclesPromise,
+                stopsPromise;
+
+            console.log('Setup route', this.route());
+            localStorage.setItem('rappid:route', ko.toJSON(this.route()));
 
             if (this.routeLayer) {
                 this.map.removeLayer(this.routeLayer);
@@ -92,28 +135,36 @@ function(ko, L, when, LocateControl, Routes, Vehicles, Shape, Stops) {
 
             this.vehicles = new Vehicles(route, direction);
             this.shape = new Shape(route, direction);
-            this.stops = new Stops(route, direction);
 
-            this.shape.fetch().then(
-                this.shape.draw.bind(this.shape, this.routeLayer),
-                this.errorHandler.bind(this)
+            shapePromise = this.shape.fetch();
+            shapePromise.then(this.shape.draw.bind(this.shape, this.routeLayer));
+
+            vehiclesPromise = this.vehicles.fetch();
+            vehiclesPromise.then(this.vehicles.draw.bind(this.vehicles, this.routeLayer));
+
+            stopsPromise = StopCollection.fetch(route, direction);
+            stopsPromise.then(
+                function(stops) {
+                    StopCollection.draw(stops, this.routeLayer);
+                    this.stops(stops);
+
+                    if (this.latlng) {
+                        StopCollection.closest(stops, this.latlng);
+                    }
+                }.bind(this)
             );
-            this.vehicles.fetch().then(this.vehicles.draw.bind(
-                this.vehicles, this.routeLayer),
-                this.errorHandler.bind(this)
-            );
-            this.stops.fetch().then(
+
+            promises = [shapePromise, vehiclesPromise, stopsPromise];
+
+            when.all(promises).done(
                 function() {
-                    this.stops.draw(this.routeLayer);
-                    this.stopsList(this.stops._stops);
+                    setTimeout(this.refresh.bind(this), 15 * 1000);
+                    deferred.resolve();
                 }.bind(this),
-                this.errorHandler.bind(this)
+                deferred.reject
             );
 
-            setTimeout(this.refresh.bind(this), 15 * 1000);
-        },
-        errorHandler: function(e) {
-            console.error(e);
+            return deferred.promise;
         },
         resize: function(e) {
             if (window.screen.width <= 640) {
@@ -131,7 +182,7 @@ function(ko, L, when, LocateControl, Routes, Vehicles, Shape, Stops) {
             this.map.invalidateSize();
             this.map.closePopup();
             document.body.scrollTop = document.documentElement.scrollTop = 0;
-        }
+        },
     };
 
     return Rappid;
