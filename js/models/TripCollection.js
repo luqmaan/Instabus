@@ -1,4 +1,4 @@
-define(['jquery', 'when', 'xml2json', 'utils', 'models/Trip'],
+define(['jquery', 'when', 'X2JS', 'utils', 'models/Trip'],
 function($, when, X2JS, utils, Trip) {
     var x2js = new X2JS({});
 
