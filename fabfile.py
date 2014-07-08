@@ -24,12 +24,23 @@ DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
 DATA_VERSION_FILE = os.path.join(DATA_DIR, 'data_version.txt')
 
 
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+
+
 def serve():
     fabric.api.local("twistd -n web -p 1234 --path .")
 
 
 def fetch_gtfs_data():
+    print bcolors.HEADER
     print 'fetching gtfs data....'
+    print bcolors.ENDC
     r = requests.get('http://www.gtfs-data-exchange.com/agency/capital-metro/latest.zip', stream=True)
     assert r.ok, 'problem fetching data. status_code={}'.format(r.status_code)
 
@@ -205,7 +216,9 @@ def parse_gtfs_data(force_refetch=True):
     if int(force_refetch):
         fetch_gtfs_data()
 
+    print bcolors.HEADER
     print 'loading gtfs data into db ({})...'.format(GTFS_DB)
+    print bcolors.ENDC
     fabric.api.local('gtfsdb-load --database_url sqlite:///{} {}'.format(GTFS_DB, GTFS_DOWNLOAD_FILE))
 
     with sqlite3.connect(GTFS_DB) as conn:
@@ -214,3 +227,13 @@ def parse_gtfs_data(force_refetch=True):
         shape_data = _get_shape_data(curr)
         _save_shape_data(curr, shape_data)
         _save_stop_data(curr)
+
+
+def deploy():
+    parse_gtfs_data()
+    fabric.api.local('npm install -g requirejs@~2.1.14')
+    fabric.api.local('r.js -o js/almond.build.js')
+    print bcolors.WARNING
+    print 'REMEMBER: Toggle the <!-- production --> / <!-- development --> script tags in index.html'
+    print bcolors.ENDC
+
