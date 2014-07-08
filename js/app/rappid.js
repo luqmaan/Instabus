@@ -54,13 +54,13 @@ function(ko, L, when, LocateControl, RoutesCollection, Vehicles, Shape, StopColl
         refresh: function() {
             var deferred = when.defer(),
                 vehiclesPromise = this.vehicles.fetch(),
-                promises = [vehiclesPromise],
-                stopPromises;
-
-            stopPromises = this.stops().map(function(stop) { return stop.refresh(); });
-            promises.push(stopPromises);
+                stopPromises = this.stops().map(function(stop) { return stop.refresh(); }),
+                promises;
 
             vehiclesPromise.then(this.vehicles.draw.bind(this.vehicles, this.routeLayer));
+
+            promises = [vehiclesPromise];
+            promises = promises.concat(stopPromises);
 
             when.all(promises).done(
                 function() {
