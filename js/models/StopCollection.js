@@ -29,13 +29,25 @@ function($, L, when, geolib, config, Stop) {
             });
         },
         closest: function(stops, latlng) {
+            if (!stops.length) return;
+
             var points = stops.map(function(s) { return { latitude: s.lat(), longitude: s.lon()}; }),
                 _latlng = {latitude: latlng.lat, longitude: latlng.lng },
                 nearestPoint,
-                stop;
+                stop,
+                k;
 
             nearestPoint = geolib.findNearest(_latlng, points, 1);
-            stop = stops[nearestPoint.key];
+
+            // for some reason the nearest point is off by one, in opposite ways depending on the route
+            k = parseInt(nearestPoint.key);
+            stop = stops[k];
+            if (stop.direction() === 0) {
+                stop = stops[k + 1];
+            }
+            else if (stop.direction() === 1) {
+                stop = stops[k - 1];
+            }
 
             stop.closest(true);
             document.body.scrollTop = document.getElementById(stop.cssId()).offsetTop;  // mobile

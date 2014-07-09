@@ -177,7 +177,7 @@ button, body {
     color: rgb(123,123,123);
 }
 #list .stop-name {
-    display: inline-block;;
+    display: inline-block;
     width: 330px;
 }
 #list .stop .buttons {

@@ -40,7 +40,6 @@ function(leaflet, when) {
             });
 
             this.map.on('locationfound', function(e) {
-                console.log('Found location', e.latlng, 'Accuracy', e.accuracy);
                 this.userLatLng = e.latlng;
                 this.updateMarkers();
                 this.container.classList.remove('loading');
