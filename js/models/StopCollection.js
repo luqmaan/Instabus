@@ -29,13 +29,15 @@ function($, L, when, geolib, config, Stop) {
             });
         },
         closest: function(stops, latlng) {
+            if (!stops.length) return;
+
             var points = stops.map(function(s) { return { latitude: s.lat(), longitude: s.lon()}; }),
                 _latlng = {latitude: latlng.lat, longitude: latlng.lng },
                 nearestPoint,
                 stop;
 
-            nearestPoint = geolib.findNearest(_latlng, points, 1);
-            stop = stops[nearestPoint.key];
+            nearestPoint = geolib.findNearest(_latlng, points, 0, 1);
+            stop = stops[parseInt(nearestPoint.key)];
 
             stop.closest(true);
             document.body.scrollTop = document.getElementById(stop.cssId()).offsetTop;  // mobile
