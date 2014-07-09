@@ -34,20 +34,10 @@ function($, L, when, geolib, config, Stop) {
             var points = stops.map(function(s) { return { latitude: s.lat(), longitude: s.lon()}; }),
                 _latlng = {latitude: latlng.lat, longitude: latlng.lng },
                 nearestPoint,
-                stop,
-                k;
+                stop;
 
-            nearestPoint = geolib.findNearest(_latlng, points, 1);
-
-            // for some reason the nearest point is off by one, in opposite ways depending on the route
-            k = parseInt(nearestPoint.key);
-            stop = stops[k];
-            if (stop.direction() === 0) {
-                stop = stops[k + 1];
-            }
-            else if (stop.direction() === 1) {
-                stop = stops[k - 1];
-            }
+            nearestPoint = geolib.findNearest(_latlng, points, 0, 1);
+            stop = stops[parseInt(nearestPoint.key)];
 
             stop.closest(true);
             document.body.scrollTop = document.getElementById(stop.cssId()).offsetTop;  // mobile
