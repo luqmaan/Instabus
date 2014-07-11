@@ -51,15 +51,20 @@ function(ko, when, leaflet, TripCollection, stopPopupHTML, config) {
     Stop.prototype = {
         toggleTrips: function() {
             this.showTrips(!this.showTrips());
+
+            if (this.showTrips()) {
+                this.marker.openPopup();
+            }
+            else {
+                this.marker.closePopup();
+            }
+
             if (!this.loadedTrips()) {
                 this.loadTrips().then(
-                    function() {
-                        this.marker.openPopup();
-                    }.bind(this),
+                    null,  // FIXME: Should make the map fit the popup
                     console.error
                 );
             }
-            this.marker.openPopup();
         },
         loadTrips: function() {
             var deferred = when.defer();
