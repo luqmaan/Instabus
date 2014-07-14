@@ -229,11 +229,15 @@ def parse_gtfs_data(force_refetch=True):
         _save_stop_data(curr)
 
 
-def deploy():
-    parse_gtfs_data()
+def build():
     fabric.api.local('npm install -g requirejs@~2.1.14')
+    fabric.api.local('bower install')
     fabric.api.local('r.js -o js/almond.build.js')
     print bcolors.WARNING
     print 'REMEMBER: Toggle the <!-- production --> / <!-- development --> script tags in index.html'
     print bcolors.ENDC
 
+
+def deploy():
+    parse_gtfs_data()
+    build()
