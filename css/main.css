@@ -211,12 +211,20 @@ button, body {
     border-radius: 7px;
     height: 12px;
     width: 12px;
-    border: 1px solid rgb(19,124,207);
-    transition: background-color 0.5s, border-color 0.5s;
+    border: 1px solid rgb(104,190,249);
+    transition: box-shadow 0.5s;
 }
 #list .stop:hover .closest {
-    background: rgb(59,163,238);
-    border-color: rgb(3,52,86);
+    box-shadow: 0px 3px 5px rgb(149,210,253);
+}
+.error {
+    color: rgb(200,35,38);
+    border: 1px solid rgb(235,167,168);
+    background: rgb(255,234,235);
+    border-radius: 5px;
+    padding: 3px 7px;
+    margin: 2px 0;
+    font-size: 0.8em;
 }
 .trips {
     list-style: none;
@@ -348,4 +356,15 @@ and (orientation : portrait) {
     margin-bottom: 0.4em;
     display: block;
     color: rgb(71,55,57);
+}
+
+#nprogress .bar {
+    background: rgb(221,17,68);
+}
+#nprogress .peg {
+    box-shadow: 0 0 10px rgb(221,17,68), 0 0 5px rgb(221,17,68);
+}
+#nprogress .spinner-icon {
+  border-top-color: rgb(221,17,68);
+  border-left-color: rgb(221,17,68);
 }
