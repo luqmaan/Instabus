@@ -19,7 +19,7 @@ button, body {
 }
 #map-wrapper {
     position: absolute;
-    margin-left: 400px;
+    margin-left: 410px;
     width: 100%;
     top: 40px;
     margin-top: 0px;
@@ -27,12 +27,12 @@ button, body {
 }
 #map {
     position: relative;
-    margin-right: 400px;
+    margin-right: 410px;
     height: 100%;
 }
 #list {
     position: absolute;
-    width: 400px;
+    width: 410px;
     top: 40px;
     bottom: 0;
     background: #fff;
