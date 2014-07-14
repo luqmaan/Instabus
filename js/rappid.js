@@ -1,5 +1,5 @@
-define(['knockout', 'leaflet', 'when', 'LocateControl', 'models/RoutesCollection', 'models/Vehicles', 'models/Shape', 'models/StopCollection'],
-function(ko, L, when, LocateControl, RoutesCollection, Vehicles, Shape, StopCollection) {
+define(['knockout', 'leaflet', 'when', 'NProgress', 'LocateControl', 'models/RoutesCollection', 'models/Vehicles', 'models/Shape', 'models/StopCollection'],
+function(ko, L, when, NProgress, LocateControl, RoutesCollection, Vehicles, Shape, StopCollection) {
     function Rappid() {
         // leaflet
         this.map = null;
@@ -49,9 +49,13 @@ function(ko, L, when, LocateControl, RoutesCollection, Vehicles, Shape, StopColl
                 deferred.reject
             );
 
+            NProgress.configure({ showSpinner: false });
+
             return deferred.promise;
         },
         refresh: function() {
+            NProgress.start();
+
             var deferred = when.defer(),
                 vehiclesPromise = this.vehicles.fetch(),
                 stopPromises = this.stops().map(function(stop) { return stop.refresh(); }),
@@ -64,11 +68,13 @@ function(ko, L, when, LocateControl, RoutesCollection, Vehicles, Shape, StopColl
 
             when.all(promises).done(
                 function() {
+                    NProgress.done();
                     setTimeout(this.refresh.bind(this), 15 * 1000);
                     deferred.resolve(true);
                 }.bind(this),
                 function(e) {
                     console.error(e);
+                    NProgress.done();
                     deferred.resolve(false);
                 }
             );
@@ -107,12 +113,14 @@ function(ko, L, when, LocateControl, RoutesCollection, Vehicles, Shape, StopColl
             this.map.on('locationfound', function(e) {
                 if (!this.latlng) {
                     StopCollection.closest(this.stops(), e.latlng);
+                    window.ga('set', 'latlng', JSON.stringify(e.latlng));
                 }
                 this.latlng = e.latlng;
             }.bind(this));
         },
         selectRoute: function() {
             this.setupRoute().done(null, console.error);
+            window.ga('set', 'route-direction', this.route().id + '-' + this.route().direction);
         },
         setupRoute: function() {
             var deferred = when.defer(),

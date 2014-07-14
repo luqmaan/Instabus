@@ -12,6 +12,7 @@ function(ko, when, leaflet, TripCollection, stopPopupHTML, config) {
         this.lon = ko.observable(data.stop_lon);
         this.timezone = ko.observable(data.stop_timezone);
         this.url = ko.observable(data.url);
+        this.errorMsg = ko.observable();
 
         this.trips = ko.observableArray();
 
@@ -43,7 +44,7 @@ function(ko, when, leaflet, TripCollection, stopPopupHTML, config) {
 
         this.marker.addEventListener('click', function(e) {
             if (!this.loadedTrips()) {
-                this.loadTrips().catch(console.error);
+                this.loadTrips().then(null, console.error);
             }
         }.bind(this));
     }
@@ -62,7 +63,7 @@ function(ko, when, leaflet, TripCollection, stopPopupHTML, config) {
             if (!this.loadedTrips()) {
                 this.loadTrips().then(
                     null,  // FIXME: Should make the map fit the popup
-                    console.error
+                    function(e) { console.error(e); }
                 );
             }
         },
@@ -74,17 +75,16 @@ function(ko, when, leaflet, TripCollection, stopPopupHTML, config) {
 
             TripCollection.fetch(this.route(), this.direction(), this.id()).then(
                 function(trips) {
-                    this.trips(trips);
-                    this.loading(false);
                     this.loadedTrips(true);
+                    this.loading(false);
+                    this.trips(trips);
+                    this.errorMsg(null);
                     deferred.resolve();
                 }.bind(this),
                 function(e) {
+                    this.loadedTrips(true);
                     this.loading(false);
-                    if (e.message.indexOf('20005') !== -1) {
-                        // fault 20005 = #20005--No service at origin at the date/time specified
-                        this.loadedTrips(true);
-                    }
+                    this.errorMsg(e);
                     deferred.reject(e);
                 }.bind(this)
             );

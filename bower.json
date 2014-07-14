@@ -18,7 +18,8 @@
     "leaflet": "~0.7.3",
     "Leaflet.label": "~0.2.1",
     "moment": "~2.7.0",
-    "geolib": "~2.0.9"
+    "geolib": "~2.0.9",
+    "nprogress": "~0.1.6"
   },
   "devDependencies": {
     "requirejs": "~2.1.14",
