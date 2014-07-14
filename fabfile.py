@@ -34,6 +34,7 @@ class bcolors:
 
 
 def serve():
+    fabric.api.local("bower install")
     fabric.api.local("twistd -n web -p 1234 --path .")
 
 
