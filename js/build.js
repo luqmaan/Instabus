@@ -1,7 +1,5 @@
 requirejs.config({
     baseUrl: 'js',
-    // FIXME: Copy pasta ing the paths/packages between almond.build and build may suck
-    // When it does suck, fix it.
     paths: {
         'text': '../bower_components/requirejs-text/text',
         'jquery': '../bower_components/jquery/dist/jquery.min',

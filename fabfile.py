@@ -33,7 +33,24 @@ class bcolors:
     ENDC = '\033[0m'
 
 
+def tweak_for_dev_requirejs():
+    # probably a better way to do this using grunt or some other JS tool
+    # replace almond include (prod) with requirejs include (dev)
+    prod_tag = '<!-- production -->'
+    dev_tag = '<!-- development DO NOT CHECK IN -->'
+    with open('./index.html', 'r+') as f:
+        lines = f.read().splitlines()
+        for n, line in enumerate(lines):
+            if line.strip() == prod_tag:
+                lines[n] = '\t' + dev_tag
+                lines[n + 1] = '\t\t<script data-main="js/build" src="bower_components/requirejs/require.js"></script>'
+                lines[n + 2] = '\t' + dev_tag
+        f.seek(0)
+        f.writelines('\n'.join(lines) + '\n')
+
+
 def serve():
+    tweak_for_dev_requirejs()
     fabric.api.local("bower install")
     fabric.api.local("twistd -n web -p 1234 --path .")
 
@@ -231,9 +248,9 @@ def parse_gtfs_data(force_refetch=True):
 
 
 def build():
-    fabric.api.local('npm install -g requirejs@~2.1.14')
+    fabric.api.local('npm install')
     fabric.api.local('bower install')
-    fabric.api.local('r.js -o js/almond.build.js')
+    fabric.api.local('./node_modules/.bin/r.js -o js/almond.build.js')
     print bcolors.WARNING
     print 'REMEMBER: Toggle the <!-- production --> / <!-- development --> script tags in index.html'
     print bcolors.ENDC
