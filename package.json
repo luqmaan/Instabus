@@ -1,0 +1,14 @@
+{
+  "name": "metrorappid",
+  "version": "0.0.1",
+  "description": "MetroRappid",
+  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/luqmaan/MetroRappid.git"
+  },
+  "dependencies": {
+    "requirejs": "2.1.14"
+  },
+  "engine": "node >= 0.8.8"
+}
