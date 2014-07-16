@@ -113,14 +113,12 @@ function(ko, L, when, NProgress, LocateControl, RoutesCollection, Vehicles, Shap
             this.map.on('locationfound', function(e) {
                 if (!this.latlng) {
                     StopCollection.closest(this.stops(), e.latlng);
-                    window.ga('set', 'dimension2', JSON.stringify(e.latlng));
                 }
                 this.latlng = e.latlng;
             }.bind(this));
         },
         selectRoute: function() {
             this.setupRoute().done(null, console.error);
-            window.ga('set', 'dimension1', this.route().id + '-' + this.route().direction);
         },
         setupRoute: function() {
             var deferred = when.defer(),
@@ -130,6 +128,8 @@ function(ko, L, when, NProgress, LocateControl, RoutesCollection, Vehicles, Shap
                 shapePromise,
                 vehiclesPromise,
                 stopsPromise;
+
+            this.track();
 
             console.log('Setup route', this.route());
             localStorage.setItem('rappid:route', ko.toJSON(this.route()));
@@ -191,6 +191,14 @@ function(ko, L, when, NProgress, LocateControl, RoutesCollection, Vehicles, Shap
             this.map.closePopup();
             document.body.scrollTop = document.documentElement.scrollTop = 0;
         },
+        track: function() {
+            var routeDirection = this.route().id + '-' + this.route().direction;
+            window.ga('send', {
+                'dimension1': routeDirection,
+                'hitType': 'screen',
+                'screenName': routeDirection
+            });
+        }
     };
 
     return Rappid;
