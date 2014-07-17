@@ -63,6 +63,12 @@ button, body {
     padding: 0;
     padding-top: 8px;
 }
+#controls .unicon {
+    width: 25px;
+    height: 25px;
+    float: left;
+    margin-left: 15px;
+}
 #controls select, #controls button {
     font-size: 16px;
 }
@@ -283,12 +289,18 @@ and (max-device-width: 568px)
         font-size: 15px;
         line-height: 35px;
     }
+    #controls .unicon {
+        margin-left: 0px;
+        margin-top: 7px;
+        margin-right: 5px;
+    }
     #controls select {
         float: left;
         margin-top: 7px;
     }
     #controls button {
         color: rgb(227,15,26);
+        background: none;
         border: none;
         text-align: right;
         float: right;

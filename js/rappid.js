@@ -93,10 +93,8 @@ function(ko, L, when, NProgress, LocateControl, RoutesCollection, Vehicles, Shap
 
             tileLayer = L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
                 maxZoom: 18,
-                attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
-                    '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-                    'Imagery © <a href="http://mapbox.com">Mapbox</a>',
-                id: 'examples.map-i86knfo3',
+                attribution: '<a href="http://openstreetmap.org">OpenStreetMap</a> | <a href="http://mapbox.com">Mapbox</a>',
+                id: 'drmaples.ipbindf8'
             });
 
             zoomCtrl = new L.Control.Zoom({position: 'bottomright'});
@@ -176,8 +174,8 @@ function(ko, L, when, NProgress, LocateControl, RoutesCollection, Vehicles, Shap
         },
         resize: function(e) {
             if (window.screen.width <= 640) {
-                this.includeMap(false);
-                this.includeList(true);
+                this.includeMap(true);
+                this.includeList(false);
             }
             else {
                 this.includeMap(true);
