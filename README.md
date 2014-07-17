@@ -5,6 +5,10 @@
 
 [![](https://cloud.githubusercontent.com/assets/1275831/3210441/0128e4a2-eec1-11e3-8622-fc947f7c305c.png)](http://metrorappid.com)
 
+##### Works on your desktop, your iPhone, and your Android device. Just go to [metrorappid.com](http://metrorappid.com)
+
+![placeit](https://cloud.githubusercontent.com/assets/1275831/3565798/3078cb22-0ad3-11e4-8285-005d3c211766.jpg)
+
 
 ##### Watch the bus/train move in realtime on a map. Also see how fast (or slow) it is moving. This bus between Chinatown and Techridge is moving South at 39 mph.
 
@@ -13,10 +17,6 @@
 ##### See the next few arrivals at a glance.
 
 ![arrivals-at-a-glance](https://cloud.githubusercontent.com/assets/1275831/3565763/29f3796c-0ad0-11e4-9508-0b03d1fcd1b8.jpg)
-
-##### Works on your desktop, your iPhone, and your Android device. Just go to [metrorappid.com](http://metrorappid.com)
-
-![placeit](https://cloud.githubusercontent.com/assets/1275831/3565798/3078cb22-0ad3-11e4-8285-005d3c211766.jpg)
 
 ## Routes
 
