@@ -174,8 +174,8 @@ function(ko, L, when, NProgress, LocateControl, RoutesCollection, Vehicles, Shap
         },
         resize: function(e) {
             if (window.screen.width <= 640) {
-                this.includeMap(false);
-                this.includeList(true);
+                this.includeMap(true);
+                this.includeList(false);
             }
             else {
                 this.includeMap(true);
