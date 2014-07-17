@@ -5,6 +5,10 @@
 
 [![](https://cloud.githubusercontent.com/assets/1275831/3210441/0128e4a2-eec1-11e3-8622-fc947f7c305c.png)](http://metrorappid.com)
 
+##### Works on your desktop, your iPhone, and your Android device. Just go to [metrorappid.com](http://metrorappid.com)
+
+![placeit](https://cloud.githubusercontent.com/assets/1275831/3565798/3078cb22-0ad3-11e4-8285-005d3c211766.jpg)
+
 
 ##### Watch the bus/train move in realtime on a map. Also see how fast (or slow) it is moving. This bus between Chinatown and Techridge is moving South at 39 mph.
 
@@ -13,10 +17,6 @@
 ##### See the next few arrivals at a glance.
 
 ![arrivals-at-a-glance](https://cloud.githubusercontent.com/assets/1275831/3565763/29f3796c-0ad0-11e4-9508-0b03d1fcd1b8.jpg)
-
-##### Works on your desktop, your iPhone, and your Android device. Just go to [metrorappid.com](http://metrorappid.com)
-
-![placeit](https://cloud.githubusercontent.com/assets/1275831/3565798/3078cb22-0ad3-11e4-8285-005d3c211766.jpg)
 
 ## Routes
 
@@ -44,12 +44,12 @@ We then used that API and built an Android app that shows real-time arrivals for
 
 Step 1. Select A Route And Direction
 
-![Select A Route And Direction]()
+![Select A Route And Direction](https://cloud.githubusercontent.com/assets/1275831/3613329/f7e0cdc8-0db6-11e4-972f-9de75b036372.png)
 
 
 Step 2. MetroRappid automatically finds the nearest stop and vehicle
 
-![View the closest stop and vehicle]()
+![View the closest stop and vehicle](https://cloud.githubusercontent.com/assets/1275831/3613330/f7e6324a-0db6-11e4-96f9-77adfff913bc.png)
 
 Step 3. Get on the bus
 
@@ -57,9 +57,17 @@ Step 3. Get on the bus
 
 ### What happened to MetroRappid for iOS and MetroRappid for Android?
 
+MetroRappid for iOS is being replaced with this.
+
+MetroRappid for Android (winner of ATX Hack For Change) had problems working with the Google Maps API. We've chosen to move in the direction of open data, and now instead use OpenStreetMaps. This webapp replaces MetroRappid for Android.
+
 ### Why don't I see any buses or trains?
 
-### Why is the bus location out of date?
+We're relying on Yahoo! Query Language to provide a backend that allows us to talk to CapMetro's API (avoiding CORS issues). This is a hacky and unreliable solution. You should encourage CapMetro to make their API more easily accessible.
+
+### Why is the vehicle location out of date?
+
+CapMetro only updates the vehicle location every 30-90 seconds. You should encourage them to provide more accurate realtime data.
 
 ## Team
 
@@ -72,4 +80,4 @@ Step 3. Get on the bus
 
 ## License
 
-GNU GPL
+GNU GENERAL PUBLIC LICENSE Version 3
