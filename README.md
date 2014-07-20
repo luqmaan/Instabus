@@ -44,14 +44,13 @@ We then used that API and built an Android app that shows real-time arrivals for
 
 Step 1. Select A Route And Direction
 
-![Select A Route And Direction](https://cloud.githubusercontent.com/assets/1275831/3613329/f7e0cdc8-0db6-11e4-972f-9de75b036372.png)
-
+![Select A Route And Direction](https://cloud.githubusercontent.com/assets/1275831/3613330/f7e6324a-0db6-11e4-96f9-77adfff913bc.png
 
 Step 2. MetroRappid automatically finds the nearest stop and vehicle
 
-![View the closest stop and vehicle](https://cloud.githubusercontent.com/assets/1275831/3613330/f7e6324a-0db6-11e4-96f9-77adfff913bc.png)
+![View the closest stop and vehicle](https://cloud.githubusercontent.com/assets/1275831/3613329/f7e0cdc8-0db6-11e4-972f-9de75b036372.png))
 
-Step 3. Get on the bus
+Step 3. Get on the bus. Let everybody around you know about [metrorappid.com](http://metrorappid.com)
 
 ## FAQ
 
@@ -69,6 +68,35 @@ We're relying on Yahoo! Query Language to provide a backend that allows us to ta
 
 CapMetro only updates the vehicle location every 30-90 seconds. You should encourage them to provide more accurate realtime data.
 
+## Contributing
+
+We really need help making this app awesome. We use GitHub issues to track bugs, features, and ideas. Issues that we think are important/can use help are tagged as `help wanted`. You can filter by the `help wanted` tag: https://github.com/luqmaan/MetroRappid/issues?labels=help+wanted&state=open.
+
+**:warning: Please submit pull requests to the `dev` branch.**
+
+### Installation
+
+Clone the repo and checkout the `dev` branch:
+
+```
+git clone git@github.com:luqmaan/MetroRappid.git
+cd MetroRappid
+git checkout dev
+```
+
+Install dependencies through [npm](https://www.npmjs.org/) and [bower](http://bower.io/):
+
+``
+npm install
+bower install
+```
+
+Serve the directory with [grunt](http://gruntjs.com/):
+
+```
+grunt serve
+```
+
 ## Team
 
 - https://github.com/luqmaan
@@ -80,4 +108,4 @@ CapMetro only updates the vehicle location every 30-90 seconds. You should encou
 
 ## License
 
-GNU GENERAL PUBLIC LICENSE Version 3
+GNU General Public License Version 3

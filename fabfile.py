@@ -1,5 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+
+# This script is used to update the JSON files in the data folder.
+# It downloads the GTFS data from CapMetro, converts it to a SQLite database, and performs some queries on it to generate the JSON files.
+
 from __future__ import unicode_literals
 
 import os
@@ -10,7 +14,6 @@ from collections import defaultdict
 
 import requests
 import fabric.api
-
 
 # only routes with realtime data
 ROUTE_IDS = {
@@ -31,28 +34,6 @@ class bcolors:
     WARNING = '\033[93m'
     FAIL = '\033[91m'
     ENDC = '\033[0m'
-
-
-def tweak_for_dev_requirejs():
-    # probably a better way to do this using grunt or some other JS tool
-    # replace almond include (prod) with requirejs include (dev)
-    prod_tag = '<!-- production -->'
-    dev_tag = '<!-- development DO NOT CHECK IN -->'
-    with open('./index.html', 'r+') as f:
-        lines = f.read().splitlines()
-        for n, line in enumerate(lines):
-            if line.strip() == prod_tag:
-                lines[n] = '\t' + dev_tag
-                lines[n + 1] = '\t\t<script data-main="js/build" src="bower_components/requirejs/require.js"></script>'
-                lines[n + 2] = '\t' + dev_tag
-        f.seek(0)
-        f.writelines('\n'.join(lines) + '\n')
-
-
-def serve():
-    tweak_for_dev_requirejs()
-    fabric.api.local("bower install")
-    fabric.api.local("twistd -n web -p 1234 --path .")
 
 
 def fetch_gtfs_data():
@@ -245,17 +226,3 @@ def parse_gtfs_data(force_refetch=True):
         shape_data = _get_shape_data(curr)
         _save_shape_data(curr, shape_data)
         _save_stop_data(curr)
-
-
-def build():
-    fabric.api.local('npm install')
-    fabric.api.local('bower install')
-    fabric.api.local('./node_modules/.bin/r.js -o js/almond.build.js')
-    print bcolors.WARNING
-    print 'REMEMBER: Toggle the <!-- production --> / <!-- development --> script tags in index.html'
-    print bcolors.ENDC
-
-
-def deploy():
-    parse_gtfs_data()
-    build()
