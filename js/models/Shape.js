@@ -35,10 +35,10 @@ function($, leaflet, when, config) {
                     stroke: true,
                     weight: 5,
                     opacity: 0.9,
-                    smoothFactor: 1,
-                    zIndexOffset: config.shapeZIndex
+                    smoothFactor: 1
                 });
             line.addTo(layer);
+            line.bringToBack();  // https://github.com/Leaflet/Leaflet/issues/185
         }
     };
 
