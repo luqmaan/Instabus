@@ -46,8 +46,10 @@ function(leaflet, when) {
              }.bind(this));
 
             this.map.on('locationerror', function(e) {
-                console.error('Unable to find location', e.message);
+                this.userLatLng = {lat: 30.268066, lng: -97.743189}; //Default location if we couldn't get yours.
+                this.updateMarkers();
                 this.container.classList.remove('loading');
+                console.error('Unable to find location: ', e.message);
             }.bind(this));
         },
         updateMarkers: function() {
