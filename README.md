@@ -81,12 +81,12 @@ Clone the repo and checkout the `dev` branch:
 ```
 git clone git@github.com:luqmaan/MetroRappid.git
 cd MetroRappid
-git checkout dev
+git checkout -b dev origin/dev
 ```
 
 Install dependencies through [npm](https://www.npmjs.org/) and [bower](http://bower.io/):
 
-``
+```
 npm install
 bower install
 ```
