@@ -9,7 +9,6 @@ module.exports = function(grunt) {
                     insertRequire: ['main'],
                     name: '../bower_components/almond/almond',
                     out: 'js/built.js',
-                    almond: true,
                     wrap: true,
                     optimize: 'uglify2',
                     preserveLicenseComments: false,
