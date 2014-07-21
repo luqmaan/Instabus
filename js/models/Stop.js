@@ -36,7 +36,7 @@ function(ko, when, leaflet, TripCollection, stopPopupHTML, config) {
                 fillColor: this.color,
                 fill: true,
                 fillOpacity: 1,
-                radius: 8,
+                radius: 12,
                 zIndexOffset: config.stopZIndex
             });
 

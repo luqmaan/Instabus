@@ -101,7 +101,7 @@ function($, L, when, _, X2JS, utils, config) {
                 marker = L.circleMarker([vehicle.lat, vehicle.lng], {
                     color: '#fff',
                     weight: 3,
-                    radius: 12,
+                    radius: 15,
                     opacity: 1,
                     fillOpacity: '0.9',
                     fillColor: fillColor,
