@@ -23,7 +23,14 @@ module.exports = function(grunt) {
         cssmin: {
           combine: {
             files: {
-            'css/main.min.css': ['css/*.css', '!css/main.min.css']
+            'css/main.min.css': [
+                'css/leaflet.css', 
+                'css/leaflet-label.css', 
+                'css/nprogress.css', 
+                'css/progress.css', 
+                'css/main.css', 
+                '!css/main.min.css'
+                ]
             }
           }
         },
