@@ -20,6 +20,20 @@ module.exports = function(grunt) {
                 }
             }
         },
+        cssmin: {
+          combine: {
+            files: {
+            'css/main.min.css': [
+                'css/leaflet.css', 
+                'css/leaflet-label.css', 
+                'css/nprogress.css', 
+                'css/progress.css', 
+                'css/main.css', 
+                '!css/main.min.css'
+                ]
+            }
+          }
+        },
         connect: {
             server: {
               options: {
@@ -31,11 +45,12 @@ module.exports = function(grunt) {
     });
 
     grunt.loadNpmTasks('grunt-requirejs');
+    grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-connect');
 
     // build for production
     // replace the script tag in index.html to target the single file js
-    grunt.registerTask('build', ['requirejs']);
+    grunt.registerTask('build', ['requirejs', 'cssmin']);
 
-    grunt.registerTask('serve', ['connect']);
+    grunt.registerTask('serve', ['cssmin', 'connect']);
 };
