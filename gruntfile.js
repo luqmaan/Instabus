@@ -23,13 +23,13 @@ module.exports = function(grunt) {
         cssmin: {
           combine: {
             files: {
-            'css/main.min.css': [
-                'css/leaflet.css', 
-                'css/leaflet-label.css', 
-                'css/nprogress.css', 
-                'css/progress.css', 
-                'css/main.css', 
-                '!css/main.min.css'
+                'css/main.min.css': [
+                    'css/leaflet.css',
+                    'css/leaflet-label.css',
+                    'css/nprogress.css',
+                    'css/progress.css',
+                    'css/main.css',
+                    '!css/main.min.css'
                 ]
             }
           }
@@ -37,20 +37,24 @@ module.exports = function(grunt) {
         connect: {
             server: {
               options: {
-                port: 1234,
-                keepalive: true
+                port: 1234
               }
             }
+        },
+        watch: {
+            files: ['css/*', '!css/main.min.css'],
+            tasks: ['cssmin']
         }
     });
 
     grunt.loadNpmTasks('grunt-requirejs');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-connect');
+    grunt.loadNpmTasks('grunt-contrib-watch');
 
     // build for production
     // replace the script tag in index.html to target the single file js
     grunt.registerTask('build', ['requirejs', 'cssmin']);
 
-    grunt.registerTask('serve', ['cssmin', 'connect']);
+    grunt.registerTask('serve', ['connect', 'watch']);
 };
