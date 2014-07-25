@@ -10,10 +10,14 @@ import os
 import json
 import tempfile
 import sqlite3
+import logging
 from collections import defaultdict
 
 import requests
 import fabric.api
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)-15s [%(levelname)s] %(message)s')
+logger = logging.getLogger(__name__)
 
 # only routes with realtime data
 ROUTE_IDS = {
@@ -27,19 +31,8 @@ DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
 DATA_VERSION_FILE = os.path.join(DATA_DIR, 'data_version.txt')
 
 
-class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-
-
 def fetch_gtfs_data():
-    print bcolors.HEADER
-    print 'fetching gtfs data....'
-    print bcolors.ENDC
+    logger.info('fetching gtfs data....')
     r = requests.get('http://www.gtfs-data-exchange.com/agency/capital-metro/latest.zip', stream=True)
     assert r.ok, 'problem fetching data. status_code={}'.format(r.status_code)
 
@@ -51,7 +44,7 @@ def fetch_gtfs_data():
     with open(GTFS_DOWNLOAD_FILE, 'wb') as f:
         for chunk in r.iter_content(1024):
             f.write(chunk)
-    print 'saved to {}'.format(GTFS_DOWNLOAD_FILE)
+    logger.info('saved to {}'.format(GTFS_DOWNLOAD_FILE))
 
 
 def _save_route_data(curr):
@@ -75,7 +68,7 @@ def _save_route_data(curr):
         })
 
     filename = os.path.join(DATA_DIR, 'routes.json')
-    print 'writing ROUTE data to {}'.format(filename)
+    logger.info('writing ROUTE data to {}'.format(filename))
     with open(filename, 'wb') as f:
         f.write(json.dumps(data) + '\n')
 
@@ -132,7 +125,7 @@ def _save_shape_data(curr, shape_data):
             })
 
         filename = os.path.join(DATA_DIR, 'shapes_{}_{}.json'.format(route_id, direction_id))
-        print 'writing SHAPE data to {}'.format(filename)
+        logger.info('writing SHAPE data to {}'.format(filename))
         with open(filename, 'wb') as f:
             f.write(json.dumps(data) + '\n')
 
@@ -206,7 +199,7 @@ def _save_stop_data(curr):
 
     for (route_id, direction_id), data in data_by_stops.items():
         filename = os.path.join(DATA_DIR, 'stops_{}_{}.json'.format(route_id, direction_id))
-        print 'writing STOP data to {}'.format(filename)
+        logger.info('writing STOP data to {}'.format(filename))
         with open(filename, 'wb') as f:
             f.write(json.dumps(data) + '\n')
 
@@ -215,9 +208,7 @@ def parse_gtfs_data(force_refetch=True):
     if int(force_refetch):
         fetch_gtfs_data()
 
-    print bcolors.HEADER
-    print 'loading gtfs data into db ({})...'.format(GTFS_DB)
-    print bcolors.ENDC
+    logger.info('loading gtfs data into db ({})...'.format(GTFS_DB))
     fabric.api.local('gtfsdb-load --database_url sqlite:///{} {}'.format(GTFS_DB, GTFS_DOWNLOAD_FILE))
 
     with sqlite3.connect(GTFS_DB) as conn:
