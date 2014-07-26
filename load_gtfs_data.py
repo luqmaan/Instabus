@@ -14,10 +14,8 @@ import logging
 from collections import defaultdict
 
 import requests
-import fabric.api
-
-logging.basicConfig(level=logging.INFO, format='%(asctime)-15s [%(levelname)s] %(message)s')
-logger = logging.getLogger(__name__)
+import gtfsdb
+from gtfsdb.api import database_load
 
 # only routes with realtime data
 ROUTE_IDS = {
@@ -204,12 +202,16 @@ def _save_stop_data(curr):
             f.write(json.dumps(data) + '\n')
 
 
-def parse_gtfs_data(force_refetch=True):
-    if int(force_refetch):
-        fetch_gtfs_data()
-
+def parse_gtfs_data():
     logger.info('loading gtfs data into db ({})...'.format(GTFS_DB))
-    fabric.api.local('gtfsdb-load --database_url sqlite:///{} {}'.format(GTFS_DB, GTFS_DOWNLOAD_FILE))
+    database_load(
+        filename=GTFS_DOWNLOAD_FILE,
+        batch_size=gtfsdb.config.DEFAULT_BATCH_SIZE,
+        schema=gtfsdb.config.DEFAULT_SCHEMA,
+        is_geospatial=gtfsdb.config.DEFAULT_IS_GEOSPATIAL,
+        tables=None,
+        url='sqlite:///{}'.format(GTFS_DB),
+    )
 
     with sqlite3.connect(GTFS_DB) as conn:
         curr = conn.cursor()
@@ -217,3 +219,11 @@ def parse_gtfs_data(force_refetch=True):
         shape_data = _get_shape_data(curr)
         _save_shape_data(curr, shape_data)
         _save_stop_data(curr)
+
+
+if __name__ == '__main__':
+    logging.basicConfig(level=logging.INFO, format='%(asctime)-15s [%(levelname)s] %(message)s')
+    logger = logging.getLogger(__name__)
+
+    fetch_gtfs_data()
+    parse_gtfs_data()
