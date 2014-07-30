@@ -22,7 +22,16 @@ function($, L, when, _, X2JS, utils, config) {
                 }
             }).done(function(data) {
                 var xml = x2js.xml2json(data),
-                    BuslocationResponse = xml.query.results.Envelope.Body.BuslocationResponse;
+                    Envelope =  xml.query.results.Envelope,
+                    BuslocationResponse;
+
+                if (!Envelope) {
+                    console.log(xml);
+                    deferred.reject('The CapMetro API is unavailable');
+                    return;
+                }
+
+                BuslocationResponse = Envelope.Body.BuslocationResponse;
 
                 if (!BuslocationResponse.Vehicles) {
                     deferred.reject(new Error('Zero active vehicles'));

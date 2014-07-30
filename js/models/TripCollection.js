@@ -16,19 +16,28 @@ function($, when, X2JS, utils, Trip) {
                 }
             }).done(
                 function(data) {
-                    var doc = x2js.xml2json(data),
-                        fault = doc.query.results.Envelope.Body.Fault,
+                    var xml = x2js.xml2json(data),
+                        Envelope = xml.query.results.Envelope,
+                        Fault,
                         Service,
                         Tripinfo,
                         trips;
 
-                    if (fault) {
-                        console.error(fault);
-                        deferred.reject(new Error(fault.faultstring));
+                    if (!Envelope) {
+                        console.log(xml);
+                        deferred.reject('The CapMetro API is unavailable');
                         return;
                     }
 
-                    Service = doc.query.results.Envelope.Body.SchedulenearbyResponse.Atstop.Service;
+                    Fault = xml.query.results.Envelope.Body.Fault;
+
+                    if (Fault) {
+                        console.error(Fault);
+                        deferred.reject(new Error(Fault.faultstring));
+                        return;
+                    }
+
+                    Service = xml.query.results.Envelope.Body.SchedulenearbyResponse.Atstop.Service;
                     if (Array.isArray(Service)) {
                         // Filter out the wrong direction
                         // But don't filter out the wrong direction if only one service is returned: this happens at the last stop in a route
