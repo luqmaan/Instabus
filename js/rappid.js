@@ -75,8 +75,11 @@ function(ko, L, when, NProgress, LocateControl, RoutesCollection, Vehicles, Shap
                 function(e) {
                     console.error(e);
                     NProgress.done();
+                    if (e === 'The CapMetro API is unavailable') {
+                        this.rustle();
+                    }
                     deferred.resolve(false);
-                }
+                }.bind(this)
             );
 
             // always resolves to true (success) or false (error)
@@ -167,7 +170,14 @@ function(ko, L, when, NProgress, LocateControl, RoutesCollection, Vehicles, Shap
                     setTimeout(this.refresh.bind(this), 15 * 1000);
                     deferred.resolve();
                 }.bind(this),
-                deferred.reject
+                function(e) {
+                    console.error(e);
+                    NProgress.done();
+                    if (e === 'The CapMetro API is unavailable') {
+                        this.rustle();
+                    }
+                    deferred.resolve(false);
+                }.bind(this)
             );
 
             return deferred.promise;
@@ -196,6 +206,12 @@ function(ko, L, when, NProgress, LocateControl, RoutesCollection, Vehicles, Shap
                 'hitType': 'screen',
                 'screenName': routeDirection
             });
+        },
+        rustle: function() {
+            window.alert('CapMetro is experiencing some system issues. There is no need to be upset.');
+            setTimeout(function() {
+                window.location.href = "https://www.youtube.com/watch?v=ygr5AHufBN4";
+            }, 3000);
         }
     };
 
