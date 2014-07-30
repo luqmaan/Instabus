@@ -208,10 +208,13 @@ function(ko, L, when, NProgress, LocateControl, RoutesCollection, Vehicles, Shap
             });
         },
         rustle: function() {
-            window.alert('CapMetro is experiencing some system issues. There is no need to be upset.');
+            window.alert('CapMetro is experiencing some system issues.');
             setTimeout(function() {
-                window.location.href = "https://www.youtube.com/watch?v=ygr5AHufBN4";
-            }, 3000);
+                window.alert('There is no need to be upset.');
+                setTimeout(function() {
+                    window.location.href = "https://www.youtube.com/watch?v=ygr5AHufBN4";
+                }, 5000);
+            }, 2000);
         }
     };
 
