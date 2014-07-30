@@ -5,8 +5,11 @@ function($, ko, Rappid) {
 
     $(document).ready(function() {
         ko.applyBindings(rappid, document.getElementById('lerappid'));
-        rappid.start().done(null, function(e) {
+        rappid.start().catch(function(e) {
             console.error(e);
+            if (e === 'The CapMetro API is unavailable') {
+                rappid.rustle();
+            }
         });
     });
 });
