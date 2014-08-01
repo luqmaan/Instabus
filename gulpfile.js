@@ -4,7 +4,6 @@ var taskListing = require('gulp-task-listing');
 var browserify = require('browserify');
 var source = require('vinyl-source-stream');
 var gutil = require('gulp-util');
-var watchify = require('watchify');
 var cssmin = require('gulp-cssmin');
 var concat = require('gulp-concat');
 
@@ -50,5 +49,7 @@ gulp.task('serve', function() {
         })
     );
 });
+
+gulp.task('deploy', ['cssmin', 'build']);
 
 gulp.task('default', taskListing);
