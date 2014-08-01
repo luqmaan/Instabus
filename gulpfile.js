@@ -5,9 +5,18 @@ var browserify = require('browserify');
 var source = require('vinyl-source-stream');
 var gutil = require('gulp-util');
 var watchify = require('watchify');
+var cssmin = require('gulp-cssmin');
+var concat = require('gulp-concat');
 
 //FIXME: hook up css minification
 //FIXME: hook this up https://github.com/gulpjs/gulp/blob/master/docs/recipes/fast-browserify-builds-with-watchify.md
+
+gulp.task('cssmin', function() {
+    gulp.src(['./css/*.css', '!./css/main.min.css'] )
+        .pipe(cssmin())
+        .pipe(concat('main.min.css'))
+        .pipe(gulp.dest('./css'));
+});
 
 gulp.task('build', function() {
     var bundler = browserify({
@@ -19,10 +28,14 @@ gulp.task('build', function() {
     var bundle = function() {
         return bundler
             .bundle()
-            .on('error', function(e) { gutil.log(gutil.colors.red("shit broke" + e)); })
+            .on('error', function(e) {
+                gutil.log(gutil.colors.red("shit broke"), e);
+            })
             .pipe(source('bundle.js'))
             .pipe(gulp.dest('.'))
-            .on('end', function() { gutil.log(gutil.colors.blue("shit finished'")); });
+            .on('end', function() {
+                gutil.log(gutil.colors.blue("shit finished"));
+            });
     };
 
     return bundle();
