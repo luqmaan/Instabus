@@ -8,7 +8,6 @@ var watchify = require('watchify');
 var cssmin = require('gulp-cssmin');
 var concat = require('gulp-concat');
 
-//FIXME: hook up css minification
 //FIXME: hook this up https://github.com/gulpjs/gulp/blob/master/docs/recipes/fast-browserify-builds-with-watchify.md
 
 gulp.task('cssmin', function() {
