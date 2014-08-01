@@ -3,8 +3,6 @@
 
 .env
 .build
-.sass-cache/*
-static/css/*
 node_modules
 twistd.pid
 
