@@ -88,13 +88,12 @@ Install dependencies through [npm](https://www.npmjs.org/) and [bower](http://bo
 
 ```
 npm install
-bower install
 ```
 
-Serve the directory with [grunt](http://gruntjs.com/):
+Serve the directory with [gulp](http://gulpjs.com/):
 
 ```
-grunt serve
+gulp serve
 ```
 
 ## Team
