@@ -5,8 +5,6 @@
 .build
 .sass-cache/*
 static/css/*
-bower_components/
-.grunt
 node_modules
 twistd.pid
 
