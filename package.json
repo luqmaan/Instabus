@@ -10,7 +10,7 @@
   "dependencies": {},
   "engine": "node >= 0.10.22",
   "browserify": {
-    "transform": [ "brfs" ]
+    "transform": ["brfs"]
   } ,
   "devDependencies": {
     "browserify": "~5.9.1",
