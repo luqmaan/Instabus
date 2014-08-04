@@ -6,6 +6,8 @@ var source = require('vinyl-source-stream');
 var gutil = require('gulp-util');
 var cssmin = require('gulp-cssmin');
 var concat = require('gulp-concat');
+var uglify = require('gulp-uglify');
+var sourcemaps = require('gulp-sourcemaps');
 
 //FIXME: hook this up https://github.com/gulpjs/gulp/blob/master/docs/recipes/fast-browserify-builds-with-watchify.md
 
@@ -16,7 +18,17 @@ gulp.task('cssmin', function() {
         .pipe(gulp.dest('./css'));
 });
 
-gulp.task('build', function() {
+gulp.task('uglify', function() {
+    gulp.src('./js/**/*.js')
+        .pipe(sourcemaps.init())
+        .pipe(concat('bundle.js'))
+        .pipe(uglify())
+        .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest('./')
+    );
+});
+
+gulp.task('browserify-app', function() {
     var bundler = browserify({
         entries: ['./js/main.js'],
         extensions: ['.js'],
@@ -39,7 +51,7 @@ gulp.task('build', function() {
     return bundle();
 });
 
-gulp.task('serve', function() {
+gulp.task('_serve', function() {
     gulp.src('.')
         .pipe(webserver({
             port: 1234,
@@ -50,6 +62,6 @@ gulp.task('serve', function() {
     );
 });
 
-gulp.task('deploy', ['cssmin', 'build']);
-
+gulp.task('serve', ['browserify-app', '_serve']);
+gulp.task('deploy', ['cssmin', 'uglify']);
 gulp.task('default', taskListing);

@@ -20,6 +20,8 @@
     "gulp-util": "~3.0.0",
     "gulp-cssmin": "~0.1.6",
     "gulp-concat": "~2.3.4",
+    "gulp-uglify": "~0.3.1",
+    "gulp-sourcemaps": "~1.1.0",
     "jquery": "~2.1.1",
     "knockout": "~3.1.0",
     "underscore": "~1.6.0",

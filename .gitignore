@@ -2,7 +2,7 @@
 .DS_Store
 
 .env
-.build
+build
 node_modules
 twistd.pid
 
