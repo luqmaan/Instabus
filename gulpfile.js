@@ -54,10 +54,7 @@ gulp.task('browserify-app', function() {
 gulp.task('_serve', function() {
     gulp.src('.')
         .pipe(webserver({
-            port: 1234,
-            // livereload: true,
-            directoryListing: true,
-            fallback: './index.html'
+            port: 1234
         })
     );
 });
