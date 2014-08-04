@@ -2,11 +2,7 @@
 .DS_Store
 
 .env
-.build
-.sass-cache/*
-static/css/*
-bower_components/
-.grunt
+build
 node_modules
 twistd.pid
 

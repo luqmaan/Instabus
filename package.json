@@ -7,15 +7,32 @@
     "type": "git",
     "url": "https://github.com/luqmaan/MetroRappid.git"
   },
-  "dependencies": {
-    "requirejs": "2.1.14"
-  },
-  "engine": "node >= 0.8.8",
+  "dependencies": {},
+  "engine": "node >= 0.10.22",
+  "browserify": {
+    "transform": ["brfs"]
+  } ,
   "devDependencies": {
-    "grunt": "~0.4.5",
-    "grunt-requirejs": "~0.4.2",
-    "grunt-contrib-cssmin": "~0.10.0",
-    "grunt-contrib-connect": "~0.8.0",
-    "grunt-contrib-watch": "~0.6.1"
+    "browserify": "~5.9.1",
+    "gulp": "~3.8.6",
+    "gulp-webserver": "~0.4.0",
+    "gulp-task-listing": "0.3.0",
+    "gulp-util": "~3.0.0",
+    "gulp-cssmin": "~0.1.6",
+    "gulp-concat": "~2.3.4",
+    "gulp-uglify": "~0.3.1",
+    "gulp-sourcemaps": "~1.1.0",
+    "jquery": "~2.1.1",
+    "knockout": "~3.1.0",
+    "underscore": "~1.6.0",
+    "when": "~3.2.3",
+    "leaflet": "~0.7.3",
+    "leaflet-label": "~0.2.1",
+    "moment": "~2.7.0",
+    "geolib": "~2.0.9",
+    "nprogress": "~0.1.6",
+    "vinyl-source-stream": "~0.1.1",
+    "watchify": "~1.0.1",
+    "brfs": "~1.2.0"
   }
 }

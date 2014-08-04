@@ -1,52 +1,56 @@
-define(['jquery', 'leaflet', 'when', 'geolib', 'config', 'models/Stop'],
-function($, L, when, geolib, config, Stop) {
-    var StopCollection = {
-        fetch: function(route, direction) {
-            var deferred = when.defer();
+var $ = require('jquery');
+var L = require('leaflet');
+var when = require('when');
+var geolib = require('geolib');
+var config = require('../config');
+var Stop = require('./Stop');
 
-            $.ajax({
-                url: 'data/stops_' + route + '_' + direction + '.json'
-            }).done(
-                function(data) {
-                    var stops = data.map(function(stopData) {
-                        return new Stop(stopData);
-                    });
+var StopCollection = {
+    fetch: function(route, direction) {
+        var deferred = when.defer();
 
-                    deferred.resolve(stops);
-                }
-            ).fail(
-                function(a, b, err) {
-                    console.error(err);
-                    deferred.reject(err);
-                }
-            );
+        $.ajax({
+            url: 'data/stops_' + route + '_' + direction + '.json'
+        }).done(
+            function(data) {
+                var stops = data.map(function(stopData) {
+                    return new Stop(stopData);
+                });
 
-            return deferred.promise;
-        },
-        draw: function(stops, layer) {
-            stops.forEach(function(stop) {
-                stop.marker.addTo(layer);
-            });
-        },
-        closest: function(stops, latlng) {
-            if (!stops.length) return;
+                deferred.resolve(stops);
+            }
+        ).fail(
+            function(a, b, err) {
+                console.error(err);
+                deferred.reject(err);
+            }
+        );
 
-            var points = stops.map(function(s) { return { latitude: s.lat(), longitude: s.lon()}; }),
-                _latlng = {latitude: latlng.lat, longitude: latlng.lng },
-                nearestPoint,
-                stop;
+        return deferred.promise;
+    },
+    draw: function(stops, layer) {
+        stops.forEach(function(stop) {
+            stop.marker.addTo(layer);
+        });
+    },
+    closest: function(stops, latlng) {
+        if (!stops.length) return;
 
-            nearestPoint = geolib.findNearest(_latlng, points, 0, 1);
-            stop = stops[parseInt(nearestPoint.key)];
+        var points = stops.map(function(s) { return { latitude: s.lat(), longitude: s.lon()}; }),
+            _latlng = {latitude: latlng.lat, longitude: latlng.lng },
+            nearestPoint,
+            stop;
 
-            stop.closest(true);
-            document.body.scrollTop = document.getElementById(stop.cssId()).offsetTop;  // mobile
-            document.getElementById('list').scrollTop = document.getElementById(stop.cssId()).offsetTop;  // desktop
-            stop.toggleTrips();
+        nearestPoint = geolib.findNearest(_latlng, points, 0, 1);
+        stop = stops[parseInt(nearestPoint.key)];
 
-            return stop;
-        }
-    };
+        stop.closest(true);
+        document.body.scrollTop = document.getElementById(stop.cssId()).offsetTop;  // mobile
+        document.getElementById('list').scrollTop = document.getElementById(stop.cssId()).offsetTop;  // desktop
+        stop.toggleTrips();
 
-    return StopCollection;
-});
+        return stop;
+    }
+};
+
+module.exports = StopCollection;
