@@ -84,7 +84,7 @@ cd MetroRappid
 git checkout -b dev origin/dev
 ```
 
-Install dependencies through [npm](https://www.npmjs.org/) and [bower](http://bower.io/):
+Install dependencies through [npm](https://www.npmjs.org/) and [browserify](http://browserify.org/):
 
 ```
 npm install
