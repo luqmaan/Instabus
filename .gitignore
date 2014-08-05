@@ -3,8 +3,8 @@
 
 .env
 dist
-main.min.css
+css/main.min.css
+bundle.js
 node_modules
-twistd.pid
 
 npm-debug.log
