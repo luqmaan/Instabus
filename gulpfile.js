@@ -8,23 +8,30 @@ var cssmin = require('gulp-cssmin');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var sourcemaps = require('gulp-sourcemaps');
+var clean = require('gulp-clean');
 
 //FIXME: hook this up https://github.com/gulpjs/gulp/blob/master/docs/recipes/fast-browserify-builds-with-watchify.md
 
+gulp.task('clean', function () {
+    return gulp.src('dist/*.*')
+        .pipe(clean());
+});
+
 gulp.task('cssmin', function() {
-    gulp.src(['./css/*.css', '!./css/main.min.css'] )
+    return gulp.src(['./css/*.css', '!./css/main.min.css'] )
         .pipe(cssmin())
         .pipe(concat('main.min.css'))
-        .pipe(gulp.dest('./css'));
+        .pipe(gulp.dest('./'))  // for local dev
+        .pipe(gulp.dest('./dist'));  // for prod
 });
 
 gulp.task('uglify', function() {
-    gulp.src('./js/**/*.js')
+    return gulp.src('./js/**/*.js')
         .pipe(sourcemaps.init())
         .pipe(concat('bundle.js'))
         .pipe(uglify())
-        .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest('./')
+        .pipe(sourcemaps.write('.'))
+        .pipe(gulp.dest('./dist')
     );
 });
 
@@ -52,13 +59,13 @@ gulp.task('browserify-app', function() {
 });
 
 gulp.task('_serve', function() {
-    gulp.src('.')
+    return gulp.src('.')
         .pipe(webserver({
             port: 1234
         })
     );
 });
 
-gulp.task('serve', ['browserify-app', '_serve']);
-gulp.task('deploy', ['cssmin', 'uglify']);
+gulp.task('serve', ['cssmin', 'browserify-app', '_serve']);
+gulp.task('deploy', ['clean', 'cssmin', 'uglify']);
 gulp.task('default', taskListing);

@@ -2,7 +2,8 @@
 .DS_Store
 
 .env
-build
+dist
+main.min.css
 node_modules
 twistd.pid
 
