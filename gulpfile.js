@@ -66,6 +66,11 @@ gulp.task('_serve', ['cssmin', 'browserify-app'], function() {
     );
 });
 
-gulp.task('serve', ['cssmin', 'browserify-app', '_serve']);
+gulp.task('watch', function() {
+    gulp.watch('./js/**', ['browserify-app']);
+    gulp.watch('./css/**', ['cssmin']);
+});
+
+gulp.task('serve', ['cssmin', 'browserify-app', '_serve', 'watch']);
 gulp.task('deploy', ['clean', 'cssmin', 'uglify']);
 gulp.task('default', taskListing);
