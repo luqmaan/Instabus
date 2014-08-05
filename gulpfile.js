@@ -58,7 +58,7 @@ gulp.task('browserify-app', function() {
     return bundle();
 });
 
-gulp.task('_serve', function() {
+gulp.task('_serve', ['cssmin', 'browserify-app'], function() {
     return gulp.src('.')
         .pipe(webserver({
             port: 1234
