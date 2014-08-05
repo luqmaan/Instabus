@@ -21,7 +21,7 @@ gulp.task('cssmin', function() {
     return gulp.src(['./css/*.css', '!./css/main.min.css'] )
         .pipe(cssmin())
         .pipe(concat('main.min.css'))
-        .pipe(gulp.dest('./'))  // for local dev
+        .pipe(gulp.dest('./css'))  // for local dev
         .pipe(gulp.dest('./dist'));  // for prod
 });
 
