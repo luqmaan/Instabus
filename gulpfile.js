@@ -31,8 +31,8 @@ gulp.task('uglify', function() {
         .pipe(concat('bundle.js'))
         .pipe(uglify())
         .pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest('./dist')
-    );
+        .pipe(gulp.dest('./dist'))
+        .pipe(gulp.dest('./')); // FIXME: need to remove this once we figure out deployment
 });
 
 gulp.task('browserify-app', function() {
@@ -72,5 +72,5 @@ gulp.task('watch', function() {
 });
 
 gulp.task('serve', ['cssmin', 'browserify-app', '_serve', 'watch']);
-gulp.task('deploy', ['clean', 'cssmin', 'uglify']);
+gulp.task('deploy', ['clean', 'cssmin', 'browserify-app', 'uglify']);
 gulp.task('default', taskListing);

@@ -4,7 +4,6 @@
 .env
 dist
 css/main.min.css
-bundle.js
 node_modules
 
 npm-debug.log
