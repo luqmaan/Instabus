@@ -2,8 +2,8 @@
 .DS_Store
 
 .env
-build
+dist
+css/main.min.css
 node_modules
-twistd.pid
 
 npm-debug.log
