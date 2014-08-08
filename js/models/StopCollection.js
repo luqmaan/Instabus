@@ -1,30 +1,26 @@
-var $ = require('jquery');
 var L = require('leaflet');
 var when = require('when');
 var geolib = require('geolib');
 var config = require('../config');
 var Stop = require('./Stop');
+var requests = require('../requests');
 
 var StopCollection = {
     fetch: function(route, direction) {
         var deferred = when.defer();
 
-        $.ajax({
-            url: 'data/stops_' + route + '_' + direction + '.json'
-        }).done(
-            function(data) {
+        requests.get('data/stops_' + route + '_' + direction + '.json')
+            .then(function(data) {
                 var stops = data.map(function(stopData) {
                     return new Stop(stopData);
                 });
 
                 deferred.resolve(stops);
-            }
-        ).fail(
-            function(a, b, err) {
-                console.error(err);
+            })
+            .catch(function(err) {
+                console.error("Problem fetching stop", err);
                 deferred.reject(err);
-            }
-        );
+            });
 
         return deferred.promise;
     },

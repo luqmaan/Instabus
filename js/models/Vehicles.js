@@ -1,10 +1,10 @@
-var $ = require('jquery');
 var L = require('leaflet');
 var when = require('when');
 var _ = require('underscore');
 var X2JS = require('../X2JS');
 var utils = require('../utils');
 var config = require('../config');
+var requests = require('../requests');
 
 var x2js = new X2JS({});
 
@@ -18,15 +18,15 @@ function Vehicles(route, direction) {
 
 Vehicles.prototype = {
     fetch: function() {
-        var deferred = when.defer();
-
-        $.ajax({
-            url: 'http://query.yahooapis.com/v1/public/yql',
-            data:{
+        var deferred = when.defer(),
+            url = 'http://query.yahooapis.com/v1/public/yql',
+            params = {
                 q: 'select * from xml where url="http://www.capmetro.org/planner/s_buslocation.asp?route=*"',
                 format: 'xml'
-            }
-        }).done(function(data) {
+            };
+
+        requests.get(url, params)
+        .then(function(data) {
             var xml = x2js.xml2json(data),
                 Envelope =  xml.query.results.Envelope,
                 BuslocationResponse;
@@ -58,7 +58,9 @@ Vehicles.prototype = {
             });
 
             deferred.resolve();
-        }.bind(this)).fail(function(xhr, status, err) {
+        }.bind(this))
+        .catch(function(err) {
+            console.error("Fetch vehicles", err);
             deferred.reject(err);
         });
 

@@ -1,26 +1,22 @@
-var $ = require('jquery');
 var when = require('when');
+var requests = require('../requests');
 
 var RoutesCollection = {
     fetch: function() {
         var deferred = when.defer();
 
-        $.ajax({
-            url: 'data/routes.json'
-        }).done(
-            function(data) {
+        requests.get('data/routes.json')
+            .then(function(data) {
                 var routes = data.map(function(row) {
                     return row;
                 });
 
                 deferred.resolve(routes);
-            }.bind(this)
-        ).fail(
-            function(xhr, status, err) {
+            })
+            .catch(function(err) {
                 console.error(err);
                 deferred.reject(err);
-            }
-        );
+            });
 
         return deferred.promise;
     }
