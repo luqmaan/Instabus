@@ -38,7 +38,7 @@ var requests = {
                     result = JSON.parse(xhr.responseText);
                 } else if (/text\/xml/i.test(contentType)) {
                     var parser = new DOMParser();
-                    result = parser.parseFromString(xhr.responseText,"text/xml");
+                    result = parser.parseFromString(xhr.responseText, "text/xml");
                 } else {
                     result = xhr.responseText;
                 }

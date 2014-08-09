@@ -10,9 +10,9 @@ var TripCollection = {
     fetch: function(route, direction, stop) {
         var deferred = when.defer(),
             url = 'http://query.yahooapis.com/v1/public/yql',
-            cap_url = 'http://www.capmetro.org/planner/s_service.asp?output=xml&opt=2&tool=SI&route=' + route + '&stopid=' + stop,
+            capUrl = 'http://www.capmetro.org/planner/s_service.asp?output=xml&opt=2&tool=SI&route=' + route + '&stopid=' + stop,
             params = {
-                q: 'select * from xml where url="' + cap_url + '"',
+                q: 'select * from xml where url="' + capUrl + '"',
                 format: 'xml'
             };
 
