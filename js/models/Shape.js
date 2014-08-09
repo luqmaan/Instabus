@@ -1,7 +1,7 @@
-var $ = require('jquery');
-var leaflet = require('leaflet');
+var L = require('leaflet');
 var when = require('when');
 var config = require('../config');
+var requests = require('../requests');
 
 function Shape(route, direction) {
     this.route = route;
@@ -13,21 +13,17 @@ Shape.prototype = {
     fetch: function() {
         var deferred = when.defer();
 
-        $.ajax({
-            url: 'data/shapes_' + this.route + '_' + this.direction + '.json'
-        }).done(
-            function(data) {
+        requests.get('data/shapes_' + this.route + '_' + this.direction + '.json')
+            .then(function(data) {
                 this._shape = data.map(function(el) {
                     return new L.LatLng(el.shape_pt_lat, el.shape_pt_lon);
                 });
                 deferred.resolve();
-            }.bind(this)
-        ).fail(
-            function(xhr, status, err) {
-                console.error(err);
+            }.bind(this))
+            .catch(function(err) {
+                console.error("problem fetching shape", err);
                 deferred.reject(err);
-            }
-        );
+            });
 
         return deferred.promise;
     },

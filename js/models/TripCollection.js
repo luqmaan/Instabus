@@ -1,8 +1,8 @@
-var $ = require('jquery');
 var when = require('when');
 var X2JS = require('../X2JS');
 var utils = require('../utils');
 var Trip = require('./Trip');
+var requests = require('../requests');
 
 var x2js = new X2JS({});
 
@@ -10,16 +10,14 @@ var TripCollection = {
     fetch: function(route, direction, stop) {
         var deferred = when.defer(),
             url = 'http://query.yahooapis.com/v1/public/yql',
-            cap_url = 'http://www.capmetro.org/planner/s_service.asp?output=xml&opt=2&tool=SI&route=' + route + '&stopid=' + stop;
-
-        $.ajax({
-            url: url,
-            data: {
-                q: 'select * from xml where url="' + cap_url + '"',
+            capUrl = 'http://www.capmetro.org/planner/s_service.asp?output=xml&opt=2&tool=SI&route=' + route + '&stopid=' + stop,
+            params = {
+                q: 'select * from xml where url="' + capUrl + '"',
                 format: 'xml'
-            }
-        }).done(
-            function(data) {
+            };
+
+        requests.get(url, params)
+            .then(function(data) {
                 var xml = x2js.xml2json(data),
                     Envelope = xml.query.results.Envelope,
                     Fault,
@@ -51,7 +49,6 @@ var TripCollection = {
                     })[0];
                 }
 
-
                 Tripinfo = Service.Tripinfo;
                 if (!Array.isArray(Tripinfo)) {
                     Tripinfo = [Tripinfo];
@@ -71,12 +68,10 @@ var TripCollection = {
 
                 deferred.resolve(trips);
             }.bind(this))
-        .fail(
-            function(xhr, status, err) {
-                console.error('Fetch arrivals', err);
-                deferred.reject();
-            }
-        );
+        .catch(function(err) {
+            console.error("Fetch arrivals", err);
+            deferred.reject(err);
+        });
 
         return deferred.promise;
     }
