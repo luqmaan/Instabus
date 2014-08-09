@@ -1,10 +1,7 @@
 var when = require('when');
-var X2JS = require('../X2JS');
 var utils = require('../utils');
 var Trip = require('./Trip');
 var requests = require('../requests');
-
-var x2js = new X2JS({});
 
 var TripCollection = {
     fetch: function(route, direction, stop) {
@@ -13,25 +10,26 @@ var TripCollection = {
             capUrl = 'http://www.capmetro.org/planner/s_service.asp?output=xml&opt=2&tool=SI&route=' + route + '&stopid=' + stop,
             params = {
                 q: 'select * from xml where url="' + capUrl + '"',
-                format: 'xml'
+                format: 'json' // let yql do the conversion from xml to json
             };
 
         requests.get(url, params)
             .then(function(data) {
-                var xml = x2js.xml2json(data),
-                    Envelope = xml.query.results.Envelope,
+                var results = data.query.results,
+                    Envelope,
                     Fault,
                     Service,
                     Tripinfo,
                     trips;
 
-                if (!Envelope) {
-                    console.log(xml);
+                if (results === null || !results.Envelope) {
+                    console.error("Bad arrival times data:", data);
                     deferred.reject('The CapMetro API is unavailable');
                     return;
                 }
 
-                Fault = xml.query.results.Envelope.Body.Fault;
+                Envelope = results.Envelope;
+                Fault = Envelope.Body.Fault;
 
                 if (Fault) {
                     console.error(Fault);
@@ -39,7 +37,7 @@ var TripCollection = {
                     return;
                 }
 
-                Service = xml.query.results.Envelope.Body.SchedulenearbyResponse.Atstop.Service;
+                Service = Envelope.Body.SchedulenearbyResponse.Atstop.Service;
                 if (Array.isArray(Service)) {
                     // Filter out the wrong direction
                     // But don't filter out the wrong direction if only one service is returned: this happens at the last stop in a route

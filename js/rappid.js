@@ -217,13 +217,13 @@ Rappid.prototype = {
         });
     },
     rustle: function() {
-        window.alert('CapMetro is experiencing some system issues.');
-        setTimeout(function() {
-            window.alert('There is no need to be upset.');
-            setTimeout(function() {
-                window.location.href = "https://www.youtube.com/watch?v=ygr5AHufBN4";
-            }, 5000);
-        }, 2000);
+        window.alert('There was a problem fetching data from CapMetro.\nClose the app and try again.');
+        // setTimeout(function() {
+        //     window.alert('There is no need to be upset.');
+        //     setTimeout(function() {
+        //         window.location.href = "https://www.youtube.com/watch?v=ygr5AHufBN4";
+        //     }, 5000);
+        // }, 2000);
     }
 };
 
