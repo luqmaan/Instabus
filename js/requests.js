@@ -72,7 +72,7 @@ var requests = {
             requestData = '1';
         }
 
-        xhr.timeout = 30000;
+        xhr.timeout = 1000 * 30;
         xhr.send(requestData);
 
         return deferred.promise;

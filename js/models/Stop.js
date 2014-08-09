@@ -6,7 +6,6 @@ var fs = require('fs');
 var config = require('../config');
 
 var stopPopupHTML = fs.readFileSync(__dirname + '/../templates/stop-popup.html', 'utf8');
-// var stopPopupHTML = "";
 
 function Stop(data) {
     var stop_name = data.stop_name.replace('(SB)', '').replace('(NB)', '');

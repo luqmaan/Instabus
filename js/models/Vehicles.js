@@ -1,12 +1,9 @@
 var L = require('leaflet');
 var when = require('when');
 var _ = require('underscore');
-var X2JS = require('../X2JS');
 var utils = require('../utils');
 var config = require('../config');
 var requests = require('../requests');
-
-var x2js = new X2JS({});
 
 function Vehicles(route, direction) {
     this.route = route;
@@ -22,22 +19,21 @@ Vehicles.prototype = {
             url = 'http://query.yahooapis.com/v1/public/yql',
             params = {
                 q: 'select * from xml where url="http://www.capmetro.org/planner/s_buslocation.asp?route=*"',
-                format: 'xml'
+                format: 'json' // let yql do the conversion from xml to json
             };
 
         requests.get(url, params)
         .then(function(data) {
-            var xml = x2js.xml2json(data),
-                Envelope =  xml.query.results.Envelope,
+            var results = data.query.results,
                 BuslocationResponse;
 
-            if (!Envelope) {
-                console.log(xml);
+            if (results === null || !results.Envelope) {
+                console.error("Bad vehicle location data:", data);
                 deferred.reject('The CapMetro API is unavailable');
                 return;
             }
 
-            BuslocationResponse = Envelope.Body.BuslocationResponse;
+            BuslocationResponse = results.Envelope.Body.BuslocationResponse;
 
             if (!BuslocationResponse.Vehicles) {
                 deferred.reject(new Error('Zero active vehicles'));
