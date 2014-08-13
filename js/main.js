@@ -1,16 +1,13 @@
-define(['jquery', 'knockout', 'rappid'],
-function($, ko, Rappid) {
-    var rappid = window.rappid = new Rappid();
-    window.ko = ko;
+var ko = require('knockout');
+var Rappid = require('./rappid');
 
-    $(document).ready(function() {
-        ko.applyBindings(rappid, document.getElementById('lerappid'));
-        rappid.start().catch(function(e) {
-            console.error(e);
-            if (e === 'The CapMetro API is unavailable') {
-                rappid.rustle();
-            }
-        });
-    });
+var rappid = window.rappid = new Rappid();
+window.ko = ko;
+
+ko.applyBindings(rappid, document.getElementById('lerappid'));
+rappid.start().catch(function(e) {
+    console.error(e);
+    if (e === 'The CapMetro API is unavailable') {
+        rappid.rustle();
+    }
 });
-

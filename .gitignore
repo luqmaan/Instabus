@@ -2,12 +2,8 @@
 .DS_Store
 
 .env
-.build
-.sass-cache/*
-static/css/*
-bower_components/
-.grunt
+dist
+css/main.min.css
 node_modules
-twistd.pid
 
 npm-debug.log

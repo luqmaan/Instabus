@@ -84,17 +84,16 @@ cd MetroRappid
 git checkout -b dev origin/dev
 ```
 
-Install dependencies through [npm](https://www.npmjs.org/) and [bower](http://bower.io/):
+Install dependencies through [npm](https://www.npmjs.org/) and [browserify](http://browserify.org/):
 
 ```
 npm install
-bower install
 ```
 
-Serve the directory with [grunt](http://gruntjs.com/):
+Serve the directory with [gulp](http://gulpjs.com/):
 
 ```
-grunt serve
+gulp serve
 ```
 
 ## Team

@@ -1,29 +1,25 @@
-define(['jquery', 'when'],
-function($, when) {
-    var RoutesCollection = {
-        fetch: function() {
-            var deferred = when.defer();
+var when = require('when');
+var requests = require('../requests');
 
-            $.ajax({
-                url: 'data/routes.json'
-            }).done(
-                function(data) {
-                    var routes = data.map(function(row) {
-                        return row;
-                    });
+var RoutesCollection = {
+    fetch: function() {
+        var deferred = when.defer();
 
-                    deferred.resolve(routes);
-                }.bind(this)
-            ).fail(
-                function(xhr, status, err) {
-                    console.error(err);
-                    deferred.reject(err);
-                }
-            );
+        requests.get('data/routes.json')
+            .then(function(data) {
+                var routes = data.map(function(row) {
+                    return row;
+                });
 
-            return deferred.promise;
-        }
-    };
+                deferred.resolve(routes);
+            })
+            .catch(function(err) {
+                console.error(err);
+                deferred.reject(err);
+            });
 
-    return RoutesCollection;
-});
+        return deferred.promise;
+    }
+};
+
+module.exports = RoutesCollection;
