@@ -25,7 +25,7 @@ gulp.task('cssmin', function() {
         .pipe(gulp.dest('./dist'));  // for prod
 });
 
-gulp.task('uglify', function() {
+gulp.task('uglify', ['browserify-app'], function() {
     return gulp.src('./js/**/*.js')
         .pipe(sourcemaps.init())
         .pipe(concat('bundle.js'))
