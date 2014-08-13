@@ -13,22 +13,22 @@ var clean = require('gulp-clean');
 //FIXME: hook this up https://github.com/gulpjs/gulp/blob/master/docs/recipes/fast-browserify-builds-with-watchify.md
 
 gulp.task('clean', function () {
-    return gulp.src('dist/*.*')
+    return gulp.src('./dist/*.*')
         .pipe(clean());
 });
 
 gulp.task('cssmin', function() {
     return gulp.src(['./css/*.css', '!./css/main.min.css'] )
         .pipe(cssmin())
-        .pipe(concat('main.min.css'))
+        .pipe(concat('./main.min.css'))
         .pipe(gulp.dest('./css'))  // for local dev
         .pipe(gulp.dest('./dist'));  // for prod
 });
 
 gulp.task('uglify', ['browserify-app'], function() {
-    return gulp.src('./js/**/*.js')
+    return gulp.src('./bundle.js')
         .pipe(sourcemaps.init())
-        .pipe(concat('bundle.js'))
+        .pipe(concat('./bundle.js'))
         .pipe(uglify())
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest('./dist'))
@@ -48,7 +48,7 @@ gulp.task('browserify-app', function() {
             .on('error', function(e) {
                 gutil.log(gutil.colors.red("shit broke"), e);
             })
-            .pipe(source('bundle.js'))
+            .pipe(source('./bundle.js'))
             .pipe(gulp.dest('.'))
             .on('end', function() {
                 gutil.log(gutil.colors.blue("shit finished"));
