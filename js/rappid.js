@@ -4,10 +4,12 @@ var when = require('when');
 var NProgress = require('NProgress');
 var LocateControl = require('./LocateControl');
 var RoutesCollection = require('./models/RoutesCollection');
-var Vehicles = require('./models/Vehicles');
+var VehicleCollection = require('./models/VehicleCollection');
 var Shape = require('./models/Shape');
 var StopCollection = require('./models/StopCollection');
+var config = require('./config');
 
+var CapMetroAPIError = config.errors.CapMetroAPIError();
 
 function Rappid() {
     // leaflet
@@ -18,6 +20,7 @@ function Rappid() {
     // data
     this.vehicles = null;
     this.shape = null;
+    this.markers = {};
 
     // viewmodels
     this.availableRoutes = ko.observableArray();
@@ -34,13 +37,13 @@ function Rappid() {
 
 Rappid.prototype = {
     start: function() {
-        var deferred = when.defer();
+        NProgress.configure({ showSpinner: false });
 
         this.resize();
         this.setupMap();
 
-        RoutesCollection.fetch().then(
-            function(routes) {
+        RoutesCollection.fetch()
+            .tap(function(routes) {
                 this.availableRoutes(routes);
 
                 var cachedRoute = JSON.parse(localStorage.getItem('rappid:route')),
@@ -51,49 +54,41 @@ Rappid.prototype = {
                 }
 
                 this.route(defaultRoute);
-                this.setupRoute().then(null, console.error);
-
-                deferred.resolve();
-            }.bind(this),
-            deferred.reject
-        );
-
-        NProgress.configure({ showSpinner: false });
-
-        return deferred.promise;
+            }.bind(this))
+            .then(this.setupRoute.bind(this))
+            .then(this.refresh.bind(this))
+            .catch(console.error);
     },
     refresh: function() {
+        // refresh() should be the final place where all the promises die
+        // therefore, refresh() can't return a promise itself
         NProgress.start();
 
-        var deferred = when.defer(),
-            vehiclesPromise = this.vehicles.fetch(),
-            stopPromises = this.stops().map(function(stop) { return stop.refresh(); }),
-            promises;
-
-        vehiclesPromise.then(this.vehicles.draw.bind(this.vehicles, this.routeLayer));
-
-        promises = [vehiclesPromise];
-        promises = promises.concat(stopPromises);
-
-        when.all(promises).done(
-            function() {
-                NProgress.done();
-                setTimeout(this.refresh.bind(this), 15 * 1000);
-                deferred.resolve(true);
-            }.bind(this),
-            function(e) {
+        VehicleCollection.fetch(this.route().id, this.route().direction)
+            .progress(function() {
+                // console.log('progress', arguments);
+                // FIXME: Show the progress notifications in the UI
+            }.bind(this))
+            .then(function(newVehicles) {
+                this.vehicles = newVehicles;
+                this.markers = VehicleCollection.draw(this.vehicles, this.markers, this.routeLayer);
+            }.bind(this))
+            .then(function() {
+                var stopsRefresh = this.stops().map(function(stop) { return stop.refresh(); });
+                return when.all(stopsRefresh);
+            }.bind(this))
+            .catch(CapMetroAPIError, this.rustle.bind(this))
+            .catch(function(e) {
+                // FIXME: Show the error in the UI
                 console.error(e);
+            })
+            .finally(function() {
                 NProgress.done();
-                if (e === 'The CapMetro API is unavailable') {
-                    this.rustle();
-                }
-                deferred.resolve(false);
-            }.bind(this)
-        );
-
-        // always resolves to true (success) or false (error)
-        // doesn't not reject because we don't want an error to propogate from here since it is self scheduling
-        return deferred.promise;
+                setTimeout.bind(null, this.refresh.bind(this), 15 * 1000);
+            }.bind(this))
+            .done(function() {
+                NProgress.done();
+            });
     },
     setupMap: function() {
         var tileLayer,
@@ -131,65 +126,34 @@ Rappid.prototype = {
         this.setupRoute().done(null, console.error);
     },
     setupRoute: function() {
-        var deferred = when.defer(),
-            route = this.route().id,
+        var route = this.route().id,
             direction = this.route().direction,
-            promises,
             shapePromise,
-            vehiclesPromise,
             stopsPromise;
 
         this.track();
-
-        console.log('Setup route', this.route());
         localStorage.setItem('rappid:route', ko.toJSON(this.route()));
 
         if (this.routeLayer) {
             this.map.removeLayer(this.routeLayer);
         }
-
         this.routeLayer = L.layerGroup();
         this.routeLayer.addTo(this.map);
 
-        this.vehicles = new Vehicles(route, direction);
         this.shape = new Shape(route, direction);
+        shapePromise = this.shape.fetch()
+            .tap(this.shape.draw.bind(this.shape, this.routeLayer));
 
-        shapePromise = this.shape.fetch();
-        shapePromise.then(this.shape.draw.bind(this.shape, this.routeLayer));
-
-        vehiclesPromise = this.vehicles.fetch();
-        vehiclesPromise.then(this.vehicles.draw.bind(this.vehicles, this.routeLayer));
-
-        stopsPromise = StopCollection.fetch(route, direction);
-        stopsPromise.then(
-            function(stops) {
+        stopsPromise = StopCollection.fetch(route, direction)
+            .tap(function(stops) {
                 StopCollection.draw(stops, this.routeLayer);
                 this.stops(stops);
-
                 if (this.latlng) {
                     StopCollection.closest(stops, this.latlng);
                 }
-            }.bind(this)
-        );
+            }.bind(this));
 
-        promises = [shapePromise, vehiclesPromise, stopsPromise];
-
-        when.all(promises).done(
-            function() {
-                setTimeout(this.refresh.bind(this), 15 * 1000);
-                deferred.resolve();
-            }.bind(this),
-            function(e) {
-                console.error(e);
-                NProgress.done();
-                if (e === 'The CapMetro API is unavailable') {
-                    this.rustle();
-                }
-                deferred.resolve(false);
-            }.bind(this)
-        );
-
-        return deferred.promise;
+        return when.all([shapePromise, stopsPromise]);
     },
     resize: function(e) {
         if (window.screen.width <= 1024) {
@@ -209,6 +173,7 @@ Rappid.prototype = {
         document.body.scrollTop = document.documentElement.scrollTop = 0;
     },
     track: function() {
+        // FIXME: Shit don't work
         var routeDirection = this.route().id + '-' + this.route().direction;
         window.ga('send', {
             'dimension1': routeDirection,
@@ -218,12 +183,12 @@ Rappid.prototype = {
     },
     rustle: function() {
         window.alert('There was a problem fetching data from CapMetro.\nClose the app and try again.');
-        // setTimeout(function() {
-        //     window.alert('There is no need to be upset.');
-        //     setTimeout(function() {
-        //         window.location.href = "https://www.youtube.com/watch?v=ygr5AHufBN4";
-        //     }, 5000);
-        // }, 2000);
+        setTimeout(function() {
+            window.alert('There is no need to be upset.');
+            setTimeout(function() {
+                window.location.href = "https://www.youtube.com/watch?v=ygr5AHufBN4";
+            }, 5000);
+        }, 2000);
     }
 };
 

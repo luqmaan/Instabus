@@ -1,2 +1,3 @@
+arrow==0.4.4
 gtfsdb==0.1.5
 requests==2.3.0

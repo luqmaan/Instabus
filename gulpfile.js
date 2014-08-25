@@ -18,7 +18,14 @@ gulp.task('clean', function () {
 });
 
 gulp.task('cssmin', function() {
-    return gulp.src(['./css/*.css', '!./css/main.min.css'] )
+    var src = [
+        'css/leaflet.css',
+        'css/leaflet-label.css',
+        'css/nprogress.css',
+        'css/progress.css',
+        'css/main.css',
+    ];
+    return gulp.src(src)
         .pipe(cssmin())
         .pipe(concat('./main.min.css'))
         .pipe(gulp.dest('./css'))  // for local dev
@@ -46,7 +53,7 @@ gulp.task('browserify-app', function() {
         return bundler
             .bundle()
             .on('error', function(e) {
-                gutil.log(gutil.colors.red("shit broke"), e);
+                gutil.log(gutil.colors.red("shit broke", e.toString()));
             })
             .pipe(source('./bundle.js'))
             .pipe(gulp.dest('.'))
