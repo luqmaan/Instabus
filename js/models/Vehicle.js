@@ -28,7 +28,6 @@ function Vehicle(data) {
     this.route = data.Route;
     this.directionID = utils.getDirectionID(this.route, data.Direction);
     this.direction = utils.formatDirection(this.route, this.directionID);
-    console.log('wefwef', this.directionID, this.direction);
     this.updateTime = data.Updatetime;
     this.block = data.Block;
     this.adherance = data.Adherance;
@@ -46,7 +45,7 @@ function Vehicle(data) {
     this.lat = this.latlng[0];
     this.lng = this.latlng[1];
 
-    this.marker = null;
+    this.marker = this.newMarker();
 }
 
 Vehicle.prototype = {
@@ -59,20 +58,37 @@ Vehicle.prototype = {
             return [Number(pos[0]), Number(pos[1])];
         });
     },
-    draw: function(existingMarkers, layer) {
-        var newMarker;
-
-        if (existingMarkers[this.vehicleID]) {
-            this.marker = existingMarkers[this.vehicleID];
-            var deltaLatLng = [this.lat - this.marker.lat, this.lng[1] - this.marker.lng[1]];
-            animateMarker(this.marker, 0, 200, this.marker.latlng, deltaLatLng);
-        }
-        else {
-            this.marker = this.newMarker();
-            this.marker.addTo(layer);
-        }
-
-        return newMarker;
+    update: function(newVehicle) {
+        this.id = newVehicle.id;
+        this.route = newVehicle.route;
+        this.directionID = newVehicle.directionID;
+        this.direction = newVehicle.direction;
+        this.updateTime = newVehicle.updateTime;
+        this.block = newVehicle.block;
+        this.adherance = newVehicle.adherance;
+        this.adheranceChange = newVehicle.adheranceChange;
+        this.reliable = newVehicle.reliable;
+        this.offRoute = newVehicle.offRoute;
+        this.stopped = newVehicle.stopped;
+        this.inService = newVehicle.inService;
+        this.routeID = newVehicle.routeID;
+        this.speed = newVehicle.speed;
+        this.heading = newVehicle.heading;
+        this.positions = newVehicle.positions;
+        this.latlng = newVehicle.latlng;
+        this.lat = newVehicle.lat;
+        this.lng = newVehicle.lng;
+    },
+    draw: function(layer) {
+        this.marker.addTo(layer);
+    },
+    move: function() {
+        var deltaLatLng = [this.lat - this.marker.lat, this.lng - this.marker.lng];
+        console.log('delta', deltaLatLng);
+        animateMarker(this.marker, 0, 200, this.marker.latlng, deltaLatLng);
+    },
+    remove: function(layer) {
+        layer.removeLayer(this.marker);
     },
     newMarker: function() {
         var marker = L.circleMarker([this.lat, this.lng], {
