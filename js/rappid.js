@@ -4,7 +4,7 @@ var when = require('when');
 var NProgress = require('NProgress');
 var LocateControl = require('./LocateControl');
 var RoutesCollection = require('./models/RoutesCollection');
-var Vehicles = require('./models/VehicleCollection');
+var VehicleCollection = require('./models/VehicleCollection');
 var Shape = require('./models/Shape');
 var StopCollection = require('./models/StopCollection');
 
@@ -68,18 +68,15 @@ Rappid.prototype = {
 
         NProgress.start();
 
-        this.vehicles.fetch()
+        VehicleCollection.fetch(this.route().id, this.route().direction)
             .then(function(newVehicles) {
                 this.vehicles = newVehicles;
-                this.markers = this.vehicles.draw(this.vehicles, this.markers, this.routeLayer);
-            })
+                this.markers = VehicleCollection.draw(this.vehicles, this.markers, this.routeLayer);
+            }.bind(this))
             .then(function() {
                 var stopsRefresh = this.stops().map(function(stop) { return stop.refresh(); });
                 return when.all(stopsRefresh);
-            })
-            .done(function() {
-                deferred.resolve();
-            })
+            }.bind(this))
             .catch(function(e) {
                 // FIXME: Show the error in the UI
                 console.error(e);
@@ -91,6 +88,9 @@ Rappid.prototype = {
             .finally(function() {
                 NProgress.done();
                 setTimeout.bind(null, this.refresh.bind(this), 15 * 1000);
+            }.bind(this))
+            .done(function() {
+                deferred.resolve();
             });
 
         return deferred.promise;
@@ -151,26 +151,26 @@ Rappid.prototype = {
         this.routeLayer = L.layerGroup();
         this.routeLayer.addTo(this.map);
 
-        this.vehicles = new Vehicles(route, direction);
         this.shape = new Shape(route, direction);
 
-        shapePromise = this.shape.fetch();
-        shapePromise.then(this.shape.draw.bind(this.shape, this.routeLayer));
+        shapePromise = this.shape.fetch()
+            .tap(this.shape.draw.bind(this.shape, this.routeLayer));
 
-        vehiclesPromise = this.vehicles.fetch();
-        vehiclesPromise.then(this.vehicles.draw.bind(this.vehicles, this.routeLayer));
+        vehiclesPromise = VehicleCollection.fetch(route, direction)
+            .tap(function(vehicles) {
+                this.vehicles = vehicles;
+                console.log('drawing vehicles');
+                VehicleCollection.draw(this.vehicles, this.markers, this.routeLayer);
+            }.bind(this));
 
-        stopsPromise = StopCollection.fetch(route, direction);
-        stopsPromise.then(
-            function(stops) {
+        stopsPromise = StopCollection.fetch(route, direction)
+            .tap(function(stops) {
                 StopCollection.draw(stops, this.routeLayer);
                 this.stops(stops);
-
                 if (this.latlng) {
                     StopCollection.closest(stops, this.latlng);
                 }
-            }.bind(this)
-        );
+            }.bind(this));
 
         promises = [shapePromise, vehiclesPromise, stopsPromise];
 

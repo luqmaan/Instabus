@@ -1,16 +1,18 @@
-var ko = require('knockout'),
-    L = require('leaflet'),
-    config = require('../config'),
-    utils = require('../utils');
-
-var fs = require('fs'),
-    vehiclePopupHTML = fs.readFileSync(__dirname + '/../templates/vehicle-popup.html', 'utf8');
+var ko = require('knockout');
+var L = require('leaflet');
+var config = require('../config');
+var utils = require('../utils');
+var fs = require('fs');
+var vehiclePopupHTML = fs.readFileSync(__dirname + '/../templates/vehicle-popup.html', 'utf8');
 
 function Vehicle(data) {
+    console.log('data', data);
     // FIXME: Do these have to be observables? There isn't two way binding.
-    this.id = this.vehicleID = data.Vehicleid;
+    this.id = this.vehicleID = Number(data.Vehicleid);
     this.route = data.Route;
-    this.direction = utils.getDirectionID(data.Direction);
+    this.directionID = utils.getDirectionID(this.route, data.Direction);
+    this.direction = utils.formatDirection(this.route, this.directionID);
+    console.log('wefwef', this.directionID, this.direction);
     this.updateTime = data.Updatetime;
     this.block = data.Block;
     this.adherance = data.Adherance;
@@ -23,7 +25,7 @@ function Vehicle(data) {
     this.speed = data.Speed;
     this.heading = data.Heading;
 
-    this.positions = this.parsePositions(data.Positions);
+    this.positions = this.parsePositions(data.Positions.Position);
     this.latlng = this.positions[0];
     this.lat = this.latlng[0];
     this.lng = this.latlng[1];
@@ -71,7 +73,7 @@ Vehicle.prototype.newMarker = function() {
         radius: 15,
         opacity: 1,
         fillOpacity: '0.9',
-        fillColor: this.Inservice === 'Y' ? 'rgb(34,189,252)' : 'rgb(188,188,188)',
+        fillColor: this.inService === 'Y' ? 'rgb(34,189,252)' : 'rgb(188,188,188)',
         zIndexOffset: config.vehicleZIndex
     });
 
@@ -79,10 +81,17 @@ Vehicle.prototype.newMarker = function() {
     marker.lat = this.lat;
     marker.lng = this.lng;
 
-    marker.bindPopup('popupContent');
+    marker.bindPopup(this.popupContent());
 
     return marker;
 };
+
+Vehicle.prototype.popupContent = function() {
+    var div = document.createElement('div');
+    div.innerHTML = vehiclePopupHTML;
+    ko.applyBindings(this, div);
+    return div;
+}
 
 // https://github.com/danro/jquery-easing/blob/818a47a97fa5ea25f1e4c8a6121e0bca9407d51a/jquery.easing.js
 function easeInOutCubic(t, b, c, d) {

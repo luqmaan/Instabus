@@ -6,6 +6,9 @@ var utils = {
             if (route === 801) {
                 return 'North';
             }
+            if (route === 803) {
+                return 'North';
+            }
             if (route === 550) {
                 return 'South';
             }
@@ -13,6 +16,9 @@ var utils = {
         }
         if (direction === 1) {
             if (route === 801) {
+                return 'South';
+            }
+            if (route === 803) {
                 return 'South';
             }
             if (route === 550) {
