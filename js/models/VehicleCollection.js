@@ -19,7 +19,7 @@ var VehicleCollection = {
         function retryAtMost(maxRetries) {
             console.log(url);
             requests.get(yqlURL, params)
-                .then(this.parseLocationResponse.bind(direction))
+                .then(this.parseLocationResponse.bind(this, direction))
                 .catch(function(err) {
                     console.error(err);
                     if (err.message === 'The CapMetro API is unavailable') {
@@ -29,7 +29,7 @@ var VehicleCollection = {
                     deferred.reject(err);
                 })
                 .done(function(vehicles) {
-                    console.log('Got vehicles', vehicles);
+                    console.info('API responded with', vehicles.length, 'vehicles');
                     deferred.resolve(vehicles);
                 });
         }
@@ -38,11 +38,25 @@ var VehicleCollection = {
 
         return deferred.promise;
     },
-    parseLocationResponse: function(directoin, res) {
-        var BuslocationResponse;
+    parseLocationResponse: function(direction, res) {
+        var vehicles = [],
+            BuslocationResponse;
 
         if (!res.query.results) {
             throw new Error('The CapMetro API is unavailable');
+        }
+        if (res.query.results.Envelope.Body.Fault) {
+            var fault = res.query.results.Envelope.Body.Fault,
+                faultstring = fault.faultstring,
+                faultcode = fault.faultcode;
+
+            // soap:15006 => SOAP - empty response
+            if (faultcode === 'soap:15006') {
+                throw new Error('Zero active vehicles');
+            }
+            else {
+                throw new Error(faultcode + ' ' + faultstring);
+            }
         }
         if (!res.query.results.Envelope.Body.BuslocationResponse.Vehicles) {
             throw new Error('Zero active vehicles');
@@ -53,8 +67,13 @@ var VehicleCollection = {
             data = [data];
         }
 
-        var vehicles = data.map(function(v) {
-            return new Vehicle(v);
+        data.forEach(function(v) {
+
+            var vehicle = new Vehicle(v);
+            console.log(vehicle);
+            if (vehicle.directionID === direction) {
+                return vehicles.push(vehicle);
+            }
         });
 
         return vehicles;

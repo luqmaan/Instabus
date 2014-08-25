@@ -6,7 +6,6 @@ var fs = require('fs');
 var vehiclePopupHTML = fs.readFileSync(__dirname + '/../templates/vehicle-popup.html', 'utf8');
 
 function Vehicle(data) {
-    console.log('data', data);
     // FIXME: Do these have to be observables? There isn't two way binding.
     this.id = this.vehicleID = Number(data.Vehicleid);
     this.route = data.Route;
