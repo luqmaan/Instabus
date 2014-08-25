@@ -82,7 +82,6 @@ Stop.prototype = {
 
         TripCollection.fetch(this.route(), this.direction(), this.id())
             .progress(function(msg) {
-                console.log('progress', msg);
                 this.errorMsg(msg);
             }.bind(this))
             .then(function(trips) {
