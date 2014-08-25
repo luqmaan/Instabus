@@ -13,6 +13,7 @@ import sqlite3
 import logging
 from collections import defaultdict
 
+import arrow
 import requests
 import gtfsdb
 from gtfsdb.api import database_load
@@ -20,6 +21,7 @@ from gtfsdb.api import database_load
 # only routes with realtime data
 ROUTE_IDS = {
     801: ('MetroRapid', 'Bus'),
+    803: ('MetroRapid', 'Bus'),
     550: ('MetroRail', 'Train'),
 }
 
@@ -31,13 +33,14 @@ DATA_VERSION_FILE = os.path.join(DATA_DIR, 'data_version.txt')
 
 def fetch_gtfs_data():
     logger.info('fetching gtfs data....')
-    r = requests.get('http://www.gtfs-data-exchange.com/agency/capital-metro/latest.zip', stream=True)
+    # for other cities we can use http://www.gtfs-data-exchange.com/agency/capital-metro/latest.zip
+    gtfs_url = 'https://www.capmetro.org/gisdata/google_transit.zip'
+    r = requests.get(gtfs_url, stream=True)
     assert r.ok, 'problem fetching data. status_code={}'.format(r.status_code)
 
     # looks like 'capital-metro_20140609_0109.zip'
     with open(DATA_VERSION_FILE, 'wb') as f:
-        data_version = os.path.splitext(os.path.basename(r.url))[0].replace('capital-metro_', '')
-        f.write(data_version + '\n')
+        f.write('{}\n{}'.format(r.url, arrow.now()))
 
     with open(GTFS_DOWNLOAD_FILE, 'wb') as f:
         for chunk in r.iter_content(1024):
