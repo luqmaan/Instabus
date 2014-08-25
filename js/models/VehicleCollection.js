@@ -12,9 +12,9 @@ var VehicleCollection = {
     fetch: function(route, direction) {
         var deferred = when.defer(),
             yqlURL = 'http://query.yahooapis.com/v1/public/yql',
-            url = 'http://www.capmetro.org/planner/s_buslocation.asp?route=' + route,
+            capURL = 'http://www.capmetro.org/planner/s_buslocation.asp?route=' + route,
             params = {
-                q: 'select * from xml where url="' + url + '"',
+                q: 'select * from xml where url="' + capURL + '"',
                 format: 'json' // let yql do the conversion from xml to json
             };
 
@@ -41,7 +41,7 @@ var VehicleCollection = {
                 });
         }
 
-        retryAtMost.call(this, 3);
+        retryAtMost.call(this, config.MAX_RETRIES);
 
         return deferred.promise;
     },
@@ -49,7 +49,7 @@ var VehicleCollection = {
         var vehicles = [],
             BuslocationResponse;
 
-        if (!res.query.results) {
+        if (!res.query.results || !res.query.results.Envelope) {
             throw new CapMetroAPIError('The CapMetro Bus Location API is unavailable');
         }
         if (res.query.results.Envelope.Body.Fault) {
@@ -57,13 +57,7 @@ var VehicleCollection = {
                 faultstring = fault.faultstring,
                 faultcode = fault.faultcode;
 
-            // soap:15006 => SOAP - empty response
-            if (faultcode === 'soap:15006') {
-                throw new Error('Zero active vehicles');
-            }
-            else {
-                throw new Error(faultcode + ' ' + faultstring);
-            }
+            throw new Error(faultcode + ' ' + faultstring);
         }
         if (!res.query.results.Envelope.Body.BuslocationResponse.Vehicles) {
             throw new Error('Zero active vehicles');

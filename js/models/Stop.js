@@ -80,21 +80,24 @@ Stop.prototype = {
         this.showTrips(true);
         this.loading(true);
 
-        TripCollection.fetch(this.route(), this.direction(), this.id()).then(
-            function(trips) {
+        TripCollection.fetch(this.route(), this.direction(), this.id())
+            .progress(function(msg) {
+                console.log('progress', msg);
+                this.errorMsg(msg);
+            }.bind(this))
+            .then(function(trips) {
                 this.loadedTrips(true);
                 this.loading(false);
                 this.trips(trips);
                 this.errorMsg(null);
                 deferred.resolve();
-            }.bind(this),
-            function(e) {
+            }.bind(this))
+            .catch(function(e) {
                 this.loadedTrips(true);
                 this.loading(false);
-                this.errorMsg(e);
+                this.errorMsg(e.message);
                 deferred.reject(e);
-            }.bind(this)
-        );
+            }.bind(this));
 
         return deferred.promise;
     },
