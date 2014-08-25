@@ -34,12 +34,18 @@ var utils = {
             if (route === 801) {
                 return 0;
             }
+            if (route === 803) {
+                return 0;
+            }
             if (route === 550) {
                 return 1;
             }
         }
         if (direction === 'south' || direction === 's') {
             if (route === 801) {
+                return 1;
+            }
+            if (route === 803) {
                 return 1;
             }
             if (route === 550) {

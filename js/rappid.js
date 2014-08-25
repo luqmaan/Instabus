@@ -4,7 +4,7 @@ var when = require('when');
 var NProgress = require('NProgress');
 var LocateControl = require('./LocateControl');
 var RoutesCollection = require('./models/RoutesCollection');
-var Vehicles = require('./models/Vehicles');
+var Vehicles = require('./models/VehicleCollection');
 var Shape = require('./models/Shape');
 var StopCollection = require('./models/StopCollection');
 
@@ -18,6 +18,7 @@ function Rappid() {
     // data
     this.vehicles = null;
     this.shape = null;
+    this.markers = {};
 
     // viewmodels
     this.availableRoutes = ko.observableArray();
@@ -63,36 +64,35 @@ Rappid.prototype = {
         return deferred.promise;
     },
     refresh: function() {
+        var deferred = when.defer();
+
         NProgress.start();
 
-        var deferred = when.defer(),
-            vehiclesPromise = this.vehicles.fetch(),
-            stopPromises = this.stops().map(function(stop) { return stop.refresh(); }),
-            promises;
-
-        vehiclesPromise.then(this.vehicles.draw.bind(this.vehicles, this.routeLayer));
-
-        promises = [vehiclesPromise];
-        promises = promises.concat(stopPromises);
-
-        when.all(promises).done(
-            function() {
-                NProgress.done();
-                setTimeout(this.refresh.bind(this), 15 * 1000);
-                deferred.resolve(true);
-            }.bind(this),
-            function(e) {
+        this.vehicles.fetch()
+            .then(function(newVehicles) {
+                this.vehicles = newVehicles;
+                this.markers = this.vehicles.draw(this.vehicles, this.markers, this.routeLayer);
+            })
+            .then(function() {
+                var stopsRefresh = this.stops().map(function(stop) { return stop.refresh(); });
+                return when.all(stopsRefresh);
+            })
+            .done(function() {
+                deferred.resolve();
+            })
+            .catch(function(e) {
+                // FIXME: Show the error in the UI
                 console.error(e);
-                NProgress.done();
-                if (e === 'The CapMetro API is unavailable') {
+                if (e.message === 'The CapMetro API is unavailable') {
                     this.rustle();
                 }
-                deferred.resolve(false);
-            }.bind(this)
-        );
+                deferred.reject(e);
+            })
+            .finally(function() {
+                NProgress.done();
+                setTimeout.bind(null, this.refresh.bind(this), 15 * 1000);
+            });
 
-        // always resolves to true (success) or false (error)
-        // doesn't not reject because we don't want an error to propogate from here since it is self scheduling
         return deferred.promise;
     },
     setupMap: function() {
@@ -209,6 +209,7 @@ Rappid.prototype = {
         document.body.scrollTop = document.documentElement.scrollTop = 0;
     },
     track: function() {
+        // FIXME: Shit don't work
         var routeDirection = this.route().id + '-' + this.route().direction;
         window.ga('send', {
             'dimension1': routeDirection,
