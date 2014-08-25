@@ -6,6 +6,8 @@ var config = require('../config');
 var requests = require('../requests');
 var Vehicle = require('./Vehicle');
 
+var CapMetroAPIError = config.errors.CapMetroAPIError();
+
 var VehicleCollection = {
     fetch: function(route, direction) {
         var deferred = when.defer(),
@@ -17,20 +19,25 @@ var VehicleCollection = {
             };
 
         function retryAtMost(maxRetries) {
-            console.log(url);
             requests.get(yqlURL, params)
                 .then(this.parseLocationResponse.bind(this, direction))
-                .catch(function(err) {
-                    console.error(err);
-                    if (err.message === 'The CapMetro API is unavailable') {
-                        console.error('Retrying', maxRetries - 1, 'more times');
-                        return retryAtMost(maxRetries - 1);
-                    }
-                    deferred.reject(err);
-                })
-                .done(function(vehicles) {
+                .then(function(vehicles) {
                     console.info('API responded with', vehicles.length, 'vehicles');
                     deferred.resolve(vehicles);
+                })
+                .catch(CapMetroAPIError, function(err) {
+                    var msg = err.message + '. Retrying ' + maxRetries + ' more times';
+                    console.error(msg);
+                    deferred.notify(msg);
+                    if (maxRetries > 0) {
+                        return retryAtMost.call(this, maxRetries - 1);
+                    }
+                    else {
+                        deferred.reject(CapMetroAPIError);
+                    }
+                }.bind(this))
+                .catch(function(err) {
+                    deferred.reject(err);
                 });
         }
 
@@ -43,7 +50,7 @@ var VehicleCollection = {
             BuslocationResponse;
 
         if (!res.query.results) {
-            throw new Error('The CapMetro API is unavailable');
+            throw new CapMetroAPIError('The CapMetro Bus Location API is unavailable');
         }
         if (res.query.results.Envelope.Body.Fault) {
             var fault = res.query.results.Envelope.Body.Fault,

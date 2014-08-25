@@ -7,7 +7,9 @@ var RoutesCollection = require('./models/RoutesCollection');
 var VehicleCollection = require('./models/VehicleCollection');
 var Shape = require('./models/Shape');
 var StopCollection = require('./models/StopCollection');
+var config = require('./config');
 
+var CapMetroAPIError = config.errors.CapMetroAPIError();
 
 function Rappid() {
     // leaflet
@@ -54,17 +56,8 @@ Rappid.prototype = {
                 this.route(defaultRoute);
             }.bind(this))
             .then(this.setupRoute.bind(this))
-            .catch(function(e) {
-                console.error(e);
-                NProgress.done();
-
-                if (e === 'The CapMetro API is unavailable') {
-                    this.rustle();
-                }
-            }.bind(this))
-            .done(function() {
-                setTimeout(this.refresh.bind(this), 15 * 1000);
-            }.bind(this));
+            .then(this.refresh.bind(this))
+            .catch(console.error);
     },
     refresh: function() {
         // refresh() should be the final place where all the promises die
@@ -72,6 +65,10 @@ Rappid.prototype = {
         NProgress.start();
 
         VehicleCollection.fetch(this.route().id, this.route().direction)
+            .progress(function() {
+                // console.log('progress', arguments);
+                // FIXME: Show the progress notifications in the UI
+            }.bind(this))
             .then(function(newVehicles) {
                 this.vehicles = newVehicles;
                 this.markers = VehicleCollection.draw(this.vehicles, this.markers, this.routeLayer);
@@ -80,12 +77,10 @@ Rappid.prototype = {
                 var stopsRefresh = this.stops().map(function(stop) { return stop.refresh(); });
                 return when.all(stopsRefresh);
             }.bind(this))
+            .catch(CapMetroAPIError, this.rustle.bind(this))
             .catch(function(e) {
                 // FIXME: Show the error in the UI
                 console.error(e);
-                if (e.message === 'The CapMetro API is unavailable') {
-                    this.rustle();
-                }
             })
             .finally(function() {
                 NProgress.done();
@@ -134,7 +129,6 @@ Rappid.prototype = {
         var route = this.route().id,
             direction = this.route().direction,
             shapePromise,
-            vehiclesPromise,
             stopsPromise;
 
         this.track();
@@ -150,12 +144,6 @@ Rappid.prototype = {
         shapePromise = this.shape.fetch()
             .tap(this.shape.draw.bind(this.shape, this.routeLayer));
 
-        vehiclesPromise = VehicleCollection.fetch(route, direction)
-            .tap(function(vehicles) {
-                this.vehicles = vehicles;
-                VehicleCollection.draw(this.vehicles, this.markers, this.routeLayer);
-            }.bind(this));
-
         stopsPromise = StopCollection.fetch(route, direction)
             .tap(function(stops) {
                 StopCollection.draw(stops, this.routeLayer);
@@ -165,7 +153,7 @@ Rappid.prototype = {
                 }
             }.bind(this));
 
-        return when.all([shapePromise, vehiclesPromise, stopsPromise]);
+        return when.all([shapePromise, stopsPromise]);
     },
     resize: function(e) {
         if (window.screen.width <= 1024) {
@@ -195,12 +183,12 @@ Rappid.prototype = {
     },
     rustle: function() {
         window.alert('There was a problem fetching data from CapMetro.\nClose the app and try again.');
-        // setTimeout(function() {
-        //     window.alert('There is no need to be upset.');
-        //     setTimeout(function() {
-        //         window.location.href = "https://www.youtube.com/watch?v=ygr5AHufBN4";
-        //     }, 5000);
-        // }, 2000);
+        setTimeout(function() {
+            window.alert('There is no need to be upset.');
+            setTimeout(function() {
+                window.location.href = "https://www.youtube.com/watch?v=ygr5AHufBN4";
+            }, 5000);
+        }, 2000);
     }
 };
 
