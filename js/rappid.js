@@ -1,5 +1,6 @@
 var ko = require('knockout');
 var L = require('leaflet');
+require('when/monitor/console');
 var when = require('when');
 var NProgress = require('NProgress');
 var LocateControl = require('./LocateControl');
@@ -64,6 +65,12 @@ Rappid.prototype = {
         // therefore, refresh() can't return a promise itself
         NProgress.start();
 
+        function refreshCompletion() {
+            console.log('refresh', this);
+            NProgress.done();
+            setTimeout(this.refresh.bind(this), config.REFRESH_INTERVAL);
+        }
+
         this.vehicles.refresh()
             .progress(function() {
                 // console.log('progress', arguments);
@@ -73,18 +80,13 @@ Rappid.prototype = {
                 var stopsRefresh = this.stops().map(function(stop) { return stop.refresh(); });
                 return when.all(stopsRefresh);
             }.bind(this))
+            .then()
             .catch(CapMetroAPIError, this.rustle.bind(this))
             .catch(function(e) {
                 // FIXME: Show the error in the UI
                 console.error(e);
             })
-            .finally(function() {
-                NProgress.done();
-                setTimeout.bind(null, this.refresh.bind(this), 15 * 1000);
-            }.bind(this))
-            .done(function() {
-                NProgress.done();
-            });
+            .finally(refreshCompletion.bind(this));
     },
     setupMap: function() {
         var tileLayer,
