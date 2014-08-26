@@ -1,6 +1,6 @@
 var ko = require('knockout');
 var L = require('leaflet');
-require('when/monitor/console');
+// require('when/monitor/console');
 var when = require('when');
 var NProgress = require('NProgress');
 var LocateControl = require('./LocateControl');
