@@ -66,7 +66,6 @@ Rappid.prototype = {
         NProgress.start();
 
         function refreshCompletion() {
-            console.log('refresh', this);
             NProgress.done();
             setTimeout(this.refresh.bind(this), config.REFRESH_INTERVAL);
         }
@@ -80,7 +79,6 @@ Rappid.prototype = {
                 var stopsRefresh = this.stops().map(function(stop) { return stop.refresh(); });
                 return when.all(stopsRefresh);
             }.bind(this))
-            .then()
             .catch(CapMetroAPIError, this.rustle.bind(this))
             .catch(function(e) {
                 // FIXME: Show the error in the UI
