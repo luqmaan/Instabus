@@ -41,11 +41,12 @@ function Vehicle(data) {
     this.heading = data.Heading;
 
     this.positions = this.parsePositions(data.Positions.Position);
-    // 0 = oldest position, -1 = newest position
-    // use oldest position so we can animate from there
-    this.latlng = this.positions[0];
-    this.lat = this.latlng[0];
-    this.lng = this.latlng[1];
+
+    this.oldestPos = this.positions[0];
+    this.newestPos = this.positions[this.positions.length - 1];
+
+    this.lat = this.oldestPos[0];
+    this.lng = this.oldestPos[1];
 
     this.marker = this.newMarker();
 }
@@ -82,9 +83,12 @@ Vehicle.prototype = {
         this.speed = newVehicle.speed;
         this.heading = newVehicle.heading;
         this.positions = newVehicle.positions;
-        this.latlng = newVehicle.latlng;
-        this.lat = newVehicle.lat;
-        this.lng = newVehicle.lng;
+
+        this.oldestPos = newVehicle.oldestPos;
+        this.newestPos = newVehicle.newestPos;
+
+        this.lat = this.newestPos[0];
+        this.lng = this.newestPos[1];
     },
     animateTo: function(lat, lng, steps) {
         steps = steps || config.DEFAULT_MARKER_ANIMATION_STEPS;
@@ -94,7 +98,7 @@ Vehicle.prototype = {
     draw: function(layer) {
         var timeout = 0,
             steps = 50,
-            fudge_factor = 10;
+            fudgeFactor = 10;
 
         this.marker.addTo(layer);
 
@@ -105,7 +109,7 @@ Vehicle.prototype = {
                 }.bind(this),
             timeout);
 
-            timeout += (steps * config.MARKER_ANIMATION_REFRESH_RATE) + fudge_factor;
+            timeout += (steps * config.MARKER_ANIMATION_REFRESH_RATE) + fudgeFactor;
         }.bind(this));
     },
     move: function() {
