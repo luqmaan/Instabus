@@ -2,6 +2,8 @@ var config =  {
     vehicleZIndex: 10,
     stopZIndex: 5,
     MAX_RETRIES: 2,
+    MARKER_ANIMATION_REFRESH_RATE: 10,
+    DEFAULT_MARKER_ANIMATION_STEPS: 200,
     errors: {
         CapMetroAPIError: function() {
             function CapMetroAPIError(message) {

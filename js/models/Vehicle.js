@@ -18,7 +18,7 @@ function animateMarker(marker, i, steps, startLatLng, deltaLatLng) {
     marker.setLatLng([x, y]);
 
     if (i < steps) {
-        setTimeout(animateMarker.bind(null, marker, i + 1, steps, startLatLng, deltaLatLng), 10);
+        setTimeout(animateMarker.bind(null, marker, i + 1, steps, startLatLng, deltaLatLng), config.MARKER_ANIMATION_REFRESH_RATE);
     }
 }
 
@@ -41,6 +41,8 @@ function Vehicle(data) {
     this.heading = data.Heading;
 
     this.positions = this.parsePositions(data.Positions.Position);
+    // 0 = oldest position, -1 = newest position
+    // use oldest position so we can animate from there
     this.latlng = this.positions[0];
     this.lat = this.latlng[0];
     this.lng = this.latlng[1];
@@ -53,10 +55,15 @@ Vehicle.prototype = {
         if (!Array.isArray(positions)) {
             positions = [positions];
         }
-        return positions.map(function(pos) {
+        var parsed = positions.map(function(pos) {
             pos = pos.split(',');
             return [Number(pos[0]), Number(pos[1])];
         });
+
+        // reverse so the positions are in chronological order
+        parsed.reverse();
+
+        return parsed;
     },
     update: function(newVehicle) {
         this.id = newVehicle.id;
@@ -79,13 +86,30 @@ Vehicle.prototype = {
         this.lat = newVehicle.lat;
         this.lng = newVehicle.lng;
     },
+    animateTo: function(lat, lng, steps) {
+        steps = steps || config.DEFAULT_MARKER_ANIMATION_STEPS;
+        var deltaLatLng = [lat - this.marker.getLatLng().lat, lng - this.marker.getLatLng().lng];
+        animateMarker(this.marker, 0, steps, [this.marker.getLatLng().lat, this.marker.getLatLng().lng], deltaLatLng);
+    },
     draw: function(layer) {
+        var timeout = 0,
+            steps = 50,
+            fudge_factor = 10;
+
         this.marker.addTo(layer);
+
+        this.positions.forEach(function(pos) {
+            setTimeout(
+                function() {
+                    this.animateTo(pos[0], pos[1], steps);
+                }.bind(this),
+            timeout);
+
+            timeout += (steps * config.MARKER_ANIMATION_REFRESH_RATE) + fudge_factor;
+        }.bind(this));
     },
     move: function() {
-        var deltaLatLng = [this.lat - this.marker.lat, this.lng - this.marker.lng];
-        console.log('delta', deltaLatLng);
-        animateMarker(this.marker, 0, 200, this.marker.latlng, deltaLatLng);
+        this.animateTo(this.lat, this.lng);
     },
     remove: function(layer) {
         layer.removeLayer(this.marker);
@@ -100,10 +124,6 @@ Vehicle.prototype = {
             fillColor: this.inService === 'Y' ? 'rgb(34,189,252)' : 'rgb(188,188,188)',
             zIndexOffset: config.vehicleZIndex
         });
-
-        marker.latlng = this.latlng;
-        marker.lat = this.lat;
-        marker.lng = this.lng;
 
         marker.bindPopup(this.popupContent());
 
