@@ -41,10 +41,12 @@ function Vehicle(data) {
     this.heading = data.Heading;
 
     this.positions = this.parsePositions(data.Positions.Position);
-    // 0 = oldest position, -1 = newest position
-    // use oldest position so we can animate from there
-    this.lat = this.positions[0][0];
-    this.lng = this.positions[0][1];
+
+    this.oldestPos = this.positions[0];
+    this.newestPos = this.positions[this.positions.length - 1];
+
+    this.lat = this.oldestPos[0];
+    this.lng = this.oldestPos[1];
 
     this.marker = this.newMarker();
 }
@@ -82,9 +84,11 @@ Vehicle.prototype = {
         this.heading = newVehicle.heading;
         this.positions = newVehicle.positions;
 
-        // set to the most recent position (instead of the oldest position, which is the initial state)
-        this.lat = this.positions[this.positions.length - 1][0];
-        this.lng = this.positions[this.positions.length - 1][1];
+        this.oldestPos = newVehicle.oldestPos;
+        this.newestPos = newVehicle.newestPos;
+
+        this.lat = this.newestPos[0];
+        this.lng = this.newestPos[1];
     },
     animateTo: function(lat, lng, steps) {
         steps = steps || config.DEFAULT_MARKER_ANIMATION_STEPS;
