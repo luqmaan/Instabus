@@ -8,11 +8,22 @@ var Vehicle = require('./Vehicle');
 
 var CapMetroAPIError = config.errors.CapMetroAPIError();
 
-var VehicleCollection = {
-    fetch: function(route, direction) {
+function VehicleCollection(route, direction) {
+    this.route = route;
+    this.direction = direction;
+    this.vehicles = [];
+    this.layer = L.layerGroup();
+}
+
+VehicleCollection.prototype = {
+    refresh: function() {
+        return this.fetch()
+            .tap(this.draw.bind(this));
+    },
+    fetch: function() {
         var deferred = when.defer(),
             yqlURL = 'http://query.yahooapis.com/v1/public/yql',
-            capURL = 'http://www.capmetro.org/planner/s_buslocation.asp?route=' + route,
+            capURL = 'http://www.capmetro.org/planner/s_buslocation.asp?route=' + this.route,
             params = {
                 q: 'select * from xml where url="' + capURL + '"',
                 format: 'json' // let yql do the conversion from xml to json
@@ -20,7 +31,7 @@ var VehicleCollection = {
 
         function retryAtMost(maxRetries) {
             requests.get(yqlURL, params)
-                .then(this.parseLocationResponse.bind(this, direction))
+                .then(this.parseLocationResponse.bind(this, this.direction))
                 .then(function(vehicles) {
                     console.info('API responded with', vehicles.length, 'vehicles');
                     deferred.resolve(vehicles);
@@ -69,9 +80,7 @@ var VehicleCollection = {
         }
 
         data.forEach(function(v) {
-
             var vehicle = new Vehicle(v);
-            console.log(vehicle);
             if (vehicle.directionID === direction) {
                 return vehicles.push(vehicle);
             }
@@ -79,31 +88,59 @@ var VehicleCollection = {
 
         return vehicles;
     },
-    draw: function(vehicles, existingMarkers, layer) {
-        var existingVehicleIDs = vehicles.map(function(v) { return v.id; }),
-            addedVehicles = [],
-            deletedVehicleIDs = [];
+    draw: function(newVehicles) {
+        var addedVehicles = [],
+            existingVehicles = [],
+            deletedVehicles = [],
+            vehicleComparator = function(a, b) { return a.id === b.id; };
 
-        for (var vehicleID in existingMarkers) {
-            if (!existingVehicleIDs[vehicleID]) {
-                var marker = existingMarkers[vehicleID];
-                deletedVehicleIDs.push(vehicleID);
-                layer.removeLayer(marker);
+        // find added and existing vehicles
+        newVehicles.forEach(function(v) {
+            var existing = _.find(this.vehicles, vehicleComparator.bind(null, v));
+            if (existing) {
+                existingVehicles.push(existing);
             }
-        }
+            else {
+                addedVehicles.push(v);
+            }
+        }.bind(this));
 
-        console.info('Showing', existingVehicleIDs.length, 'vehicles', existingVehicleIDs);
-        console.info('Added', addedVehicles.length, 'vehicles', addedVehicles);
-        console.info('Deleted', deletedVehicleIDs.length, 'vehicles', deletedVehicleIDs);
-
-        vehicles.forEach(function(vehicle) {
-            var newMarker = vehicle.draw(existingMarkers, layer);
-            if (newMarker) {
-                existingMarkers[vehicleID] = newMarker;
+        // find deleted vehicles
+        this.vehicles.forEach(function(v) {
+            var equal = _.find(newVehicles, vehicleComparator.bind(null, v));
+            if (!equal) {
+                deletedVehicles.push(v);
             }
         });
 
-        return existingMarkers;
+        console.info('Existing', existingVehicles.length, 'vehicles', existingVehicles);
+        console.info('Added', addedVehicles.length, 'vehicles', addedVehicles);
+        console.info('Deleted', deletedVehicles.length, 'vehicles', deletedVehicles);
+
+        // remove from map and delete from this.vehicles
+        deletedVehicles.forEach(function(v) {
+            v.remove(this.layer);
+
+            var index = this.vehicles.indexOf(v);
+            if (index > -1) {
+                this.vehicles.splice(index, 1);
+            }
+        }.bind(this));
+
+        // draw on map and add to this.vehicles
+        addedVehicles.forEach(function(v) {
+            this.vehicles.push(v);
+            v.draw(this.layer);
+        }.bind(this));
+
+        // update the existing vehicle with the new vehicle's data
+        // move to the new location
+        existingVehicles.forEach(function(v) {
+            var newVehicle = _.find(newVehicles, vehicleComparator.bind(null, v));
+
+            v.update(newVehicle);
+            v.move();
+        });
     }
 };
 

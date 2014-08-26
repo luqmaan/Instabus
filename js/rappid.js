@@ -14,13 +14,14 @@ var CapMetroAPIError = config.errors.CapMetroAPIError();
 function Rappid() {
     // leaflet
     this.map = null;
-    this.routeLayer = null;
     this.latlng = null;
+    // route shape and stops go on rappid.routeLayer
+    // vehicles go on rappid.vehicles.layer
+    this.routeLayer = null;
 
     // data
     this.vehicles = null;
     this.shape = null;
-    this.markers = {};
 
     // viewmodels
     this.availableRoutes = ko.observableArray();
@@ -55,8 +56,7 @@ Rappid.prototype = {
 
                 this.route(defaultRoute);
             }.bind(this))
-            .then(this.setupRoute.bind(this))
-            .then(this.refresh.bind(this))
+            .then(this.selectRoute.bind(this))
             .catch(console.error);
     },
     refresh: function() {
@@ -64,14 +64,10 @@ Rappid.prototype = {
         // therefore, refresh() can't return a promise itself
         NProgress.start();
 
-        VehicleCollection.fetch(this.route().id, this.route().direction)
+        this.vehicles.refresh()
             .progress(function() {
                 // console.log('progress', arguments);
                 // FIXME: Show the progress notifications in the UI
-            }.bind(this))
-            .then(function(newVehicles) {
-                this.vehicles = newVehicles;
-                this.markers = VehicleCollection.draw(this.vehicles, this.markers, this.routeLayer);
             }.bind(this))
             .then(function() {
                 var stopsRefresh = this.stops().map(function(stop) { return stop.refresh(); });
@@ -123,7 +119,9 @@ Rappid.prototype = {
         }.bind(this));
     },
     selectRoute: function() {
-        this.setupRoute().done(null, console.error);
+        this.setupRoute()
+            .then(this.refresh.bind(this))
+            .catch(console.error);
     },
     setupRoute: function() {
         var route = this.route().id,
@@ -139,6 +137,12 @@ Rappid.prototype = {
         }
         this.routeLayer = L.layerGroup();
         this.routeLayer.addTo(this.map);
+
+        if (this.vehicles) {
+            this.map.removeLayer(this.vehicles.layer);
+        }
+        this.vehicles = new VehicleCollection(route, direction);
+        this.vehicles.layer.addTo(this.map);
 
         this.shape = new Shape(route, direction);
         shapePromise = this.shape.fetch()
