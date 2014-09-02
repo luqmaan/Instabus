@@ -134,12 +134,11 @@ VehicleCollection.prototype = {
         }.bind(this));
 
         // update the existing vehicle with the new vehicle's data
-        // move to the new location
+        // then move the existing vehicle's marker to its new location
         existingVehicles.forEach(function(v) {
             var newVehicle = _.find(newVehicles, vehicleComparator.bind(null, v));
 
             v.update(newVehicle);
-            v.move();
         });
     }
 };

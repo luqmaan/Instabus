@@ -35,6 +35,9 @@ function Rappid() {
     this.includeToggleBtn = ko.computed(function() {
         return !this.includeList() || !this.includeMap();
     }.bind(this));
+
+    this.refreshTimeout = null;
+    this.hidden = false;
 }
 
 Rappid.prototype = {
@@ -61,14 +64,20 @@ Rappid.prototype = {
             .catch(console.error);
     },
     refresh: function() {
-        // refresh() should be the final place where all the promises die
-        // therefore, refresh() can't return a promise itself
-        NProgress.start();
-
         function refreshCompletion() {
             NProgress.done();
-            setTimeout(this.refresh.bind(this), config.REFRESH_INTERVAL);
+            this.refreshTimeout = setTimeout(this.refresh.bind(this), config.REFRESH_INTERVAL);
         }
+
+        if (this.refreshTimeout) {
+            clearTimeout(this.refreshTimeout);
+            this.refreshTimeout = null;
+            // FIXME: Is there some way to abort any existings requests/promises?
+            // Two refreshes happening at once seems bad.
+            // We could do put a mutex on refresh(). But if refresh() gets stuck, no more refreshes will get scheduled.
+        }
+
+        NProgress.start();
 
         this.vehicles.refresh()
             .progress(function() {
@@ -117,6 +126,8 @@ Rappid.prototype = {
             }
             this.latlng = e.latlng;
         }.bind(this));
+
+        document.addEventListener("visibilitychange", this.handleVisibilityChange.bind(this), false);
     },
     selectRoute: function() {
         this.setupRoute()
@@ -193,6 +204,16 @@ Rappid.prototype = {
                 window.location.href = "https://www.youtube.com/watch?v=ygr5AHufBN4";
             }, 5000);
         }, 2000);
+    },
+    handleVisibilityChange: function() {
+        // refresh when the window reappears
+        if (this.hidden) {
+            this.refresh();
+            this.hidden = false;
+        }
+        else if (document.visibilityState === 'hidden') {
+            this.hidden = true;
+        }
     }
 };
 
