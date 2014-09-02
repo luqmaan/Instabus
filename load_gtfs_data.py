@@ -40,7 +40,7 @@ def fetch_gtfs_data():
 
     # looks like 'capital-metro_20140609_0109.zip'
     with open(DATA_VERSION_FILE, 'wb') as f:
-        f.write('{}\n{}'.format(r.url, arrow.now()))
+        f.write('{}\n{}\n'.format(r.url, arrow.now()))
 
     with open(GTFS_DOWNLOAD_FILE, 'wb') as f:
         for chunk in r.iter_content(1024):
