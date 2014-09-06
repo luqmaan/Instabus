@@ -1,6 +1,5 @@
 <div class="stop-name">
     <span class="name" data-bind="text: name"></span>
-    <span class="desc" data-bind="text: desc"></span>
 </div>
 <ul class="trips">
     <div class="progress large" data-bind="visible: showProgress">
@@ -11,7 +10,8 @@
     </div>
     <!-- ko foreach: trips() -->
         <li class="trip" data-bind="css: { old: old }">
-            <span data-bind="text: prettyTime"></span>
+            <span data-bind="text: prettyMinutes"></span>
+            <span data-bind="text: prettyHour"></span>
         </li>
     <!-- /ko -->
     <!-- ko if: errorMsg -->
