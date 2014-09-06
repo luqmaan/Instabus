@@ -104,11 +104,10 @@ Vehicle.prototype = {
         this.marker.addTo(layer);
 
         this.positions.forEach(function(pos) {
-            setTimeout(
-                function() {
-                    this.animateTo(pos[0], pos[1], steps);
-                }.bind(this),
-            timeout);
+            console.log('timeout', timeout);
+            setTimeout(function() {
+                this.animateTo(pos[0], pos[1], steps);
+            }.bind(this), timeout);
 
             timeout += (steps * config.MARKER_ANIMATION_REFRESH_RATE) + fudgeFactor;
         }.bind(this));

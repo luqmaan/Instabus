@@ -59,16 +59,16 @@ Rappid.prototype = {
                 this.route(defaultRoute);
             }.bind(this))
             .then(this.selectRoute.bind(this))
-            .then(function() {
-                window.addEventListener('focus', this.refresh.bind(this));  // desktop
-                window.addEventListener('pageshow', this.refresh.bind(this));  // ios safari
-            }.bind(this))
             .catch(console.error);
     },
     refresh: function() {
+        console.log('refreshing', this, arguments);
         function refreshCompletion() {
             NProgress.done();
             this.refreshTimeout = setTimeout(this.refresh.bind(this), config.REFRESH_INTERVAL);
+            // refresh on mobile unlock/maximize
+            // don't bind until the first refresh is done unless you want a world of race conditions with the animations ;_;
+            window.addEventListener('pageshow', this.refresh.bind(this));
         }
 
         if (this.refreshTimeout) {
@@ -80,7 +80,6 @@ Rappid.prototype = {
         }
 
         NProgress.start();
-        console.log('this', this);
 
         this.vehicles.refresh()
             .progress(function() {
