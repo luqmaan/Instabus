@@ -36,8 +36,6 @@ function Rappid() {
         return !this.includeList() || !this.includeMap();
     }.bind(this));
 
-    this.refreshTimeout = null;
-    this.hidden = false;
 }
 
 Rappid.prototype = {
@@ -61,6 +59,10 @@ Rappid.prototype = {
                 this.route(defaultRoute);
             }.bind(this))
             .then(this.selectRoute.bind(this))
+            .then(function() {
+                window.addEventListener('focus', this.refresh.bind(this));  // desktop
+                window.addEventListener('pageshow', this.refresh.bind(this));  // ios safari
+            }.bind(this))
             .catch(console.error);
     },
     refresh: function() {
@@ -78,6 +80,7 @@ Rappid.prototype = {
         }
 
         NProgress.start();
+        console.log('this', this);
 
         this.vehicles.refresh()
             .progress(function() {
@@ -126,8 +129,6 @@ Rappid.prototype = {
             }
             this.latlng = e.latlng;
         }.bind(this));
-
-        document.addEventListener("visibilitychange", this.handleVisibilityChange.bind(this), false);
     },
     selectRoute: function() {
         this.setupRoute()
@@ -204,16 +205,6 @@ Rappid.prototype = {
                 window.location.href = "https://www.youtube.com/watch?v=ygr5AHufBN4";
             }, 5000);
         }, 2000);
-    },
-    handleVisibilityChange: function() {
-        // refresh when the window reappears
-        if (this.hidden) {
-            this.refresh();
-            this.hidden = false;
-        }
-        else if (document.visibilityState === 'hidden') {
-            this.hidden = true;
-        }
     }
 };
 
