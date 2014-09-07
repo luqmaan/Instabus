@@ -36,8 +36,6 @@ function Rappid() {
         return !this.includeList() || !this.includeMap();
     }.bind(this));
 
-    this.refreshTimeout = null;
-    this.hidden = false;
 }
 
 Rappid.prototype = {
@@ -64,9 +62,13 @@ Rappid.prototype = {
             .catch(console.error);
     },
     refresh: function() {
+        console.log('refreshing', this, arguments);
         function refreshCompletion() {
             NProgress.done();
             this.refreshTimeout = setTimeout(this.refresh.bind(this), config.REFRESH_INTERVAL);
+            // refresh on mobile unlock/maximize
+            // don't bind until the first refresh is done unless you want a world of race conditions with the animations ;_;
+            window.addEventListener('pageshow', this.refresh.bind(this));
         }
 
         if (this.refreshTimeout) {
@@ -126,8 +128,6 @@ Rappid.prototype = {
             }
             this.latlng = e.latlng;
         }.bind(this));
-
-        document.addEventListener("visibilitychange", this.handleVisibilityChange.bind(this), false);
     },
     selectRoute: function() {
         this.setupRoute()
@@ -204,16 +204,6 @@ Rappid.prototype = {
                 window.location.href = "https://www.youtube.com/watch?v=ygr5AHufBN4";
             }, 5000);
         }, 2000);
-    },
-    handleVisibilityChange: function() {
-        // refresh when the window reappears
-        if (this.hidden) {
-            this.refresh();
-            this.hidden = false;
-        }
-        else if (document.visibilityState === 'hidden') {
-            this.hidden = true;
-        }
     }
 };
 
