@@ -11,6 +11,10 @@ var sourcemaps = require('gulp-sourcemaps');
 var clean = require('gulp-clean');
 var replace = require('gulp-replace');
 var ghpages = require('gulp-gh-pages');
+var git = require('gulp-git');
+var bump = require('gulp-bump');
+var tag = require('gulp-tag-version');
+var version = require('../../package.json').version;
 
 // FIXME: hook this up https://github.com/gulpjs/gulp/blob/master/docs/recipes/fast-browserify-builds-with-watchify.md
 
@@ -67,8 +71,6 @@ gulp.task('browserify-app', function() {
 });
 
 gulp.task('build-html', function() {
-    var version = '0.0.1';
-
     var html = gulp.src('./src/html/index.html')
         .pipe(replace(/bundle.(css|js)/g, 'bundle.$1?v=' + version))
         .pipe(gulp.dest('./dist/'));
@@ -104,6 +106,15 @@ gulp.task('deploy-gh-pages', ['build'], function() {
          .pipe(ghpages({cacheDir: '/tmp/ghettorappid'}));
 });
 
+gulp.task('bump', function() {
+    return gulp.src('./package.json')
+        .pipe(bump({type: 'patch'}))
+        .pipe(gulp.dest('./'))
+        .pipe(git.commit('Update version for release :shit:'))
+        .pipe(tag())
+        .pipe(git.push('origin', 'master', {args: '--tags'}));
+});
+
 gulp.task('watch', function() {
     gulp.watch('./src/js/**', ['browserify-app']);
     gulp.watch('./src/css/**', ['build-css']);
@@ -112,5 +123,5 @@ gulp.task('watch', function() {
 
 gulp.task('serve', ['build-data', 'build-img', 'build-css', 'build-html', 'browserify-app', '_serve', 'watch']);
 gulp.task('build', ['clean', 'cname', 'build-data', 'build-img', 'build-css', 'build-html', 'browserify-app', 'uglify']);
-gulp.task('deploy', ['build', 'deploy-gh-pages']);
+gulp.task('deploy', ['build', 'bump','deploy-gh-pages']);
 gulp.task('default', taskListing);
