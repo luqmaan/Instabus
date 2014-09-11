@@ -100,7 +100,7 @@ gulp.task('cname', function() {
         .pipe(gulp.dest('./dist'));
 });
 
-gulp.task('deploy-gh-pages', ['build'], function() {
+gulp.task('deploy-gh-pages', ['build', 'bump'], function() {
 
     return gulp.src('./dist/**/*')
          .pipe(ghpages({cacheDir: '/tmp/ghettorappid'}));
@@ -123,5 +123,5 @@ gulp.task('watch', function() {
 
 gulp.task('serve', ['build-data', 'build-img', 'build-css', 'build-html', 'browserify-app', '_serve', 'watch']);
 gulp.task('build', ['clean', 'cname', 'build-data', 'build-img', 'build-css', 'build-html', 'browserify-app', 'uglify']);
-gulp.task('deploy', ['build', 'bump','deploy-gh-pages']);
+gulp.task('deploy', ['build', 'deploy-gh-pages']);
 gulp.task('default', taskListing);
