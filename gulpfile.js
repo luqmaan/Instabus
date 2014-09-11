@@ -14,7 +14,7 @@ var ghpages = require('gulp-gh-pages');
 var git = require('gulp-git');
 var bump = require('gulp-bump');
 var tag = require('gulp-tag-version');
-var version = require('../../package.json').version;
+var version = require('package.json').version;
 
 // FIXME: hook this up https://github.com/gulpjs/gulp/blob/master/docs/recipes/fast-browserify-builds-with-watchify.md
 
