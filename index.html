@@ -70,7 +70,8 @@
                                     </div>
                                     <!-- ko foreach: trips() -->
                                         <li class="trip" data-bind="css: { old: old }">
-                                            <span data-bind="text: prettyTime"></span>
+                                            <span data-bind="text: prettyMinutes"></span>
+                                            <span data-bind="text: prettyHour"></span>
                                         </li>
                                     <!-- /ko -->
                                     <!-- ko if: errorMsg -->
