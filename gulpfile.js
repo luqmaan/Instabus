@@ -93,7 +93,13 @@ gulp.task('_serve', ['build-css', 'browserify-app'], function() {
     );
 });
 
+gulp.task('cname', function() {
+    gulp.src('./CNAME')
+        .pipe(gulp.dest('./dist'));
+});
+
 gulp.task('deploy-gh-pages', ['build'], function() {
+
     return gulp.src('./dist/**/*')
          .pipe(ghpages({cacheDir: '/tmp/ghettorappid'}));
 });
@@ -105,6 +111,6 @@ gulp.task('watch', function() {
 });
 
 gulp.task('serve', ['build-data', 'build-img', 'build-css', 'build-html', 'browserify-app', '_serve', 'watch']);
-gulp.task('build', ['clean', 'build-data', 'build-img', 'build-css', 'build-html', 'browserify-app', 'uglify']);
+gulp.task('build', ['clean', 'cname', 'build-data', 'build-img', 'build-css', 'build-html', 'browserify-app', 'uglify']);
 gulp.task('deploy', ['build', 'deploy-gh-pages']);
 gulp.task('default', taskListing);
