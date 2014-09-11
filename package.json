@@ -10,8 +10,10 @@
   "dependencies": {},
   "engine": "node >= 0.10.22",
   "browserify": {
-    "transform": ["brfs"]
-  } ,
+    "transform": [
+      "brfs"
+    ]
+  },
   "devDependencies": {
     "browserify": "~5.9.1",
     "gulp": "~3.8.6",
@@ -33,6 +35,7 @@
     "nprogress": "~0.1.6",
     "vinyl-source-stream": "~0.1.1",
     "watchify": "~1.0.1",
-    "brfs": "~1.2.0"
+    "brfs": "~1.2.0",
+    "gulp-replace": "~0.4.0"
   }
 }
