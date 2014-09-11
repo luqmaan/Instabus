@@ -36,6 +36,7 @@
     "vinyl-source-stream": "~0.1.1",
     "watchify": "~1.0.1",
     "brfs": "~1.2.0",
-    "gulp-replace": "~0.4.0"
+    "gulp-replace": "~0.4.0",
+    "gulp-gh-pages": "~0.3.4"
   }
 }

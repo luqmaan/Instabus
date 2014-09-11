@@ -10,6 +10,7 @@ var uglify = require('gulp-uglify');
 var sourcemaps = require('gulp-sourcemaps');
 var clean = require('gulp-clean');
 var replace = require('gulp-replace');
+var ghpages = require('gulp-gh-pages');
 
 // FIXME: hook this up https://github.com/gulpjs/gulp/blob/master/docs/recipes/fast-browserify-builds-with-watchify.md
 
@@ -20,13 +21,13 @@ gulp.task('clean', function () {
 
 gulp.task('build-css', function() {
     var src = [
-        './css/leaflet.css',
-        './css/leaflet-label.css',
-        './css/nprogress.css',
-        './css/progress.css',
-        './css/main.css'
+        './src/css/leaflet.css',
+        './src/css/leaflet-label.css',
+        './src/css/nprogress.css',
+        './src/css/progress.css',
+        './src/css/main.css'
     ];
-    return gulp.src(src, {base: './src'})
+    return gulp.src(src)
         .pipe(cssmin())
         .pipe(concat('bundle.css'))
         .pipe(gulp.dest('./dist/css'));
@@ -79,6 +80,10 @@ gulp.task('build-data', function() {
         .pipe(gulp.dest('./dist/data'));
 });
 
+gulp.task('build-img', function() {
+    gulp.src('./src/img/**.*')
+        .pipe(gulp.dest('./dist/img'));
+});
 gulp.task('_serve', ['build-css', 'browserify-app'], function() {
     return gulp.src('./dist')
         .pipe(webserver({
@@ -87,12 +92,18 @@ gulp.task('_serve', ['build-css', 'browserify-app'], function() {
     );
 });
 
+gulp.task('deploy-gh-pages', ['build'], function() {
+    return gulp.src('./dist/**/*')
+         .pipe(ghpages({cacheDir: '/tmp/ghettorappid'}));
+});
+
 gulp.task('watch', function() {
     gulp.watch('./src/js/**', ['browserify-app']);
     gulp.watch('./src/css/**', ['build-css']);
     gulp.watch('./src/html/**', ['build-html']);
 });
 
-gulp.task('serve', ['build-data', 'build-css', 'build-html', 'browserify-app', '_serve', 'watch']);
-gulp.task('build', ['clean', 'build-data', 'build-css', 'build-html', 'browserify-app', 'uglify']);
+gulp.task('serve', ['build-data', 'build-img', 'build-css', 'build-html', 'browserify-app', '_serve', 'watch']);
+gulp.task('build', ['clean', 'build-data', 'build-img', 'build-css', 'build-html', 'browserify-app', 'uglify']);
+gulp.task('deploy', ['build', 'deploy-gh-pages']);
 gulp.task('default', taskListing);

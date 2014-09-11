@@ -138,7 +138,7 @@ button, body {
     color: rgb(241,241,241);
 }
 .icon-location {
-    background: url('../icons/locate.png') center center;
+    background: url('../img/locate.png') center center;
     background-size: 50% 50%;
 }
 #list .stops {
