@@ -9,7 +9,12 @@ function Trip(data) {
     this.exception = ko.observable(data.Exception);
 
     this.moment = ko.computed(function() { return moment(this.tripTime(), 'hh:mm A'); }.bind(this));
-    this.prettyTime = ko.computed(function() { return this.moment().fromNow(); }.bind(this));
+    this.prettyHour = ko.computed(function() {
+        return this.moment().format('h:mm');
+    }.bind(this));
+    this.prettyMinutes = ko.computed(function() {
+        return this.moment().diff(moment(), 'minutes') + 'm';
+    }.bind(this));
     this.old = ko.computed(function() { return ! this.moment().isAfter(); }.bind(this));
 }
 

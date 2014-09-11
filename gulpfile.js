@@ -54,6 +54,7 @@ gulp.task('browserify-app', function() {
             .bundle()
             .on('error', function(e) {
                 gutil.log(gutil.colors.red("shit broke", e.toString()));
+                this.emit('end');
             })
             .pipe(source('./dist/js/bundle.js'))
             .pipe(gulp.dest('.'))

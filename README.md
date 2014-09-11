@@ -72,7 +72,7 @@ CapMetro only updates the vehicle location every 30-90 seconds. You should encou
 
 We really need help making this app awesome. We use GitHub issues to track bugs, features, and ideas. Issues that we think are important/can use help are tagged as `help wanted`. You can filter by the `help wanted` tag: https://github.com/luqmaan/MetroRappid/issues?labels=help+wanted&state=open.
 
-**:warning: Please submit pull requests to the `dev` branch.**
+Run `gulp deploy` when submitting a pull request. This packages up the .js and .css files.
 
 ### Installation
 
@@ -96,14 +96,14 @@ Serve the directory with [gulp](http://gulpjs.com/):
 gulp serve
 ```
 
-## Team
+## Contributors
 
 - https://github.com/luqmaan
 - https://github.com/drmaples
-- https://github.com/sethgho
-- https://github.com/scasketta
-- https://github.com/johntyree
-- https://github.com/caskman
+- https://github.com/paulserraino
+- https://github.com/ECatx
+- https://github.com/fleeting
+- Mayhaps you?
 
 ## License
 

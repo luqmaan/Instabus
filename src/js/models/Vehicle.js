@@ -45,9 +45,6 @@ function Vehicle(data) {
     this.oldestPos = this.positions[0];
     this.newestPos = this.positions[this.positions.length - 1];
 
-    this.lat = this.oldestPos[0];
-    this.lng = this.oldestPos[1];
-
     this.marker = this.newMarker();
 }
 
@@ -87,13 +84,17 @@ Vehicle.prototype = {
         this.oldestPos = newVehicle.oldestPos;
         this.newestPos = newVehicle.newestPos;
 
-        this.lat = this.newestPos[0];
-        this.lng = this.newestPos[1];
+        this.move();
     },
     animateTo: function(lat, lng, steps) {
         steps = steps || config.DEFAULT_MARKER_ANIMATION_STEPS;
         var deltaLatLng = [lat - this.marker.getLatLng().lat, lng - this.marker.getLatLng().lng];
-        animateMarker(this.marker, 0, steps, [this.marker.getLatLng().lat, this.marker.getLatLng().lng], deltaLatLng);
+        if (document.visibilityState === 'visible') {
+            animateMarker(this.marker, 0, steps, [this.marker.getLatLng().lat, this.marker.getLatLng().lng], deltaLatLng);
+        }
+        else {
+            this.marker.setLatLng([lat, lng]);
+        }
     },
     draw: function(layer) {
         var timeout = 0,
@@ -103,23 +104,22 @@ Vehicle.prototype = {
         this.marker.addTo(layer);
 
         this.positions.forEach(function(pos) {
-            setTimeout(
-                function() {
-                    this.animateTo(pos[0], pos[1], steps);
-                }.bind(this),
-            timeout);
+            console.log('timeout', timeout);
+            setTimeout(function() {
+                this.animateTo(pos[0], pos[1], steps);
+            }.bind(this), timeout);
 
             timeout += (steps * config.MARKER_ANIMATION_REFRESH_RATE) + fudgeFactor;
         }.bind(this));
     },
     move: function() {
-        this.animateTo(this.lat, this.lng);
+        this.animateTo(this.newestPos[0], this.newestPos[1]);
     },
     remove: function(layer) {
         layer.removeLayer(this.marker);
     },
     newMarker: function() {
-        var marker = L.circleMarker([this.lat, this.lng], {
+        var marker = L.circleMarker([this.oldestPos[0], this.oldestPos[1]], {
             color: '#fff',
             weight: 3,
             radius: 15,

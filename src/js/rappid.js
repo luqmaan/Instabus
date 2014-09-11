@@ -35,6 +35,7 @@ function Rappid() {
     this.includeToggleBtn = ko.computed(function() {
         return !this.includeList() || !this.includeMap();
     }.bind(this));
+
 }
 
 Rappid.prototype = {
@@ -61,14 +62,24 @@ Rappid.prototype = {
             .catch(console.error);
     },
     refresh: function() {
-        // refresh() should be the final place where all the promises die
-        // therefore, refresh() can't return a promise itself
-        NProgress.start();
-
+        console.log('refreshing', this, arguments);
         function refreshCompletion() {
             NProgress.done();
-            setTimeout(this.refresh.bind(this), config.REFRESH_INTERVAL);
+            this.refreshTimeout = setTimeout(this.refresh.bind(this), config.REFRESH_INTERVAL);
+            // refresh on mobile unlock/maximize
+            // don't bind until the first refresh is done unless you want a world of race conditions with the animations ;_;
+            window.addEventListener('pageshow', this.refresh.bind(this));
         }
+
+        if (this.refreshTimeout) {
+            clearTimeout(this.refreshTimeout);
+            this.refreshTimeout = null;
+            // FIXME: Is there some way to abort any existings requests/promises?
+            // Two refreshes happening at once seems bad.
+            // We could do put a mutex on refresh(). But if refresh() gets stuck, no more refreshes will get scheduled.
+        }
+
+        NProgress.start();
 
         this.vehicles.refresh()
             .progress(function() {
