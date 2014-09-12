@@ -44,7 +44,7 @@ function Stop(data) {
             fill: true,
             fillOpacity: 1,
             radius: 12,
-            zIndexOffset: config.stopZIndex
+            zIndexOffset: config.STOP_Z_INDEX
         });
 
     this.marker.bindPopup(this.popupContent());

@@ -18,7 +18,7 @@ function animateMarker(marker, i, steps, startLatLng, deltaLatLng) {
     marker.setLatLng([x, y]);
 
     if (i < steps) {
-        setTimeout(animateMarker.bind(null, marker, i + 1, steps, startLatLng, deltaLatLng), config.MARKER_ANIMATION_REFRESH_RATE);
+        L.Util.requestAnimFrame(animateMarker.bind(null, marker, i + 1, steps, startLatLng, deltaLatLng), null, false, marker._container);
     }
 }
 
@@ -126,7 +126,7 @@ Vehicle.prototype = {
             opacity: 1,
             fillOpacity: '0.9',
             fillColor: this.inService === 'Y' ? 'rgb(34,189,252)' : 'rgb(188,188,188)',
-            zIndexOffset: config.vehicleZIndex
+            zIndexOffset: config.VEHICLE_Z_INDEX
         });
 
         marker.bindPopup(this.popupContent());

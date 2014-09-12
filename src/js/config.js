@@ -1,9 +1,8 @@
 var config =  {
-    vehicleZIndex: 10,
-    stopZIndex: 5,
+    VEHICLE_Z_INDEX: 10,
+    STOP_Z_INDEX: 5,
     REFRESH_INTERVAL: 15 * 1000,
     MAX_RETRIES: 2,
-    MARKER_ANIMATION_REFRESH_RATE: 10,
     DEFAULT_MARKER_ANIMATION_STEPS: 200,
     errors: {
         CapMetroAPIError: function() {
