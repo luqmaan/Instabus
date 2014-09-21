@@ -356,6 +356,24 @@ and (orientation : portrait) {
     font-size: 1.3em;
 }
 
+.leaflet-container a.leaflet-popup-close-button {
+    background-color: rgba(255,36,0, 0.8);
+    border-radius: 12px;
+    width: 18px;
+    height: 18px;
+    padding: 3px 2px 1px;
+    text-align: center;
+    color: rgb(255, 255, 255);
+    right: -9px;
+    top: -9px;
+    transition: color 0.1s;
+}
+
+.leaflet-container a.leaflet-popup-close-button:hover {
+    color: rgb(133,0,11);
+}
+
+
 .leaflet-popup-content .vehicle {
     color: #6B6969;
     font-size: 0.9em;
