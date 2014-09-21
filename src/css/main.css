@@ -10,10 +10,10 @@ body {
     padding: 0;
 }
 button, body {
-    font-family: Roboto, "Helvetica NeueRobot", Helvetica, Arial, sans-serif;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 .leaflet-container {
-    font-family: Roboto, "Helvetica NeueRobot", Helvetica, Arial, sans-serif;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 #map-wrapper {
     position: absolute;
@@ -43,7 +43,7 @@ button, body {
     position: fixed;
     display: block;
     height: 40px;
-    text-align: center;
+    text-align: left;
     top: 0;
     left: 0;
     padding: 0;
@@ -69,6 +69,9 @@ button, body {
 }
 #controls select, #controls button {
     font-size: 16px;
+}
+#controls select {
+    margin-left: 10px;
 }
 #controls .spinner {
     width: 1.8em;
@@ -255,7 +258,10 @@ button, body {
     font-size: 0.8em;
     font-weight: 500;
 }
-.trip.old {
+.trip .exact {
+    color: rgb(136, 167, 139);
+}
+.trip.old, .trip.old .exact {
     background-color: rgb(246,246,246);
     border-color: rgb(235,235,235);
     color: rgb(150,150,150);

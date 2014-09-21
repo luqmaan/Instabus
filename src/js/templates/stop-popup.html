@@ -9,9 +9,9 @@
         </div>
     </div>
     <!-- ko foreach: trips() -->
-        <li class="trip" data-bind="css: { old: old }">
-            <span data-bind="text: prettyMinutes"></span>
-            <span data-bind="text: prettyHour"></span>
+        <li class="trip" data-bind="css: {old: old}">
+            <span class="minutes" data-bind="text: prettyMinutes"></span>
+            <span class="exact" data-bind="text: prettyHour"></span>
         </li>
     <!-- /ko -->
     <!-- ko if: errorMsg -->

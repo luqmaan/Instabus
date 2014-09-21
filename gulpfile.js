@@ -85,9 +85,10 @@ gulp.task('build-img', function() {
     gulp.src('./src/img/**.*')
         .pipe(gulp.dest('./dist/gh-pages/img'));
 });
-gulp.task('_serve', ['build-css', 'browserify-app'], function() {
+gulp.task('_serve', function() {
     return gulp.src('./dist/gh-pages/')
         .pipe(webserver({
+            host: '0.0.0.0',
             port: 1234,
         })
     );
@@ -95,7 +96,7 @@ gulp.task('_serve', ['build-css', 'browserify-app'], function() {
 
 gulp.task('cname', function() {
     gulp.src('./CNAME')
-        .pipe(gulp.dest('./dist/gh-pages'));
+        .pipe(gulp.dest('./dist/gh-pages/'));
 });
 
 gulp.task('deploy-gh-pages', ['build', 'bump'], function() {

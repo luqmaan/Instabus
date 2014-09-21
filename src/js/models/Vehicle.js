@@ -97,19 +97,12 @@ Vehicle.prototype = {
         }
     },
     draw: function(layer) {
-        var timeout = 0,
-            steps = 50,
-            fudgeFactor = 10;
+        var steps = 50;
 
         this.marker.addTo(layer);
 
         this.positions.forEach(function(pos) {
-            console.log('timeout', timeout);
-            setTimeout(function() {
-                this.animateTo(pos[0], pos[1], steps);
-            }.bind(this), timeout);
-
-            timeout += (steps * config.MARKER_ANIMATION_REFRESH_RATE) + fudgeFactor;
+            this.animateTo(pos[0], pos[1], steps);
         }.bind(this));
     },
     move: function() {

@@ -1,4 +1,3 @@
-// require('when/monitor/console');
 var ko = require('knockout');
 var L = require('leaflet');
 var when = require('when');
@@ -15,7 +14,7 @@ var CapMetroAPIError = config.errors.CapMetroAPIError();
 function Rappid() {
     // leaflet
     this.map = null;
-    this.latlng = null;
+    this.latlng = {lat: null, lng: null};
     // route shape and stops go on rappid.routeLayer
     // vehicles go on rappid.vehicles.layer
     this.routeLayer = null;
@@ -122,16 +121,22 @@ Rappid.prototype = {
         locateCtrl.addTo(this.map);
 
         this.map.on('locationfound', function(e) {
-            if (!this.latlng) {
+            if (!this.latlng.lat || !this.latlng.lng) {
                 StopCollection.closest(this.stops(), e.latlng);
             }
             this.latlng = e.latlng;
         }.bind(this));
     },
     selectRoute: function() {
-        this.setupRoute()
-            .then(this.refresh.bind(this))
-            .catch(console.error);
+        console.log('selectroute');
+        try {
+            this.setupRoute()
+                .then(this.refresh.bind(this))
+                .catch(console.error);
+        }
+        catch (e) {
+            console.error(e);
+        }
     },
     setupRoute: function() {
         var route = this.route().id,
@@ -162,7 +167,7 @@ Rappid.prototype = {
             .tap(function(stops) {
                 StopCollection.draw(stops, this.routeLayer);
                 this.stops(stops);
-                if (this.latlng) {
+                if (this.latlng.lat && this.latlng.lng) {
                     StopCollection.closest(stops, this.latlng);
                 }
             }.bind(this));
