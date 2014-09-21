@@ -77,8 +77,6 @@ gulp.task('build-html', function() {
 });
 
 gulp.task('build-data', function() {
-    var version = '0.0.1';
-
     gulp.src('./data/**.*')
         .pipe(gulp.dest('./dist/data'));
 });
@@ -101,7 +99,6 @@ gulp.task('cname', function() {
 });
 
 gulp.task('deploy-gh-pages', ['build', 'bump'], function() {
-
     return gulp.src('./dist/**/*')
          .pipe(ghpages({cacheDir: '/tmp/ghettorappid'}));
 });

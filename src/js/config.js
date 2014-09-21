@@ -1,4 +1,7 @@
+var version = require('../../package.json').version;
+
 var config =  {
+    VERSION: version,
     VEHICLE_Z_INDEX: 10,
     STOP_Z_INDEX: 5,
     REFRESH_INTERVAL: 15 * 1000,

@@ -1,6 +1,6 @@
+// require('when/monitor/console');
 var ko = require('knockout');
 var L = require('leaflet');
-// require('when/monitor/console');
 var when = require('when');
 var NProgress = require('NProgress');
 var LocateControl = require('./LocateControl');
@@ -35,7 +35,6 @@ function Rappid() {
     this.includeToggleBtn = ko.computed(function() {
         return !this.includeList() || !this.includeMap();
     }.bind(this));
-
 }
 
 Rappid.prototype = {
@@ -188,12 +187,18 @@ Rappid.prototype = {
         document.body.scrollTop = document.documentElement.scrollTop = 0;
     },
     track: function() {
-        // FIXME: Shit don't work
         var routeDirection = this.route().id + '-' + this.route().direction;
-        window.ga('send', {
-            'dimension1': routeDirection,
-            'hitType': 'screen',
-            'screenName': routeDirection
+        window.analytics.page({
+            name: routeDirection,
+            route: this.route().id,
+            direction: this.route().id,
+            location: {
+                latitude: this.latlng.lat,
+                longitude: this.latlng.lng,
+            },
+            app: {
+                version: config.VERSION
+            }
         });
     },
     rustle: function() {
