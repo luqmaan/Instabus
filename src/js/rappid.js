@@ -190,7 +190,7 @@ Rappid.prototype = {
         window.analytics.page({
             name: routeDirection,
             route: this.route().id,
-            direction: this.direction().id,
+            //direction: this.direction().id,
             location: {
                 latitude: this.latlng.lat,
                 longitude: this.latlng.lng,
