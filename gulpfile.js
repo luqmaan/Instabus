@@ -19,7 +19,7 @@ var version = require('./package.json').version;
 // FIXME: hook this up https://github.com/gulpjs/gulp/blob/master/docs/recipes/fast-browserify-builds-with-watchify.md
 
 gulp.task('clean', function () {
-    return gulp.src('./dist/*.*')
+    return gulp.src('./dist/*')
         .pipe(clean());
 });
 
@@ -34,13 +34,13 @@ gulp.task('build-css', function() {
     return gulp.src(src)
         .pipe(cssmin())
         .pipe(concat('bundle.css'))
-        .pipe(gulp.dest('./dist/css'));
+        .pipe(gulp.dest('./dist/gh-pages/css'));
 });
 
 gulp.task('uglify', ['browserify-app'], function() {
-    return gulp.src('./dist/js/bundle.js')
+    return gulp.src('./dist/gh-pages/js/bundle.js')
         .pipe(sourcemaps.init())
-        .pipe(concat('./dist/js/bundle.js'))
+        .pipe(concat('./dist/gh-pages/js/bundle.js'))
         .pipe(uglify())
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest('.'));
@@ -60,7 +60,7 @@ gulp.task('browserify-app', function() {
                 gutil.log(gutil.colors.red("shit broke", e.toString()));
                 this.emit('end');
             })
-            .pipe(source('./dist/js/bundle.js'))
+            .pipe(source('./dist/gh-pages/js/bundle.js'))
             .pipe(gulp.dest('.'))
             .on('end', function() {
                 gutil.log(gutil.colors.blue("shit finished"));
@@ -73,23 +73,22 @@ gulp.task('browserify-app', function() {
 gulp.task('build-html', function() {
     var html = gulp.src('./src/html/index.html')
         .pipe(replace(/bundle.(css|js)/g, 'bundle.$1?v=' + version))
-        .pipe(gulp.dest('./dist/'));
+        .pipe(gulp.dest('./dist/gh-pages/'));
 });
 
 gulp.task('build-data', function() {
-    var version = '0.0.1';
-
     gulp.src('./data/**.*')
-        .pipe(gulp.dest('./dist/data'));
+        .pipe(gulp.dest('./dist/gh-pages/data'));
 });
 
 gulp.task('build-img', function() {
     gulp.src('./src/img/**.*')
-        .pipe(gulp.dest('./dist/img'));
+        .pipe(gulp.dest('./dist/gh-pages/img'));
 });
-gulp.task('_serve', ['build-css', 'browserify-app'], function() {
-    return gulp.src('./dist')
+gulp.task('_serve', function() {
+    return gulp.src('./dist/gh-pages/')
         .pipe(webserver({
+            host: '0.0.0.0',
             port: 1234,
         })
     );
@@ -97,12 +96,11 @@ gulp.task('_serve', ['build-css', 'browserify-app'], function() {
 
 gulp.task('cname', function() {
     gulp.src('./CNAME')
-        .pipe(gulp.dest('./dist'));
+        .pipe(gulp.dest('./dist/gh-pages/'));
 });
 
 gulp.task('deploy-gh-pages', ['build', 'bump'], function() {
-
-    return gulp.src('./dist/**/*')
+    return gulp.src('./dist/gh-pages/**/*')
          .pipe(ghpages({cacheDir: '/tmp/ghettorappid'}));
 });
 

@@ -1,6 +1,5 @@
 var ko = require('knockout');
 var L = require('leaflet');
-// require('when/monitor/console');
 var when = require('when');
 var NProgress = require('NProgress');
 var LocateControl = require('./LocateControl');
@@ -15,7 +14,7 @@ var CapMetroAPIError = config.errors.CapMetroAPIError();
 function Rappid() {
     // leaflet
     this.map = null;
-    this.latlng = null;
+    this.latlng = {lat: null, lng: null};
     // route shape and stops go on rappid.routeLayer
     // vehicles go on rappid.vehicles.layer
     this.routeLayer = null;
@@ -35,7 +34,6 @@ function Rappid() {
     this.includeToggleBtn = ko.computed(function() {
         return !this.includeList() || !this.includeMap();
     }.bind(this));
-
 }
 
 Rappid.prototype = {
@@ -123,7 +121,7 @@ Rappid.prototype = {
         locateCtrl.addTo(this.map);
 
         this.map.on('locationfound', function(e) {
-            if (!this.latlng) {
+            if (!this.latlng.lat || !this.latlng.lng) {
                 StopCollection.closest(this.stops(), e.latlng);
             }
             this.latlng = e.latlng;
@@ -163,7 +161,7 @@ Rappid.prototype = {
             .tap(function(stops) {
                 StopCollection.draw(stops, this.routeLayer);
                 this.stops(stops);
-                if (this.latlng) {
+                if (this.latlng.lat && this.latlng.lng) {
                     StopCollection.closest(stops, this.latlng);
                 }
             }.bind(this));
@@ -188,12 +186,18 @@ Rappid.prototype = {
         document.body.scrollTop = document.documentElement.scrollTop = 0;
     },
     track: function() {
-        // FIXME: Shit don't work
         var routeDirection = this.route().id + '-' + this.route().direction;
-        window.ga('send', {
-            'dimension1': routeDirection,
-            'hitType': 'screen',
-            'screenName': routeDirection
+        window.analytics.page({
+            name: routeDirection,
+            route: this.route().id,
+            direction: this.route().id,
+            location: {
+                latitude: this.latlng.lat,
+                longitude: this.latlng.lng,
+            },
+            app: {
+                version: config.VERSION
+            }
         });
     },
     rustle: function() {
