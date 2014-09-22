@@ -128,15 +128,9 @@ Rappid.prototype = {
         }.bind(this));
     },
     selectRoute: function() {
-        console.log('selectroute');
-        try {
-            this.setupRoute()
-                .then(this.refresh.bind(this))
-                .catch(console.error);
-        }
-        catch (e) {
-            console.error(e);
-        }
+        this.setupRoute()
+            .then(this.refresh.bind(this))
+            .catch(console.error);
     },
     setupRoute: function() {
         var route = this.route().id,

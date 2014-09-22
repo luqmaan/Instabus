@@ -37,7 +37,7 @@ gulp.task('build-css', function() {
         .pipe(gulp.dest('./dist/gh-pages/css'));
 });
 
-gulp.task('uglify', ['browserify-app'], function    () {
+gulp.task('uglify', ['browserify-app'], function() {
     return gulp.src('./dist/gh-pages/js/bundle.js')
         .pipe(sourcemaps.init())
         .pipe(concat('./dist/gh-pages/js/bundle.js'))
