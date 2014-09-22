@@ -11,17 +11,11 @@
     <link rel="apple-touch-icon" sizes="76x76" href="img/icon-76.png">
     <link rel="apple-touch-icon" sizes="120x120" href="img/icon-60@2x.png">
     <link rel="apple-touch-icon" sizes="152x152" href="img/icon-76@2x.png">
-    <link href="css/bundle.css?v=0.0.5" rel="stylesheet">
-    <link href="http://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet" type="text/css">
+    <link href="css/bundle.css?v=0.0.6" rel="stylesheet">
     <script type="text/javascript">
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-        ga('create', 'UA-48501204-1', 'metrorappid.com');
-        ga('require', 'displayfeatures');
-        ga('send', 'pageview');
+        window.analytics=window.analytics||[],window.analytics.methods=["identify","group","track","page","pageview","alias","ready","on","once","off","trackLink","trackForm","trackClick","trackSubmit"],window.analytics.factory=function(t){return function(){var a=Array.prototype.slice.call(arguments);return a.unshift(t),window.analytics.push(a),window.analytics}};for(var i=0;i<window.analytics.methods.length;i++){var key=window.analytics.methods[i];window.analytics[key]=window.analytics.factory(key)}window.analytics.load=function(t){if(!document.getElementById("analytics-js")){var a=document.createElement("script");a.type="text/javascript",a.id="analytics-js",a.async=!0,a.src=("https:"===document.location.protocol?"https://":"http://")+"cdn.segment.io/analytics.js/v1/"+t+"/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(a,n)}},window.analytics.SNIPPET_VERSION="2.0.9",
+        window.analytics.load('rogws3jvr0');
+        window.analytics.page();
     </script>
 </head>
 <body>
@@ -88,6 +82,6 @@
             <div id="map"></div>
         </div>
     </div>
-    <script src="js/bundle.js?v=0.0.5"></script>
+    <script src="js/bundle.js?v=0.0.6"></script>
 </body>
 </html>
