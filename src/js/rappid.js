@@ -192,6 +192,7 @@ Rappid.prototype = {
             route: this.route().id,
             direction: this.route().direction,
             fingerprint: window.fingerme,
+            coordinates: this.latlng,
             location: {
                 latitude: this.latlng.lat,
                 longitude: this.latlng.lng,
