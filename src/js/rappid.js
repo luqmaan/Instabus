@@ -187,17 +187,18 @@ Rappid.prototype = {
     },
     track: function() {
         var routeDirection = this.route().id + '-' + this.route().direction;
-        window.analytics.page({
+        window.analytics.track('TripSelected', {
             name: routeDirection,
             route: this.route().id,
             direction: this.route().direction,
+            fingerprint: window.fingerme,
             location: {
                 latitude: this.latlng.lat,
                 longitude: this.latlng.lng,
             },
             app: {
                 version: config.VERSION
-            }
+            },
         });
     },
     rustle: function() {
