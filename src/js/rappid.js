@@ -22,7 +22,6 @@ function Rappid() {
     // data
     this.vehicles = null;
     this.shape = null;
-    this.closestStop = null;
 
     // viewmodels
     this.availableRoutes = ko.observableArray();
@@ -123,8 +122,7 @@ Rappid.prototype = {
 
         this.map.on('locationfound', function(e) {
             if (!this.latlng.lat || !this.latlng.lng) {
-                this.closestStop = StopCollection.closest(this.stops(), e.latlng);
-                this.map.stopLocate();
+                StopCollection.closest(this.stops(), e.latlng);
             }
             this.latlng = e.latlng;
         }.bind(this));
@@ -164,7 +162,7 @@ Rappid.prototype = {
                 StopCollection.draw(stops, this.routeLayer);
                 this.stops(stops);
                 if (this.latlng.lat && this.latlng.lng) {
-                    this.closestStop = StopCollection.closest(stops, this.latlng);
+                    StopCollection.closest(stops, this.latlng);
                 }
             }.bind(this));
 
