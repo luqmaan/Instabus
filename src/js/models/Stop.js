@@ -69,7 +69,7 @@ Stop.prototype = {
 
         if (!this.loadedTrips()) {
             this.loadTrips().then(
-                null,  // FIXME: Should make the map fit the popup
+                this.centerMarker(this.marker),
                 function(e) { console.error(e); }
             );
         }
@@ -110,6 +110,12 @@ Stop.prototype = {
         div.innerHTML = stopPopupHTML;
         ko.applyBindings(this, div);
         return div;
+    },
+    centerMarker: function (marker) {
+        marker._map.setView([
+            marker._latlng.lat,
+            marker._latlng.lng
+            ]);
     }
 };
 

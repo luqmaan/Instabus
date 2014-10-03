@@ -124,24 +124,10 @@ Rappid.prototype = {
         this.map.on('locationfound', function(e) {
             if (!this.latlng.lat || !this.latlng.lng) {
                 this.closestStop = StopCollection.closest(this.stops(), e.latlng);
-                this.scrollMap(this.closestStop.lat(), this.closestStop.lon());
                 this.map.stopLocate();
             }
             this.latlng = e.latlng;
         }.bind(this));
-    },
-    scrollMap: function (lat, lng) {
-        try {
-            this.map.panTo(
-                [lat, lng],
-                {
-                    animate: true,
-                    duration: 1.0
-                }
-                );
-        } catch (err) {
-            console.error('error panning map ',err.message);
-        }
     },
     selectRoute: function() {
         this.setupRoute()
@@ -179,7 +165,6 @@ Rappid.prototype = {
                 this.stops(stops);
                 if (this.latlng.lat && this.latlng.lng) {
                     this.closestStop = StopCollection.closest(stops, this.latlng);
-                    this.scrollMap(this.closestStop.lat(), this.closestStop.lon());
                 }
             }.bind(this));
 
