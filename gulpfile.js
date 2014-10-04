@@ -99,7 +99,7 @@ gulp.task('cname', function() {
         .pipe(gulp.dest('./dist/gh-pages/'));
 });
 
-gulp.task('deploy-gh-pages', ['build', 'bump'], function() {
+gulp.task('deploy-gh-pages', ['bump'], function() {
     return gulp.src('./dist/gh-pages/**/*')
          .pipe(ghpages({cacheDir: '/tmp/ghettorappid'}));
 });
@@ -119,7 +119,7 @@ gulp.task('watch', function() {
     gulp.watch('./src/html/**', ['build-html']);
 });
 
-gulp.task('serve', ['clean', 'build-data', 'build-img', 'build-css', 'build-html', 'browserify-app', '_serve', 'watch']);
-gulp.task('build', ['clean', 'cname', 'build-data', 'build-img', 'build-css', 'build-html', 'browserify-app', 'uglify']);
-gulp.task('deploy', ['build', 'deploy-gh-pages']);
+gulp.task('serve', ['build-data', 'build-img', 'build-css', 'build-html', 'browserify-app', '_serve', 'watch']);
+gulp.task('build', ['cname', 'build-data', 'build-img', 'build-css', 'build-html', 'browserify-app', 'uglify']);
+gulp.task('deploy', ['deploy-gh-pages']);
 gulp.task('default', taskListing);

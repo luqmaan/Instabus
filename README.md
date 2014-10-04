@@ -96,6 +96,16 @@ Serve the directory with [gulp](http://gulpjs.com/):
 gulp serve
 ```
 
+### Deployment
+
+To deploy:
+
+```
+gulp clean
+gulp build
+gulp deploy
+```
+
 ## Contributors
 
 - https://github.com/luqmaan
