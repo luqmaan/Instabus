@@ -104,11 +104,6 @@ Stop.prototype = {
         return div;
     },
     centerMarker: function() {
-        var listEl = document.getElementById(this.cssId());
-        if (listEl) {
-            document.getElementById('list').scrollTop = listEl.offsetTop;
-        }
-        
         this.marker._map.setView(this.marker._latlng);
     }
 };
