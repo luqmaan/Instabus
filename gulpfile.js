@@ -119,7 +119,7 @@ gulp.task('watch', function() {
     gulp.watch('./src/html/**', ['build-html']);
 });
 
-gulp.task('serve', ['build-data', 'build-img', 'build-css', 'build-html', 'browserify-app', '_serve', 'watch']);
+gulp.task('serve', ['clean', 'build-data', 'build-img', 'build-css', 'build-html', 'browserify-app', '_serve', 'watch']);
 gulp.task('build', ['clean', 'cname', 'build-data', 'build-img', 'build-css', 'build-html', 'browserify-app', 'uglify']);
 gulp.task('deploy', ['build', 'deploy-gh-pages']);
 gulp.task('default', taskListing);
