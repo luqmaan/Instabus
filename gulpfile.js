@@ -23,7 +23,7 @@ gulp.task('clean', function () {
         .pipe(clean());
 });
 
-gulp.task('build-css', ['clean'], function() {
+gulp.task('build-css', function() {
     var src = [
         './src/css/leaflet.css',
         './src/css/leaflet-label.css',
@@ -46,7 +46,7 @@ gulp.task('uglify', ['browserify-app'], function() {
         .pipe(gulp.dest('.'));
 });
 
-gulp.task('browserify-app', ['clean'], function() {
+gulp.task('browserify-app', function() {
     var bundler = browserify({
         entries: ['./src/js/main.js'],
         extensions: ['.js'],
@@ -70,7 +70,7 @@ gulp.task('browserify-app', ['clean'], function() {
     return bundle();
 });
 
-gulp.task('build-html', ['clean'], function() {
+gulp.task('build-html', function() {
     var html = gulp.src('./src/html/index.html')
         .pipe(replace(/bundle.(css|js)/g, 'bundle.$1?v=' + version))
         .pipe(gulp.dest('./dist/gh-pages/'));
@@ -119,7 +119,7 @@ gulp.task('watch', function() {
     gulp.watch('./src/html/**', ['build-html']);
 });
 
-gulp.task('serve', ['build-data', 'build-img', 'build-css', 'build-html', 'browserify-app', '_serve', 'watch']);
+gulp.task('serve', ['clean', 'build-data', 'build-img', 'build-css', 'build-html', 'browserify-app', '_serve', 'watch']);
 gulp.task('build', ['clean', 'cname', 'build-data', 'build-img', 'build-css', 'build-html', 'browserify-app', 'uglify']);
 gulp.task('deploy', ['build', 'deploy-gh-pages']);
 gulp.task('default', taskListing);

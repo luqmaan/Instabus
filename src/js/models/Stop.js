@@ -49,11 +49,7 @@ function Stop(data) {
 
     this.marker.bindPopup(this.popupContent());
 
-    this.marker.addEventListener('click', function(e) {
-        if (!this.loadedTrips()) {
-            this.loadTrips().then(null, console.error);
-        }
-    }.bind(this));
+    this.marker.addEventListener('click', this.toggleTrips.bind(this));
 }
 
 Stop.prototype = {
@@ -62,6 +58,9 @@ Stop.prototype = {
 
         if (this.showTrips()) {
             this.marker.openPopup();
+            this.centerMarker();
+            document.body.scrollTop = document.getElementById(this.cssId()).offsetTop;  // mobile
+            document.getElementById('list').scrollTop = document.getElementById(this.cssId()).offsetTop;  // desktop
         }
         else {
             this.marker.closePopup();
@@ -69,7 +68,7 @@ Stop.prototype = {
 
         if (!this.loadedTrips()) {
             this.loadTrips().then(
-                this.centerMarker(this.marker),
+                this.centerMarker.bind(this),
                 function(e) { console.error(e); }
             );
         }
@@ -111,11 +110,11 @@ Stop.prototype = {
         ko.applyBindings(this, div);
         return div;
     },
-    centerMarker: function (marker) {
-        marker._map.setView([
-            marker._latlng.lat,
-            marker._latlng.lng
-            ]);
+    centerMarker: function() {
+        this.marker._map.setView([
+            this.marker._latlng.lat,
+            this.marker._latlng.lng,
+        ]);
     }
 };
 
