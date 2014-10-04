@@ -49,27 +49,19 @@ function Stop(data) {
 
     this.marker.bindPopup(this.popupContent());
 
-    this.marker.addEventListener('click', function(e) {
-        if (!this.loadedTrips()) {
-            this.loadTrips().then(null, console.error);
-        }
-    }.bind(this));
+    this.marker.addEventListener('click', this.toggleTrips.bind(this));
 }
 
 Stop.prototype = {
-    toggleTrips: function() {
+    toggleTrips: function(e) {
         this.showTrips(!this.showTrips());
-
-        if (this.showTrips()) {
-            this.marker.openPopup();
-        }
-        else {
-            this.marker.closePopup();
-        }
+        
+        this.centerMarker();
+        this.marker.openPopup();
 
         if (!this.loadedTrips()) {
             this.loadTrips().then(
-                this.centerMarker(this.marker),
+                this.centerMarker.bind(this),
                 function(e) { console.error(e); }
             );
         }
@@ -111,11 +103,13 @@ Stop.prototype = {
         ko.applyBindings(this, div);
         return div;
     },
-    centerMarker: function (marker) {
-        marker._map.setView([
-            marker._latlng.lat,
-            marker._latlng.lng
-            ]);
+    centerMarker: function() {
+        var listEl = document.getElementById(this.cssId());
+        if (listEl) {
+            document.getElementById('list').scrollTop = listEl.offsetTop;
+        }
+        
+        this.marker._map.setView(this.marker._latlng);
     }
 };
 

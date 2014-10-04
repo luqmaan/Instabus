@@ -23,7 +23,7 @@ gulp.task('clean', function () {
         .pipe(clean());
 });
 
-gulp.task('build-css', ['clean'], function() {
+gulp.task('build-css', function() {
     var src = [
         './src/css/leaflet.css',
         './src/css/leaflet-label.css',
@@ -46,7 +46,7 @@ gulp.task('uglify', ['browserify-app'], function() {
         .pipe(gulp.dest('.'));
 });
 
-gulp.task('browserify-app', ['clean'], function() {
+gulp.task('browserify-app', function() {
     var bundler = browserify({
         entries: ['./src/js/main.js'],
         extensions: ['.js'],
@@ -70,18 +70,18 @@ gulp.task('browserify-app', ['clean'], function() {
     return bundle();
 });
 
-gulp.task('build-html', ['clean'], function() {
+gulp.task('build-html', function() {
     var html = gulp.src('./src/html/index.html')
         .pipe(replace(/bundle.(css|js)/g, 'bundle.$1?v=' + version))
         .pipe(gulp.dest('./dist/gh-pages/'));
 });
 
-gulp.task('build-data', ['clean'], function() {
+gulp.task('build-data', function() {
     gulp.src('./data/**.*')
         .pipe(gulp.dest('./dist/gh-pages/data'));
 });
 
-gulp.task('build-img', ['clean'], function() {
+gulp.task('build-img', function() {
     gulp.src('./src/img/**.*')
         .pipe(gulp.dest('./dist/gh-pages/img'));
 });
@@ -101,7 +101,7 @@ gulp.task('cname', function() {
 
 gulp.task('deploy-gh-pages', ['build', 'bump'], function() {
     return gulp.src('./dist/gh-pages/**/*')
-         .pipe(ghpages({cacheDir: '/tmp/ghettorappid'}))
+         .pipe(ghpages({cacheDir: '/tmp/ghettorappid'}));
 });
 
 gulp.task('bump', function() {
