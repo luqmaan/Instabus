@@ -41,8 +41,6 @@ var StopCollection = {
         stop = stops[parseInt(nearestPoint.key)];
 
         stop.closest(true);
-        document.body.scrollTop = document.getElementById(stop.cssId()).offsetTop;  // mobile
-        document.getElementById('list').scrollTop = document.getElementById(stop.cssId()).offsetTop;  // desktop
         stop.toggleTrips();
 
         return stop;
