@@ -7,6 +7,8 @@ var config =  {
     REFRESH_INTERVAL: 15 * 1000,
     MAX_RETRIES: 2,
     DEFAULT_MARKER_ANIMATION_STEPS: 200,
+    MAP_INITIAL_COORDINATES: [30.267153, -97.743061],
+    MAP_INITIAL_ZOOM_LEVEL: 14,
     errors: {
         CapMetroAPIError: function() {
             function CapMetroAPIError(message) {
