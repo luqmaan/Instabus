@@ -1,13 +1,12 @@
 {
     "name": "metrorappid",
-    "version": "0.0.16",
+    "version": "0.0.17",
     "description": "MetroRappid",
     "author": "",
     "repository": {
         "type": "git",
         "url": "https://github.com/luqmaan/MetroRappid.git"
     },
-    "//": "Install Leaflet.label from github since npm is out of date",
     "//": "https://github.com/Leaflet/Leaflet.label/issues/101",
     "dependencies": {
         "fingerprintjs": "~0.5.3",
