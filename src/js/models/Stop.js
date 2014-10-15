@@ -1,8 +1,7 @@
 var ko = require('knockout');
 var when = require('when');
 var leaflet = require('leaflet');
-// window.L = leaflet;
-var wef = require('leaflet-label');
+require('leaflet.label');
 var TripCollection = require('./TripCollection');
 var fs = require('fs');
 var config = require('../config');
@@ -38,7 +37,7 @@ function Stop(data) {
 
     this.color = 'rgb(199,16,22)';
 
-    this.marker = L.circleMarker([this.lat(), this.lon()], {
+    this.marker = leaflet.circleMarker([this.lat(), this.lon()], {
             color: 'white',
             opacity: 1,
             weight: 3,
@@ -50,7 +49,12 @@ function Stop(data) {
         });
 
     this.marker.bindPopup(this.popupContent());
-    this.marker.bindLabel();
+    this.marker.bindLabel(this.name(), {
+        noHide: true,
+        direction: 'auto',
+        className: 'stop-leaflet-label',
+        offset: [15, -10],
+   });
 
     this.marker.addEventListener('click', this.toggleTrips.bind(this));
 }
@@ -58,7 +62,7 @@ function Stop(data) {
 Stop.prototype = {
     toggleTrips: function(e) {
         this.showTrips(!this.showTrips());
-        
+
         this.centerMarker();
         this.marker.openPopup();
 

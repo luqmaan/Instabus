@@ -145,6 +145,17 @@ button, body {
     font-size: 0.8em;
     color: rgb(123,123,123);
 }
+.stop-leaflet-label {
+    background: none;
+    border: none;
+    font-weight: 600;
+    font-family: 'Trebuchet MS', Verdana, Arial, sans-serif;
+    color: rgb(110, 96, 101);
+    text-shadow: rgb(255,255,255) 1px 2px 0px;
+}
+.stop-leaflet-label::before, .stop-leaflet-label::after {
+    content: normal;
+}
 .error {
     color: rgb(200,35,38);
     border: 1px solid rgb(235,167,168);
@@ -235,6 +246,10 @@ and (max-device-width: 1024px)
         max-height: 90%;
         width: 250px !important;
     }
+}
+
+.leaflet-popup {
+    z-index: 30;
 }
 
 .leaflet-popup-content-wrapper {

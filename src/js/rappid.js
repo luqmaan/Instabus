@@ -93,7 +93,7 @@ Rappid.prototype = {
             locateCtrl;
 
         this.map = L.map('map', {zoomControl: false,});
-        this.map.setView([30.267153, -97.743061], 12);
+        this.map.setView([30.267153, -97.743061], 13);
 
         tileLayer = L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
             maxZoom: 18,

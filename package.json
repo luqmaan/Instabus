@@ -7,13 +7,15 @@
         "type": "git",
         "url": "https://github.com/luqmaan/MetroRappid.git"
     },
+    "//": "Install Leaflet.label from github since npm is out of date",
+    "//": "https://github.com/Leaflet/Leaflet.label/issues/101",
     "dependencies": {
         "fingerprintjs": "~0.5.3",
         "knockout": "~3.1.0",
         "underscore": "~1.6.0",
         "when": "~3.2.3",
         "leaflet": "~0.7.3",
-        "leaflet-label": "~0.2.1",
+        "leaflet-label": "git+ssh://git@github.com:Leaflet/Leaflet.label.git",
         "moment": "~2.7.0",
         "geolib": "~2.0.9",
         "nprogress": "~0.1.6"
