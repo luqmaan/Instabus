@@ -1,3 +1,4 @@
+require('when/monitor/console');
 var ko = window.ko = require('knockout');
 var Fingerprint = require('fingerprintjs');
 var Rappid = require('./rappid');

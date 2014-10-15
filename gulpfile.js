@@ -51,6 +51,14 @@ gulp.task('browserify-app', function() {
         entries: ['./src/js/main.js'],
         extensions: ['.js'],
         debug: true,
+        // shim: { 
+        //     'leaflet': {
+        //          exports: 'L',  
+        //     },
+        //     'leaflet-label': {
+        //         path: 'node_modules/leaflet-label'
+        //     } 
+        // }
     });
 
     var bundle = function() {

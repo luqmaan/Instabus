@@ -1,47 +1,52 @@
 {
-  "name": "metrorappid",
-  "version": "0.0.16",
-  "description": "MetroRappid",
-  "author": "",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/luqmaan/MetroRappid.git"
-  },
-  "dependencies": {
-    "fingerprintjs": "~0.5.3",
-    "knockout": "~3.1.0",
-    "underscore": "~1.6.0",
-    "when": "~3.2.3",
-    "leaflet": "~0.7.3",
-    "leaflet-label": "~0.2.1",
-    "moment": "~2.7.0",
-    "geolib": "~2.0.9",
-    "nprogress": "~0.1.6"
-  },
-  "engine": "node >= 0.10.22",
-  "browserify": {
-    "transform": [
-      "brfs"
-    ]
-  },
-  "devDependencies": {
-    "browserify": "~5.9.1",
-    "gulp": "~3.8.7",
-    "gulp-webserver": "~0.4.0",
-    "gulp-task-listing": "0.3.0",
-    "gulp-util": "~3.0.0",
-    "gulp-cssmin": "~0.1.6",
-    "gulp-concat": "~2.3.4",
-    "gulp-uglify": "~0.3.1",
-    "gulp-sourcemaps": "~1.1.0",
-    "gulp-clean": "~0.3.1",
-    "vinyl-source-stream": "~0.1.1",
-    "watchify": "~1.0.1",
-    "brfs": "~1.2.0",
-    "gulp-replace": "~0.4.0",
-    "gulp-gh-pages": "~0.3.4",
-    "gulp-bump": "~0.1.11",
-    "gulp-tag-version": "~1.1.0",
-    "gulp-git": "~0.5.0"
-  }
+    "name": "metrorappid",
+    "version": "0.0.16",
+    "description": "MetroRappid",
+    "author": "",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/luqmaan/MetroRappid.git"
+    },
+    "//": "Install Leaflet.label from github since npm is out of date",
+    "//": "https://github.com/Leaflet/Leaflet.label/issues/101",
+    "dependencies": {
+        "fingerprintjs": "~0.5.3",
+        "knockout": "~3.1.0",
+        "underscore": "~1.6.0",
+        "when": "~3.2.3",
+        "leaflet": "~0.7.3",
+        "leaflet-label": "git+ssh://git@github.com:Leaflet/Leaflet.label.git",
+        "moment": "~2.7.0",
+        "geolib": "~2.0.9",
+        "nprogress": "~0.1.6"
+    },
+    "engine": "node >= 0.10.22",
+    "browserify": {
+        "transform": [
+            "brfs"
+        ]
+    },
+    "browserify-shim": {
+        "leaflet": "global:L"
+    },
+    "devDependencies": {
+        "browserify": "~5.9.1",
+        "gulp": "~3.8.7",
+        "gulp-webserver": "~0.4.0",
+        "gulp-task-listing": "0.3.0",
+        "gulp-util": "~3.0.0",
+        "gulp-cssmin": "~0.1.6",
+        "gulp-concat": "~2.3.4",
+        "gulp-uglify": "~0.3.1",
+        "gulp-sourcemaps": "~1.1.0",
+        "gulp-clean": "~0.3.1",
+        "vinyl-source-stream": "~0.1.1",
+        "watchify": "~1.0.1",
+        "brfs": "~1.2.0",
+        "gulp-replace": "~0.4.0",
+        "gulp-gh-pages": "~0.3.4",
+        "gulp-bump": "~0.1.11",
+        "gulp-tag-version": "~1.1.0",
+        "gulp-git": "~0.5.0"
+    }
 }

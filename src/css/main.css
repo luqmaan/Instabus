@@ -17,7 +17,6 @@ button, body {
 }
 #map-wrapper {
     position: absolute;
-    margin-left: 410px;
     width: 100%;
     top: 40px;
     margin-top: 0px;
@@ -25,19 +24,7 @@ button, body {
 }
 #map {
     position: relative;
-    margin-right: 410px;
     height: 100%;
-}
-#list {
-    position: absolute;
-    width: 410px;
-    top: 40px;
-    bottom: 0;
-    background: #fff;
-    overflow: scroll;
-    box-shadow: 10px -10px 10px rgba(0, 0, 0, 0.1);
-    border-right: 1px solid rgb(201,201,201);
-    z-index: 100;
 }
 #controls {
     position: fixed;
@@ -144,28 +131,6 @@ button, body {
     background: url('../img/locate.png') center center;
     background-size: 50% 50%;
 }
-#list .stops {
-    padding: 0;
-    margin: 0;
-    list-style: none;
-}
-#list .stop {
-    position: relative;
-    border-bottom: 1px solid rgb(241,241,241);
-    padding: 8px 15px;
-    cursor: pointer;
-    background-color: #fff;
-    transition: background-color 0.25s;
-}
-#list .stop:first-child {
-    padding-top: 20px;
-}
-#list .stop:last-child {
-    border-bottom: none;
-}
-#list .stop:hover {
-    background-color: rgb(246,246,246);
-}
 .stop-name .desc, .stop-name .name {
     display: block;
     margin-bottom: 0.2em;
@@ -175,54 +140,21 @@ button, body {
     font-weight: 500;
     color: #6B6969;
 }
-#list .stop:hover .stop-name .name {
-    color: #473739;
-}
 .stop-name .desc {
     font-weight: 400;
     font-size: 0.8em;
     color: rgb(123,123,123);
 }
-#list .stop-name {
-    display: inline-block;
-    width: 330px;
-}
-#list .stop .buttons {
-    float: right;
-    margin-right: 0px;
-}
-#list .stop button {
-    color: #473739;
-    background: #F7F7F7;
+.stop-leaflet-label {
+    background: none;
     border: none;
-    font-size: 0.9em;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-    border: 1px solid #D5D3D3;
-    display: block;
-    margin: 0 auto;
-    width: 20px;
-    height: 20px;
-    border-radius: 10px;
-    padding: 1px 3px 2px 3px;
-    line-height: 13px;
-    font-size: 15px;
-    transition: box-shadow 0.5s;
+    font-weight: 600;
+    font-family: 'Trebuchet MS', Verdana, Arial, sans-serif;
+    color: rgb(110, 96, 101);
+    text-shadow: rgb(255,255,255) 1px 2px 0px;
 }
-#list .stop:hover button {
-    box-shadow:  0px 4px 8px rgba(0, 0, 0, 0.2);
-}
-#list .stop .closest {
-    display: inline-block;
-    margin: 7px 0 0 1px;
-    background: rgb(149,210,253);
-    border-radius: 7px;
-    height: 12px;
-    width: 12px;
-    border: 1px solid rgb(104,190,249);
-    transition: box-shadow 0.5s;
-}
-#list .stop:hover .closest {
-    box-shadow: 0px 3px 5px rgb(149,210,253);
+.stop-leaflet-label::before, .stop-leaflet-label::after {
+    content: normal;
 }
 .error {
     color: rgb(200,35,38);
@@ -309,43 +241,15 @@ and (max-device-width: 1024px)
         text-align: right;
         float: right;
     }
-    #list {
-        width: 100%;
-        position: relative;
-        top: 40px;
-        bottom: auto;
-    }
-    #map, #map-wrapper {
-        width: 100%;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    #list .stop-name, #list .buttons {
-        width: auto;
-    }
-    #list .buttons {
-        float: right;
-        margin-right: 10px;
-    }
     .leaflet-popup-content {
         max-width: 90%;
         max-height: 90%;
         width: 250px !important;
     }
 }
-/* iPhone 5 in portrait */
-@media only screen
-and (min-device-width : 320px)
-and (max-device-width : 568px)
-and (orientation : portrait) {
-    #list .stop-name {
-        width: 260px;
-        display: inline-block;
-    }
-    #list .buttons {
-        top: 15px;
-        position: relative;
-    }
+
+.leaflet-popup {
+    z-index: 30;
 }
 
 .leaflet-popup-content-wrapper {

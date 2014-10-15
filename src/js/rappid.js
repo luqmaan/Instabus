@@ -27,20 +27,12 @@ function Rappid() {
     this.availableRoutes = ko.observableArray();
     this.route = ko.observable();
     this.stops = ko.observableArray();
-
-    // options
-    this.includeList = ko.observable(true);
-    this.includeMap = ko.observable(true);
-    this.includeToggleBtn = ko.computed(function() {
-        return !this.includeList() || !this.includeMap();
-    }.bind(this));
 }
 
 Rappid.prototype = {
     start: function() {
         NProgress.configure({ showSpinner: false });
 
-        this.resize();
         this.setupMap();
 
         RoutesCollection.fetch()
@@ -101,7 +93,7 @@ Rappid.prototype = {
             locateCtrl;
 
         this.map = L.map('map', {zoomControl: false,});
-        this.map.setView([30.267153, -97.743061], 12);
+        this.map.setView(config.MAP_INITIAL_COORDINATES, config.MAP_INITIAL_ZOOM_LEVEL);
 
         tileLayer = L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
             maxZoom: 18,
@@ -167,23 +159,6 @@ Rappid.prototype = {
             }.bind(this));
 
         return when.all([shapePromise, stopsPromise]);
-    },
-    resize: function(e) {
-        if (window.screen.width <= 1024) {
-            this.includeMap(true);
-            this.includeList(false);
-        }
-        else {
-            this.includeMap(true);
-            this.includeList(true);
-        }
-    },
-    toggleMap: function() {
-        this.includeList(!this.includeList());
-        this.includeMap(!this.includeMap());
-        this.map.invalidateSize();
-        this.map.closePopup();
-        document.body.scrollTop = document.documentElement.scrollTop = 0;
     },
     track: function() {
         var routeDirection = this.route().id + '-' + this.route().direction;
