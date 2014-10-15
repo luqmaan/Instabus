@@ -11,7 +11,7 @@
     <link rel="apple-touch-icon" sizes="76x76" href="img/icon-76.png">
     <link rel="apple-touch-icon" sizes="120x120" href="img/icon-60@2x.png">
     <link rel="apple-touch-icon" sizes="152x152" href="img/icon-76@2x.png">
-    <link href="css/bundle.css?v=0.0.15" rel="stylesheet">
+    <link href="css/bundle.css?v=0.0.16" rel="stylesheet">
     <script type="text/javascript">
         window.analytics=window.analytics||[],window.analytics.methods=["identify","group","track","page","pageview","alias","ready","on","once","off","trackLink","trackForm","trackClick","trackSubmit"],window.analytics.factory=function(t){return function(){var a=Array.prototype.slice.call(arguments);return a.unshift(t),window.analytics.push(a),window.analytics}};for(var i=0;i<window.analytics.methods.length;i++){var key=window.analytics.methods[i];window.analytics[key]=window.analytics.factory(key)}window.analytics.load=function(t){if(!document.getElementById("analytics-js")){var a=document.createElement("script");a.type="text/javascript",a.id="analytics-js",a.async=!0,a.src=("https:"===document.location.protocol?"https://":"http://")+"cdn.segment.io/analytics.js/v1/"+t+"/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(a,n)}},window.analytics.SNIPPET_VERSION="2.0.9",
         window.analytics.load('rogws3jvr0');
@@ -24,64 +24,12 @@
             <div class="wrapper">
                 <img class="unicon" src="img/icon-40.png" />
                 <select id="route" data-bind="options: availableRoutes, optionsText: 'name', value: route, valueAllowUnset: true, event: {change: selectRoute}"></select>
-                <!-- ko if: includeToggleBtn -->
-                    <button data-bind="click: toggleMap">
-                        <span data-bind="if: includeList">Map</span>
-                        <span data-bind="if: includeMap">List</span>
-                    </button>
-                <!-- /ko -->
             </div>
         </div>
-        <div id="list" data-bind="visible: includeList">
-            <div class="wrapper">
-                <ul class="stops">
-                    <!-- ko foreach: stops() -->
-                        <li class="stop" data-bind="click: toggleTrips, attr: {id: cssId}">
-                            <div class="stop-name">
-                                <div class="name" >
-                                    <span data-bind="text: name"></span>
-                                    <!-- ko if: closest -->
-                                        <div class="closest"></div>
-                                    <!-- /ko -->
-                                </div>
-                                <span class="desc" data-bind="text: desc"></span>
-                            </div>
-                            <div class="buttons" aria-hidden="true"> <!-- aria-hidden , hides info from screen readers-->
-                                <!-- ko ifnot: showTrips -->
-                                    <button>+</button>
-                                <!-- /ko -->
-                                <!-- ko if: showTrips -->
-                                    <button>-</button>
-                                <!-- /ko -->
-                            </div>
-                            <!-- ko if: showTrips -->
-                                <ul class="trips">
-                                    <div data-bind="visible: showProgress">
-                                        <div class="spinner">
-                                            <div class="double-bounce1"></div>
-                                            <div class="double-bounce2"></div>
-                                        </div>
-                                    </div>
-                                    <!-- ko foreach: trips() -->
-                                        <li class="trip" data-bind="css: { old: old }">
-                                            <span data-bind="text: prettyMinutes"></span>
-                                            <span data-bind="text: prettyHour"></span>
-                                        </li>
-                                    <!-- /ko -->
-                                    <!-- ko if: errorMsg -->
-                                        <li class="error"><span data-bind="text: errorMsg"></span></li>
-                                    <!-- /ko -->
-                                </ul>
-                            <!-- /ko -->
-                        </li>
-                    <!-- /ko -->
-                </ul>
-            </div>
-        </div>
-        <div id="map-wrapper" aria-hidden="true" data-bind="visible: includeMap">
+        <div id="map-wrapper" aria-hidden="true">
             <div id="map"></div>
         </div>
     </div>
-    <script src="js/bundle.js?v=0.0.15"></script>
+    <script src="js/bundle.js?v=0.0.16"></script>
 </body>
 </html>
