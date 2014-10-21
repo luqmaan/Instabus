@@ -22,8 +22,6 @@ function animateMarker(marker, i, steps, startLatLng, deltaLatLng) {
     }
 }
 
-    
-
 function Vehicle(data) {
     // FIXME: Do these have to be observables? There isn't two way binding.
     this.id = this.vehicleID = Number(data.Vehicleid);
@@ -42,10 +40,7 @@ function Vehicle(data) {
     this.speed = data.Speed;
     this.heading = data.Heading;
 
-    this.reliableReadable = this.reliable ? "reliable": "unreliable";
-    this.offRouteReadable = this.offRoute ? "on": "off";
-    this.stoppedReadable = this.stopped ? "stopped": "moving";
-    this.inServiceReadable = this.inService ? "in service": "not in service";
+    this.updateReadable();
     this.overallStatusReadable = this.getReadableVehicleStatus();
 
     this.positions = this.parsePositions(data.Positions.Position);
@@ -127,7 +122,7 @@ Vehicle.prototype = {
             radius: 15,
             opacity: 1,
             fillOpacity: '0.9',
-            fillColor: this.inService === 'Y' ? 'rgb(34,189,252)' : 'rgb(188,188,188)',
+            fillColor: this.inService ? 'rgb(34,189,252)' : 'rgb(188,188,188)',
             zIndexOffset: config.VEHICLE_Z_INDEX
         });
 
@@ -143,20 +138,20 @@ Vehicle.prototype = {
     },
     updateReadable: function() {
         this.reliableReadable = this.reliable ? "reliable": "unreliable";
-        this.offRouteReadable = this.offRoute ? "on-route": "off-route";
+        this.offRouteReadable = this.offRoute ? "off": "on";
         this.stoppedReadable = this.stopped ? "stopped": "moving";
         this.inServiceReadable = this.inService ? "in service": "not in service";
         this.overallStatusReadable = this.getReadableVehicleStatus();
     },
     getReadableVehicleStatus: function() {
         return "At " + this.updateTime +
-               ", bus " + this.routeID +
+               ", vehicle " + this.vehicleID +
                " was " + this.inServiceReadable +
                " and " + this.stoppedReadable + " " +
                this.offRouteReadable + " route " +
                this.route + " " +  this.direction +
                " at " + this.speed + " mph." +
-               " This bus is " + this.reliableReadable + " .";
+               " This vehicle is " + this.reliableReadable + ".";
     }
 };
 
