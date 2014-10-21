@@ -32,10 +32,10 @@ function Vehicle(data) {
     this.block = data.Block;
     this.adherance = data.Adherance;
     this.adheranceChange = data.Adhchange;
-    this.reliable = data.Reliable  === "Y" ? true : false;
-    this.offRoute = data.Offroute  === "Y" ? true : false;
-    this.stopped = data.Stopped  === "Y" ? true : false;
-    this.inService = data.Inservice  === "Y" ? true : false;
+    this.reliable = data.Reliable === "Y" ? true : false;
+    this.offRoute = data.Offroute === "Y" ? true : false;
+    this.stopped = data.Stopped === "Y" ? true : false;
+    this.inService = data.Inservice === "Y" ? true : false;
     this.routeID = data.Routeid;
     this.speed = data.Speed;
     this.heading = data.Heading;
