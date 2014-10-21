@@ -32,13 +32,16 @@ function Vehicle(data) {
     this.block = data.Block;
     this.adherance = data.Adherance;
     this.adheranceChange = data.Adhchange;
-    this.reliable = data.Reliable;
-    this.offRoute = data.Offroute;
-    this.stopped = data.Stopped;
-    this.inService = data.Inservice;
+    this.reliable = data.Reliable === "Y" ? true : false;
+    this.offRoute = data.Offroute === "Y" ? true : false;
+    this.stopped = data.Stopped === "Y" ? true : false;
+    this.inService = data.Inservice === "Y" ? true : false;
     this.routeID = data.Routeid;
     this.speed = data.Speed;
     this.heading = data.Heading;
+
+    this.updateReadable();
+    this.overallStatusReadable = this.getReadableVehicleStatus();
 
     this.positions = this.parsePositions(data.Positions.Position);
 
@@ -72,10 +75,10 @@ Vehicle.prototype = {
         this.block = newVehicle.block;
         this.adherance = newVehicle.adherance;
         this.adheranceChange = newVehicle.adheranceChange;
-        this.reliable = newVehicle.reliable;
-        this.offRoute = newVehicle.offRoute;
-        this.stopped = newVehicle.stopped;
-        this.inService = newVehicle.inService;
+        this.reliable = newVehicle.reliable === "Y" ? true : false;
+        this.offRoute = newVehicle.offRoute === "Y" ? true : false;
+        this.stopped = newVehicle.stopped === "Y" ? true : false;
+        this.inService = newVehicle.inService === "Y" ? true : false;
         this.routeID = newVehicle.routeID;
         this.speed = newVehicle.speed;
         this.heading = newVehicle.heading;
@@ -85,6 +88,7 @@ Vehicle.prototype = {
         this.newestPos = newVehicle.newestPos;
 
         this.move();
+        this.updateReadable();
     },
     animateTo: function(lat, lng, steps) {
         steps = steps || config.DEFAULT_MARKER_ANIMATION_STEPS;
@@ -118,7 +122,7 @@ Vehicle.prototype = {
             radius: 15,
             opacity: 1,
             fillOpacity: '0.9',
-            fillColor: this.inService === 'Y' ? 'rgb(34,189,252)' : 'rgb(188,188,188)',
+            fillColor: this.inService ? 'rgb(34,189,252)' : 'rgb(188,188,188)',
             zIndexOffset: config.VEHICLE_Z_INDEX
         });
 
@@ -131,6 +135,23 @@ Vehicle.prototype = {
         div.innerHTML = vehiclePopupHTML;
         ko.applyBindings(this, div);
         return div;
+    },
+    updateReadable: function() {
+        this.reliableReadable = this.reliable ? "reliable": "unreliable";
+        this.offRouteReadable = this.offRoute ? "off": "on";
+        this.stoppedReadable = this.stopped ? "stopped": "moving";
+        this.inServiceReadable = this.inService ? "in service": "not in service";
+        this.overallStatusReadable = this.getReadableVehicleStatus();
+    },
+    getReadableVehicleStatus: function() {
+        return "At " + this.updateTime +
+               ", vehicle " + this.vehicleID +
+               " was " + this.inServiceReadable +
+               " and " + this.stoppedReadable + " " +
+               this.offRouteReadable + " route " +
+               this.route + " " +  this.direction +
+               " at " + this.speed + " mph." +
+               " This vehicle is " + this.reliableReadable + ".";
     }
 };
 
