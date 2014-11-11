@@ -290,6 +290,7 @@ and (max-device-width: 1024px)
 }
 .leaflet-popup-content .vehicle .service {
     font-size: 1.4em;
+    padding-bottom: 5px;
 }
 .leaflet-popup-content .vehicle .id {
 }
