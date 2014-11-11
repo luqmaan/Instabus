@@ -286,14 +286,14 @@ and (max-device-width: 1024px)
 
 .leaflet-popup-content .vehicle {
     color: #6B6969;
-    font-size: 0.9em;
+    padding: 0 10px 10px 5px;
+}
+.leaflet-popup-content .vehicle .service {
+    font-size: 1.4em;
 }
 .leaflet-popup-content .vehicle .id {
-    font-size: 1.1em;
-    font-weight: 500;
-    margin-bottom: 0.4em;
-    display: block;
-    color: rgb(71,55,57);
+}
+.leaflet-popup-content .vehicle .seenbeen {
 }
 
 #nprogress .bar {
