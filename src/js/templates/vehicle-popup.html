@@ -1,8 +1,5 @@
 <div class="vehicle">
-    <div class="id"></div>
-    <div>
-        <div class="service" data-bind="text: inServiceReadable"></div>
-        <div class="seenbeen">Seen <span data-bind="text: updateTime"></span></div>
-        <div class="id">Vehicle <span data-bind="text: id"></span></div>
-    </div>
+    <div class="service" data-bind="text: inServiceReadable, css: {active: inService}"></div>
+    <div class="seenbeen">Seen <span data-bind="text: updateTime"></span></div>
+    <div class="id">Vehicle <span data-bind="text: id"></span></div>
 </div>
