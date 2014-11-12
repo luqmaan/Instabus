@@ -24,6 +24,7 @@ function animateMarker(marker, i, steps, startLatLng, deltaLatLng) {
 
 function Vehicle(data) {
     // FIXME: Do these have to be observables? There isn't two way binding.
+    // FIXME: yes they do
     this.id = this.vehicleID = Number(data.Vehicleid);
     this.route = data.Route;
     this.directionID = utils.getDirectionID(this.route, data.Direction);
@@ -41,7 +42,6 @@ function Vehicle(data) {
     this.heading = data.Heading;
 
     this.updateReadable();
-    this.overallStatusReadable = this.getReadableVehicleStatus();
 
     this.positions = this.parsePositions(data.Positions.Position);
 
@@ -140,19 +140,8 @@ Vehicle.prototype = {
         this.reliableReadable = this.reliable ? "reliable": "unreliable";
         this.offRouteReadable = this.offRoute ? "off": "on";
         this.stoppedReadable = this.stopped ? "stopped": "moving";
-        this.inServiceReadable = this.inService ? "in service": "not in service";
-        this.overallStatusReadable = this.getReadableVehicleStatus();
+        this.inServiceReadable = this.inService ? "In Service": "Not In Service";
     },
-    getReadableVehicleStatus: function() {
-        return "At " + this.updateTime +
-               ", vehicle " + this.vehicleID +
-               " was " + this.inServiceReadable +
-               " and " + this.stoppedReadable + " " +
-               this.offRouteReadable + " route " +
-               this.route + " " +  this.direction +
-               " at " + this.speed + " mph." +
-               " This vehicle is " + this.reliableReadable + ".";
-    }
 };
 
 module.exports = Vehicle;
