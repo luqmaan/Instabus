@@ -4,6 +4,7 @@ var config = require('../config');
 var utils = require('../utils');
 var fs = require('fs');
 var vehiclePopupHTML = fs.readFileSync(__dirname + '/../templates/vehicle-popup.html', 'utf8');
+var vehicleMarkerSVG = fs.readFileSync(__dirname + '/../templates/vehicle-marker.svg', 'utf8');
 
 // https://github.com/danro/jquery-easing/blob/818a47a97fa5ea25f1e4c8a6121e0bca9407d51a/jquery.easing.js
 function easeInOutCubic(t, b, c, d) {
@@ -116,7 +117,13 @@ Vehicle.prototype = {
         layer.removeLayer(this.marker);
     },
     newMarker: function() {
-        var marker = L.circleMarker([this.oldestPos[0], this.oldestPos[1]], {
+        var icon = L.divIcon({
+            className: 'my-div-icon',
+            html: vehicleMarkerSVG.replace('{vehicle-id}', this.id).replace('{vehicle-heading}', this.heading),
+        });
+
+        var marker = L.marker([this.oldestPos[0], this.oldestPos[1]], {
+            icon: icon,
             color: '#fff',
             weight: 3,
             radius: 15,

@@ -30,7 +30,7 @@
     },
     "devDependencies": {
         "browserify": "~5.9.1",
-        "gulp": "~3.8.8",
+        "gulp": "~3.8.9",
         "gulp-webserver": "~0.4.0",
         "gulp-task-listing": "0.3.0",
         "gulp-util": "~3.0.0",

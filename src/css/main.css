@@ -306,3 +306,6 @@ and (max-device-width: 1024px)
   border-top-color: rgb(221,17,68);
   border-left-color: rgb(221,17,68);
 }
+.vehicle-chinga {
+    fill: rgb(34,189,252);
+}
