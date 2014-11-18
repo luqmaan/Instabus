@@ -6,8 +6,7 @@
     <defs></defs>
     <g id="vehicle-icon-{vehicle-id}" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage" transform="scale(2) rotate({vehicle-heading} 15 15)">
        <circle id="Oval-1" stroke="#E1E1E1" opacity="0.9" fill="#FFFFFF" sketch:type="MSShapeGroup" cx="15" cy="15" r="15"></circle>
-        <path d="M15,5 L22,23.6666667 L15,19 L15,5 Z" id="Shape" fill-opacity="0.75" fill="#25C4D8" sketch:type="MSShapeGroup"></path>
-        <path d="M8,5 L15,23.6666667 L8,19 L8,5 Z" id="Shape-2" fill="#378891" sketch:type="MSShapeGroup" transform="translate(11.500000, 14.333333) scale(-1, 1) translate(-11.500000, -14.333333) "></path>
+        <path d="M15,5 L22,23.6666667 L15,19 L15,5 L15,5 Z M15,5 L8,23.6666667 L15,19 L15,5 L15,5 Z" id="Shape" fill="rgb(28,161,250)" sketch:type="MSShapeGroup"></path>
         <mask id="mask-2" sketch:name="Path 2" fill="white">
             <use xlink:href="#path-1"></use>
         </mask>
