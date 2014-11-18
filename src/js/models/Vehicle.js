@@ -40,7 +40,7 @@ function Vehicle(data) {
     this.inService = data.Inservice === "Y" ? true : false;
     this.routeID = data.Routeid;
     this.speed = data.Speed;
-    this.heading = data.Heading;
+    this.heading = data.Heading * 10;  // heading is a value between 0 and 36
 
     this.updateReadable();
 
@@ -118,18 +118,12 @@ Vehicle.prototype = {
     },
     newMarker: function() {
         var icon = L.divIcon({
-            className: 'my-div-icon',
+            className: 'vehicle-marker',
             html: vehicleMarkerSVG.replace('{vehicle-id}', this.id).replace('{vehicle-heading}', this.heading),
         });
 
         var marker = L.marker([this.oldestPos[0], this.oldestPos[1]], {
             icon: icon,
-            color: '#fff',
-            weight: 3,
-            radius: 15,
-            opacity: 1,
-            fillOpacity: '0.9',
-            fillColor: this.inService ? 'rgb(34,189,252)' : 'rgb(188,188,188)',
             zIndexOffset: config.VEHICLE_Z_INDEX
         });
 
