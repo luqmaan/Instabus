@@ -41,7 +41,6 @@ var StopCollection = {
         stop = stops[parseInt(nearestPoint.key)];
 
         stop.closest(true);
-        stop.toggleTrips();
 
         return stop;
     }
