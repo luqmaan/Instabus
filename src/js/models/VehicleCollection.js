@@ -81,7 +81,7 @@ VehicleCollection.prototype = {
 
         data.forEach(function(v) {
             var vehicle = new Vehicle(v);
-            if (vehicle.directionID === direction) {
+            if (vehicle.directionID() === direction) {
                 return vehicles.push(vehicle);
             }
         });

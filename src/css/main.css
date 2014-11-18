@@ -306,11 +306,7 @@ and (max-device-width: 1024px)
   border-top-color: rgb(221,17,68);
   border-left-color: rgb(221,17,68);
 }
-.vehicle-marker {
+.vehicle-icon {
     margin-left: -20px !important;
     margin-top: -20px !important;
-}
-.leaflet-marker-icon {
-    width: auto !important;
-    height: auto !important;
 }
