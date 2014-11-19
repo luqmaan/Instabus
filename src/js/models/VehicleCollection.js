@@ -1,3 +1,4 @@
+var geolib = require('geolib');
 var L = require('leaflet');
 var when = require('when');
 var _ = require('underscore');
@@ -142,5 +143,18 @@ VehicleCollection.prototype = {
         });
     }
 };
+
+// FIXME: VehicleCollection really needs to be refactored to be more like StopsCollection
+//        It is suppeeeeer 💩 as is.
+VehicleCollection.closest = function(lat, lng, vehicles) {
+    if (!lat || !lng || !vehicles || !vehicles.vehicles.length) return;
+
+    var points = vehicles.vehicles.map(function(v) { return {latitude: v.lat(), longitude: v.lon()}; }),
+        nearestPoint = geolib.findNearest({latitude: lat, longitude: lng}, points, 0, 1),
+        closest = vehicles.vehicles[parseInt(nearestPoint.key)];
+
+    return closest;
+}
+
 
 module.exports = VehicleCollection;

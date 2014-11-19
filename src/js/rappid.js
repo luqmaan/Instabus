@@ -71,12 +71,19 @@ Rappid.prototype = {
 
         NProgress.start();
 
+        // FIXME: suppeeeeer 💩
+        var firstVehiclesRefresh = !this.vehicles.vehicles.length;
+        console.log("firstVehiclesRefresh", firstVehiclesRefresh);
+
         this.vehicles.refresh()
             .progress(function() {
                 // console.log('progress', arguments);
                 // FIXME: Show the progress notifications in the UI
             }.bind(this))
             .then(function() {
+                if (firstVehiclesRefresh) {
+                    this.fitClosest(true);
+                }
                 var stopsRefresh = this.stops().map(function(stop) { return stop.refresh(); });
                 return when.all(stopsRefresh);
             }.bind(this))
@@ -106,6 +113,7 @@ Rappid.prototype = {
         locateCtrl = new LocateControl({
             position: 'bottomright',
             zoomLevel: 16,
+            zoomFunction: this.fitClosest.bind(this)
         });
 
         tileLayer.addTo(this.map);
@@ -114,7 +122,8 @@ Rappid.prototype = {
 
         this.map.on('locationfound', function(e) {
             if (!this.latlng.lat || !this.latlng.lng) {
-                StopCollection.closest(this.stops(), e.latlng);
+                this.latlng = e.latlng;
+                this.fitClosest();
             }
             this.latlng = e.latlng;
         }.bind(this));
@@ -154,7 +163,7 @@ Rappid.prototype = {
                 StopCollection.draw(stops, this.routeLayer);
                 this.stops(stops);
                 if (this.latlng.lat && this.latlng.lng) {
-                    StopCollection.closest(stops, this.latlng);
+                    this.fitClosest();
                 }
             }.bind(this));
 
@@ -185,6 +194,25 @@ Rappid.prototype = {
                 window.location.href = "https://www.youtube.com/watch?v=ygr5AHufBN4";
             }, 5000);
         }, 2000);
+    },
+    fitClosest: function(wef) {
+        if (!this.latlng.lat || !this.latlng.lng) { return; }
+
+        var bounds = [[this.latlng.lat, this.latlng.lng]],
+            closestStop = StopCollection.closest(this.latlng.lat, this.latlng.lng, this.stops()),
+            closestVehicle = VehicleCollection.closest(this.latlng.lat, this.latlng.lng, this.vehicles);
+
+        if (closestStop) {
+            bounds.push([closestStop.lat(), closestStop.lon()]);
+        }
+        if (closestVehicle) {
+            bounds.push([closestVehicle.lat(), closestVehicle.lon()]);
+        }
+        console.log('Zooming to fit bounds', bounds);
+
+        this.map.fitBounds(bounds, {
+            maxZoom: config.MAP_INITIAL_ZOOM_LEVEL,
+        });
     }
 };
 

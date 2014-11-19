@@ -1,6 +1,6 @@
+var geolib = require('geolib');
 var L = require('leaflet');
 var when = require('when');
-var geolib = require('geolib');
 var config = require('../config');
 var Stop = require('./Stop');
 var requests = require('../requests');
@@ -29,20 +29,14 @@ var StopCollection = {
             stop.marker.addTo(layer);
         });
     },
-    closest: function(stops, latlng) {
-        if (!stops.length) return;
+    closest: function(lat, lng, stops) {
+        if (!lat || !lng || !stops || !stops.length) return;
 
-        var points = stops.map(function(s) { return { latitude: s.lat(), longitude: s.lon()}; }),
-            _latlng = {latitude: latlng.lat, longitude: latlng.lng },
-            nearestPoint,
-            stop;
+        var points = stops.map(function(s) { return {latitude: s.lat(), longitude: s.lon()};}),
+            nearestPoint = geolib.findNearest({latitude: lat, longitude: lng}, points, 0, 1),
+            closest = stops[parseInt(nearestPoint.key)];
 
-        nearestPoint = geolib.findNearest(_latlng, points, 0, 1);
-        stop = stops[parseInt(nearestPoint.key)];
-
-        stop.closest(true);
-
-        return stop;
+        return closest;
     }
 };
 
