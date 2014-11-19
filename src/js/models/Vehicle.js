@@ -40,7 +40,7 @@ function Vehicle(data) {
 
     // computeds
     this.inServiceReadable = ko.computed(function() { return this.inService() ? "In Service": "Not In Service"; }.bind(this));
-    this.svgTransform = ko.computed(function() { return "scale(1.5) rotate(" + this.heading() + " 15 15)"; }.bind(this));
+    this.svgTransform = ko.computed(function() { return "rotate(" + this.heading() + " 15 15)"; }.bind(this));
 
     this.marker = this.newMarker();
 }
@@ -99,8 +99,8 @@ Vehicle.prototype = {
         this.rotate();
     },
     rotate: function() {
-        var g = this.marker._icon.querySelector('g');
-        g.setAttribute("transform", this.svgTransform());
+        var path = this.marker._icon.querySelector('g .Arrow');
+        path.setAttribute("transform", this.svgTransform());
     },
     remove: function(layer) {
         layer.removeLayer(this.marker);
