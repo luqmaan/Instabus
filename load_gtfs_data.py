@@ -25,7 +25,8 @@ ROUTE_IDS = {
     550: ('MetroRail', 'Train'),
 }
 
-GTFS_DOWNLOAD_FILE = os.path.join(tempfile.gettempdir(), 'capmetro_gtfs.zip')
+# GTFS_DOWNLOAD_FILE = os.path.join(tempfile.gettempdir(), 'capmetro_gtfs.zip')
+GTFS_DOWNLOAD_FILE = os.path.join('/tmp', 'capmetro_gtfs.zip')
 GTFS_DB = os.path.join(tempfile.gettempdir(), 'capmetro_gtfs_data.db')
 DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
 DATA_VERSION_FILE = os.path.join(DATA_DIR, 'data_version.txt')
@@ -228,5 +229,9 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO, format='%(asctime)-15s [%(levelname)s] %(message)s')
     logger = logging.getLogger(__name__)
 
-    fetch_gtfs_data()
+    # Manually download the GTFS file from socrata https://data.texas.gov/Transportation/Capital-Metro-Google-Transit/8s4f-jd2a
+    # And copy pasta it to /tmp/capmetro_gtfs.zip
+    # The file is still behind a socrata login wall during the beta
+    # fetch_gtfs_data()
+
     parse_gtfs_data()
