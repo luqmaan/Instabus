@@ -24,7 +24,6 @@ function Stop(data) {
 
     this.trips = ko.observableArray();
 
-    this.closest = ko.observable(false);
     this.cssId = ko.observable('stop-' + data.stop_id);
 
     this.showTrips = ko.observable(false);
