@@ -39,6 +39,8 @@ function Vehicle(data) {
     this.heading = ko.observable(data.Heading * 10);  // heading is a value between 0 and 36
 
     // computeds
+    this.lat = ko.computed(function() { return this.newestPos[0]; }.bind(this));
+    this.lon = ko.computed(function() { return this.newestPos[1]; }.bind(this));
     this.inServiceReadable = ko.computed(function() { return this.inService() ? "In Service": "Not In Service"; }.bind(this));
     this.svgTransform = ko.computed(function() { return "rotate(" + this.heading() + " 15 15)"; }.bind(this));
 

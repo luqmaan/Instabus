@@ -10,7 +10,8 @@ var LocateControl = leaflet.Control.extend({
         icon: 'icon-location',
         position: 'topleft',
         zoomLevel: 16,
-        pollInterval: 30 * 1000
+        pollInterval: 30 * 1000,
+        zoomFunction: null,
     },
     onAdd: function (map) {
         this.container = leaflet.DomUtil.create('div', 'locate-control leaflet-bar leaflet-control');
@@ -29,7 +30,12 @@ var LocateControl = leaflet.Control.extend({
         return this.container;
     },
     zoomToLocation: function(map) {
-        this.map.setView(this.userLatLng, this.options.zoomLevel);
+        if (!!this.options.zoomFunction) {
+            this.options.zoomFunction();
+        }
+        else {
+            this.map.setView(this.userLatLng, this.options.zoomLevel);
+        }
     },
     locate: function() {
         this.container.classList.add('loading');
