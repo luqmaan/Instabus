@@ -24,7 +24,7 @@ function Rappid() {
     this.shape = null;
 
     // viewmodels
-    this.availableRoutes = ko.observableArray();
+    this.routes = ko.observableArray();
     this.route = ko.observable();
     this.stops = ko.observableArray();
 }
@@ -37,18 +37,19 @@ Rappid.prototype = {
 
         RoutesCollection.fetch()
             .tap(function(routes) {
-                this.availableRoutes(routes);
+                this.routes(routes);
+                console.log('this.routes()', this.routes());
 
-                var cachedRoute = JSON.parse(localStorage.getItem('rappid:route')),
-                    defaultRoute = this.availableRoutes()[0];
+                // var cachedRoute = JSON.parse(localStorage.getItem('rappid:route')),
+                //     defaultRoute = this.routes()[0];
 
-                if (cachedRoute) {
-                    defaultRoute = this.availableRoutes().filter(function(r) { return cachedRoute.id === r.id && cachedRoute.direction === r.direction; })[0];
-                }
+                // if (cachedRoute) {
+                //     defaultRoute = this.routes().filter(function(r) { return cachedRoute.id === r.id && cachedRoute.direction === r.direction; })[0];
+                // }
 
-                this.route(defaultRoute);
+                // this.route(defaultRoute);
             }.bind(this))
-            .then(this.selectRoute.bind(this))
+            // .then(this.selectRoute.bind(this))
             .catch(console.error);
     },
     refresh: function() {
