@@ -50,7 +50,7 @@ function Stop(data) {
     this.marker.bindPopup(this.popupContent());
     this.marker.bindLabel(this.name(), {
         noHide: true,
-        direction: 'auto',
+        direction: 'right',
         className: 'stop-leaflet-label',
         offset: [15, -10],
    });
