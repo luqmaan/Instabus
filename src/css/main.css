@@ -315,7 +315,7 @@ and (max-device-width: 1024px)
     color: rgb(75, 122, 169);
     background: rgba(255, 255, 255, 0.9);
     font-family: 'Trebuchet MS', Verdana, Arial, sans-serif;
-    font-weight: normal;
+    font-weight: 600;
 }
 .vehicle-leaflet-label::before, .vehicle-leaflet-label::after {
     content: normal;
