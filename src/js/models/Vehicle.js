@@ -76,6 +76,9 @@ Vehicle.prototype = {
         this.oldestPos = newVehicle.oldestPos;
         this.newestPos = newVehicle.newestPos;
 
+        this.marker.label._content = this.updateTime();
+        this.marker.label._update();
+
         this.move();
     },
     animateTo: function(lat, lng, steps) {
