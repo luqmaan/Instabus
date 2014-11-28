@@ -292,3 +292,13 @@ and (max-device-width: 1024px)
     margin-left: -20px !important;
     margin-top: -20px !important;
 }
+.vehicle-leaflet-label {
+    border: 1px solid rgb(225,225,225);
+    color: rgb(75, 122, 169);
+    background: rgba(255, 255, 255, 0.9);
+    font-family: 'Trebuchet MS', Verdana, Arial, sans-serif;
+    font-weight: 600;
+}
+.vehicle-leaflet-label::before, .vehicle-leaflet-label::after {
+    content: normal;
+}

@@ -1,8 +1,9 @@
 var ko = require('knockout');
 var L = require('leaflet');
+var fs = require('fs');
+require('leaflet.label');
 var config = require('../config');
 var utils = require('../utils');
-var fs = require('fs');
 var vehiclePopupHTML = fs.readFileSync(__dirname + '/../templates/vehicle-popup.html', 'utf8');
 var vehicleMarkerSVG = fs.readFileSync(__dirname + '/../templates/vehicle-marker.svg', 'utf8');
 
@@ -33,7 +34,7 @@ function Vehicle(data) {
     this.route = ko.observable(data.Route);
     this.directionID = ko.observable(utils.getDirectionID(this.route(), data.Direction));
     this.direction =  ko.observable(utils.formatDirection(this.route(), this.directionID()));
-    this.updateTime = ko.observable(data.Updatetime);
+    this.updateTime = ko.observable(data.Updatetime.replace(/^0/g, ''));
     this.inService = ko.observable(data.Inservice === "Y" ? true : false);
     this.routeID = ko.observable(data.Routeid);
     this.heading = ko.observable(data.Heading * 10);  // heading is a value between 0 and 36
@@ -74,6 +75,9 @@ Vehicle.prototype = {
         this.positions = newVehicle.positions;
         this.oldestPos = newVehicle.oldestPos;
         this.newestPos = newVehicle.newestPos;
+
+        this.marker.label._content = this.updateTime();
+        this.marker.label._update();
 
         this.move();
     },
@@ -120,6 +124,13 @@ Vehicle.prototype = {
         });
 
         marker.bindPopup(this.popupContent());
+        console.log("SHIT", this.updateTime())
+        marker.bindLabel(this.updateTime(), {
+            noHide: true,
+            direction: 'left',
+            className: 'vehicle-leaflet-label',
+            offset: [25, -10],
+        });
 
         return marker;
     },
