@@ -63,7 +63,7 @@ def _get_route_types(curr):
     return route_types
 
 
-def _get_routes(curr, route_types):
+def _get_routes_for_types(curr, route_types):
     routes = {}
 
     sql = '''
@@ -81,13 +81,13 @@ def _get_routes(curr, route_types):
             'route_id': route_id,
             'name': route_long_name,
             'route_type': route_types[route_type],
-            'trips': [],
+            'directions': [],
         }
 
     return routes
 
 
-def _get_trips(curr, routes):
+def _get_directions_for_routes(curr, routes):
     sql = '''
         SELECT DISTINCT route_id, direction_id, trip_headsign
         FROM trips
@@ -100,21 +100,21 @@ def _get_trips(curr, routes):
         route_id = int(row[0])
         direction_id = int(row[1])
         headsign = row[2].title()
-        trip = {
+        direction = {
             'direction_id': direction_id,
             'headsign': headsign,
         }
-        routes[route_id]['trips'].append(trip)
+        routes[route_id]['directions'].append(direction)
 
     return routes
 
 
 def _save_route_data(curr):
     route_types = _get_route_types(curr)
-    routes = _get_routes(curr, route_types)
-    trips = _get_trips(curr, routes)
+    routes = _get_routes_for_types(curr, route_types)
+    directions = _get_directions_for_routes(curr, routes)
 
-    data = trips.values()
+    data = directions.values()
 
     filename = os.path.join(DATA_DIR, 'routes.json')
     logger.info('writing ROUTE data to {}'.format(filename))
