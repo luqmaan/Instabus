@@ -44,7 +44,7 @@ RoutesCollection.prototype.defaultRoute = function() {
     // localStorage.setItem('rappid:route', ko.toJSON(route));
 }
 
-RoutesCollection.prototype.selectTrip = function(_, route, direction) {
+RoutesCollection.prototype.select = function(_, route, direction) {
     console.log('this', this);
     console.log('arguments', arguments);
     route.activeDirection(direction);
