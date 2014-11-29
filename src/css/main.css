@@ -3,9 +3,7 @@ html, body {
     -webkit-text-size-adjust: 100%;
 }
 body {
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-image: -webkit-radial-gradient(center, ellipse cover,#FFFFFF 0%,#FAFAFA 50%,#F5F5F5 60%,#BEBEBE 100%);
+    background: rgb(254,254,254);
     margin: 0;
     padding: 0;
 }
@@ -27,28 +25,20 @@ button, body {
     height: 100%;
 }
 #index {
-    position: fixed;
+    position: relative;
     padding: 15px;
     margin: 0;
     width: 100%;
-    height: 100%;
-    color: rgb(199,16,22);
-    background: rgb(241,241,241);
-    z-index: 110;
     font-size: 1em;
-    z-index: 1000;
 }
 #index .routes button {
     width: 80%;
     display: block;
     margin: auto;
     font-size: 1.3em;
+    height: 100px;
 }
-#controls .unicon {
-    width: 25px;
-    height: 25px;
-    float: left;
-    margin-left: 15px;
+#index .unicon {
 }
 .status {
     padding: 4px 10px 2px;
@@ -185,10 +175,10 @@ button, body {
 /* Desktops and laptops */
 @media only screen
 and (min-width : 1224px) {
-    .poop.bike {}
     html, body {
         width: 100%;
-        overflow: hidden;
+        /* might need this for the map
+         * overflow: hidden; */
     }
 }
 
@@ -199,9 +189,6 @@ and (max-device-width: 1024px)
 {
     #controls {
         box-shadow: none;
-    }
-    #controls .wrapper {
-        padding: 0 0 0 10px;
     }
     #controls select, #controls button{
         font-size: 15px;

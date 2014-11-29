@@ -22,18 +22,14 @@
 <body>
     <div id="lerappid">
         <div id="index">
-            <div class="wrapper">
+            <div class="title">
                 <img class="unicon" src="img/icon-40.png" />
                 <h1>MetroRappid</h1>
-                <div class="routes">
-                    <!-- FIXME: button for north and south -->
-                    <!-- ko foreach: $data.routes -->
-                        <button data-bind="text: name"></button>
-                    <!-- /ko -->
-                </div>
+            </div>
+            <div id="routes">
             </div>
         </div>
-        <div id="map-wrapper" aria-hidden="true">
+        <div id="map-wrapper" aria-hidden="true" data-bind="visible: displayMap">
             <div id="map"></div>
         </div>
     </div>
