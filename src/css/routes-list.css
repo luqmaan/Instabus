@@ -8,11 +8,14 @@
 .routes-list li {
     list-style-type: none;
     background: rgb(255, 255, 255);
-    border: 1px solid rgb(207,207,207);
+    border-bottom: 1px solid rgb(207,207,207);
     border-top: none;
     padding: 15px 15px 15px 20px;
     cursor: pointer;
     transition: box-shadow 0.2s ease-in-out;
+}
+.routes-list li:last-child {
+    border: none;
 }
 .routes-list li .chevron {
     float: right;

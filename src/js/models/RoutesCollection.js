@@ -14,7 +14,8 @@ RoutesCollection.prototype.start = function() {
 
     this.fetch()
         .tap(this.routes)
-        // .then(this.defaultRoute.bind(this));
+        .tap(this.setupCache.bind(this))
+        .tap(this.restoreCache.bind(this));
 }
 
 RoutesCollection.prototype.applyBindings = function() {
@@ -32,16 +33,32 @@ RoutesCollection.prototype.fetch = function() {
         });
 }
 
-RoutesCollection.prototype.defaultRoute = function() {
-    // var cachedRoute = JSON.parse(localStorage.getItem('rappid:route')),
-    //     defaultRoute = this.availableRoutes()[0];
-    // if (cachedRoute) {
-    //     defaultRoute = this.availableRoutes().filter(function(r) { return cachedRoute.id === r.id && cachedRoute.direction === r.direction; })[0];
-    // }
-    // this.active(this.routes()[0].trips()[0]);
+RoutesCollection.prototype.setupCache = function() {
+    this.active.subscribe(function(route) {
+        var key = 'rappid:route:id',
+            item = route.id();
+        console.debug(key, item);
+        localStorage.setItem(key, item);
+    }.bind(this));
+}
 
-    // this.active.subscribe =>
-    // localStorage.setItem('rappid:route', ko.toJSON(route));
+RoutesCollection.prototype.restoreCache = function() {
+    var cachedRouteID = localStorage.getItem('rappid:route:id'),
+        filteredRoutes,
+        route;
+
+    console.log('cachedRouteID', cachedRouteID);
+
+    if (cachedRouteID) {
+        filteredRoutes = this.routes().filter(function(r) {
+            return cachedRouteID.toString() === r.id().toString();
+        });
+        if (filteredRoutes) {
+            route = filteredRoutes[0];
+            route.showDirections(true);
+            console.log('Restoring cached route', route);
+        }
+    }
 }
 
 RoutesCollection.prototype.select = function(_, route, direction) {
