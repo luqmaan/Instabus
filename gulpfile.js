@@ -29,7 +29,9 @@ gulp.task('build-css', function() {
         './src/css/leaflet-label.css',
         './src/css/nprogress.css',
         './src/css/progress.css',
-        './src/css/main.css'
+        './src/css/main.css',
+        './src/css/map.css',
+        './src/css/routes-list.css',
     ];
     return gulp.src(src)
         .pipe(cssmin())

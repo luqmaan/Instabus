@@ -179,7 +179,7 @@ Rappid.prototype = {
             }, 5000);
         }, 2000);
     },
-    fitClosest: function(wef) {
+    fitClosest: function() {
         if (!this.latlng.lat || !this.latlng.lng) { return; }
 
         var bounds = [[this.latlng.lat, this.latlng.lng]],

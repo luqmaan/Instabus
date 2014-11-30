@@ -1,8 +1,9 @@
-<!-- ko foreach: routes -->
-    <h3 data-bind="text: id"></h3>
-    <h5 data-bind="text: name"></h5>
-    <!-- ko foreach: directions -->
-        <button data-bind="text: headsign, click: $root.select.bind($root, $data, $parent)"></button>
-    <!-- /ko -->
-<!-- /ko -->
-
+<ul class="routes-list" data-bind="foreach: routes">
+    <li data-bind="click: toggleDirections">
+        <div class="id" data-bind="text: id"></div>
+        <div class="name" data-bind="text: name"></div>
+        <div class="directions" data-bind="foreach: directions, visible: showDirections">
+            <button data-bind="text: headsign, click: $root.select.bind($root, $data, $parent), clickBubble: false"></button>
+        </div>
+    </li>
+</ul>

@@ -1,0 +1,35 @@
+.routes-list {
+    margin: 0;
+    padding: 0;
+    color: rgb(80,78,78);
+}
+.routes-list li {
+    list-style-type: none;
+    background: rgb(255, 255, 255);
+    border: 1px solid rgb(207,207,207);
+    padding: 5px 15px;
+    margin: 0 0 20px 0;
+    cursor: pointer;
+    box-shadow: 0 2px 3px rgb(208,208,208);
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+.routes-list li:hover {
+    box-shadow: 0 4px 6px rgb(185,185,185);
+}
+.routes-list .id {
+    margin: 10px 0 5px 0;
+    font-size: 1.3em;
+    font-weight: 500;
+}
+.routes-list .name {
+    font-size: 1.0em;
+    margin: 0 0 15px 0;
+}
+.routes-list .directions button {
+    width: 100%;
+    display: block;
+    padding: 10px 0;
+    margin: 10px 0;
+    font-size: 1.1em;
+}
