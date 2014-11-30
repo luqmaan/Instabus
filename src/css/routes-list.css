@@ -2,34 +2,58 @@
     margin: 0;
     padding: 0;
     color: rgb(80,78,78);
+    font-size: 1.1em;
+    box-shadow: 0 2px 3px rgb(208,208,208);
 }
 .routes-list li {
     list-style-type: none;
     background: rgb(255, 255, 255);
     border: 1px solid rgb(207,207,207);
-    padding: 5px 15px;
-    margin: 0 0 20px 0;
+    border-top: none;
+    padding: 15px 15px 15px 20px;
     cursor: pointer;
-    box-shadow: 0 2px 3px rgb(208,208,208);
     transition: box-shadow 0.2s ease-in-out;
 }
+.routes-list li .chevron {
+    float: right;
+}
+.routes-list li .chevron svg path {
+    transition: all 100ms ease-out;
+}
+.routes-list li.expand .chevron svg path {
+    -webkit-transform: rotate(-90deg) translate(-18px);
+    -moz-transform: rotate(-90deg) translate(-18px);
+    -o-transform: rotate(-90deg) translate(-18px);
+    -ms-transform: rotate(-90deg) translate(-18px);
+    transform: rotate(-90deg) translate(-18px);
 
-.routes-list li:hover {
-    box-shadow: 0 4px 6px rgb(185,185,185);
 }
 .routes-list .id {
-    margin: 10px 0 5px 0;
-    font-size: 1.3em;
-    font-weight: 500;
+    margin: 0;
 }
 .routes-list .name {
-    font-size: 1.0em;
-    margin: 0 0 15px 0;
+    margin-left: 15px;
+    color: rgb(163,163,163);
 }
 .routes-list .directions button {
+    font-size: 1.0em;
     width: 100%;
     display: block;
     padding: 10px 0;
-    margin: 10px 0;
-    font-size: 1.1em;
+    margin-left: 50px;
+    border-radius: 2px;
+    background: none    ;
+    border: none;
+    text-align: left;
+    color: rgb(80,78,78);
+    cursor: pointer;
+}
+.routes-list .directions button:first-child {
+    padding-top: 15px;
+}
+.routes-list .directions button:last-child {
+    padding-bottom: 5px;
+}
+.routes-list .directions button:hover {
+    color: rgb(207,30,30);
 }
