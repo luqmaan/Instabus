@@ -34,7 +34,6 @@ Rappid.prototype = {
     start: function() {
         NProgress.configure({ showSpinner: false });
 
-        this.setupMap();
         this.routes.start();
         this.routes.active.subscribe(this.selectRoute.bind(this));  // Remove binding??
     },
@@ -116,6 +115,9 @@ Rappid.prototype = {
         }.bind(this));
     },
     selectRoute: function(route) {
+        this.displayMap(true);
+        this.setupMap();
+
         this.setupRoute(route)
             .then(this.refresh.bind(this))
             .catch(console.error);
