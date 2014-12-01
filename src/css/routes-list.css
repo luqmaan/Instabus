@@ -21,7 +21,12 @@
     float: right;
 }
 .routes-list li .chevron svg path {
-    transition: all 100ms ease-out;
+    transition: all 300ms ease-out;
+    -webkit-transform: rotate(90deg) translateY(-21px);
+    -moz-transform: rotate(90deg) translateY(-21px);
+    -o-transform: rotate(90deg) translateY(-21px);
+    -ms-transform: rotate(90deg) translateY(-21px);
+    transform: rotate(90deg) translateY(-21px);
 }
 .routes-list li.expand .chevron svg path {
     -webkit-transform: rotate(-90deg) translate(-18px);
@@ -29,7 +34,6 @@
     -o-transform: rotate(-90deg) translate(-18px);
     -ms-transform: rotate(-90deg) translate(-18px);
     transform: rotate(-90deg) translate(-18px);
-
 }
 .routes-list .id {
     margin: 0;
