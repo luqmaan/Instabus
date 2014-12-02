@@ -20,20 +20,23 @@
 .routes-list li .chevron {
     float: right;
 }
+.routes-list li .chevron svg {
+    overflow: visible;
+}
 .routes-list li .chevron svg path {
     transition: all 300ms ease-out;
-    -webkit-transform: rotate(90deg) translateY(-21px);
-    -moz-transform: rotate(90deg) translateY(-21px);
-    -o-transform: rotate(90deg) translateY(-21px);
-    -ms-transform: rotate(90deg) translateY(-21px);
-    transform: rotate(90deg) translateY(-21px);
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
+    -webkit-transform-origin: center center;
+    transform-origin: center center;
 }
 .routes-list li.expand .chevron svg path {
-    -webkit-transform: rotate(-90deg) translate(-18px);
-    -moz-transform: rotate(-90deg) translate(-18px);
-    -o-transform: rotate(-90deg) translate(-18px);
-    -ms-transform: rotate(-90deg) translate(-18px);
-    transform: rotate(-90deg) translate(-18px);
+    -webkit-transform: rotate(-90deg);
+    -moz-transform: rotate(-90deg);
+    -o-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    transform: rotate(-90deg);
+    fill: rgb(150,148,148);
 }
 .routes-list .id {
     margin: 0;
