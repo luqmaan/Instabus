@@ -24,11 +24,13 @@
     overflow: visible;
 }
 .routes-list li .chevron svg path {
-    transition: all 300ms ease-out;
+}
+.routes-list li .chevron svg path {
+    transition: -webkit-transform 300ms ease-out, transform 300ms ease-out, fill 300ms ease-out;
     -webkit-transform: rotate(90deg);
     transform: rotate(90deg);
-    -webkit-transform-origin: center center;
-    transform-origin: center center;
+    -webkit-transform-origin: 10px 10px 10px;
+    transform-origin: 10px 10px 10px;
 }
 .routes-list li.expand .chevron svg path {
     -webkit-transform: rotate(-90deg);
