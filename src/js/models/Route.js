@@ -26,20 +26,20 @@ function Route(data) {
     }.bind(this));
 }
 
-Route.prototype.parseDirections = function(data) {
-    return data.directions.map(function(direction) {
-        return new RouteDirection(direction)
-    });
-}
-
-Route.prototype.toggleDirections = function() {
-    this.showDirections(!this.showDirections());
-}
-
-
 function RouteDirection(direction) {
     this.directionId = ko.observable(direction.direction_id);
     this.headsign = ko.observable(direction.headsign);
 }
+
+Route.prototype.parseDirections = function(data) {
+    return data.directions.map(function(direction) {
+        return new RouteDirection(direction);
+    });
+};
+
+Route.prototype.toggleDirections = function() {
+    this.showDirections(!this.showDirections());
+};
+
 
 module.exports = Route;
