@@ -322,11 +322,6 @@ and (max-device-width: 1024px)
 .leaflet-popup-content .vehicle .service.active {
     color: rgb(45,153,206);
 }
-
-.leaflet-popup-content .info {
-    
-}
-
 #nprogress .bar {
     background: rgb(221,17,68);
 }
