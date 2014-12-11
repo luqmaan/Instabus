@@ -3,299 +3,65 @@ html, body {
     -webkit-text-size-adjust: 100%;
 }
 body {
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-image: -webkit-radial-gradient(center, ellipse cover,#FFFFFF 0%,#FAFAFA 50%,#F5F5F5 60%,#BEBEBE 100%);
+    background: rgb(240,240,240);
     margin: 0;
     padding: 0;
 }
 button, body {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
-.leaflet-container {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
-#map-wrapper {
-    position: absolute;
+/*
+ * Page
+ */
+.page {
     width: 100%;
-    top: 40px;
-    margin-top: 0px;
-    bottom: 0;
 }
-#map {
-    position: relative;
-    height: 100%;
-}
-#controls {
-    position: fixed;
-    display: block;
-    height: 40px;
-    text-align: left;
-    top: 0;
-    left: 0;
-    padding: 0;
-    width: 100%;
-    color: rgb(199,16,22);
-    background: rgba(241,241,241,0.99);
-    border-bottom: 1px solid rgb(168,168,168);
-    z-index: 110;
-    font-size: 1em;
-    box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
-    overflow: hidden;
-}
-#controls .wrapper {
-    padding: 0;
-    padding-top: 8px;
-}
-#controls .unicon {
-    width: 25px;
-    height: 25px;
-    float: left;
-    margin-left: 15px;
-}
-#controls select, #controls button {
-    font-size: 16px;
-}
-#controls select {
-    margin-left: 10px;
-}
-#controls .spinner {
-    width: 1.8em;
-    height: 1.8em;
-    font-size: 1em;
-    margin: 0;
-    display: inline-block;
-
-}
-.status {
-    padding: 4px 10px 2px;
-    margin: 3px 10px;
-    display: inline-block;
-    border-radius: 15px;
-    background-color: rgb(254,254,254);
-    border: 1px solid rgb(220,220,220);
-    text-align: center;
-    cursor: pointer;
-}
-.status.error {
-    background-color: rgb(199,16,22);
-    color: #fff;
-    border-color: rgb(142,4,14);
-}
-.status:hover {
-    opacity: 0.7;
-}
-.status .close {
-    background: rgba(156,156,156, 0.5);
-    color: #fff;
-    border: 1px solid rgb(237,237,237);
-    height: 10px;
-    width: 10px;
-    border-radius: 5px;
-    display: inline-block;
-    font-size: 11px;
-    width: 15px;
-    height: 15px;
-    position: relative;
-    top: -2px;
-}
-.status .close:hover {
-    background-color: rgba(0,0,0, 0.4);
-}
-.locate-control {
-    background-color: #FFF;
-    border-bottom: 1px solid #CCC;
-    width: 26px;
-    height: 26px;
-    line-height: 26px;
-    display: block;
-    text-align: center;
-    text-decoration: none;
-    color: #000;
-}
-.locate-control a {
-    cursor: pointer;
-}
-.leaflet-touch .locate-control {
-    width: 30px;
-    height: 30px;
-    line-height: 30px;
-}
-.locate-control.loading {
-    cursor: progress;
-    opacity: 0.5;
-    color: rgb(241,241,241);
-}
-.icon-location {
-    background: url('../img/locate.png') center center;
-    background-size: 50% 50%;
-}
-.stop-name .desc, .stop-name .name {
-    display: block;
-    margin-bottom: 0.2em;
-}
-.stop-name .name {
-    font-size: 1.1em;
-    font-weight: 500;
-    color: #6B6969;
-}
-.stop-name .desc {
-    font-weight: 400;
-    font-size: 0.8em;
-    color: rgb(123,123,123);
-}
-.stop-leaflet-label {
-    background: none;
-    border: none;
-    font-weight: 600;
-    font-family: 'Trebuchet MS', Verdana, Arial, sans-serif;
-    color: rgb(110, 96, 101);
-    text-shadow: rgb(255,255,255) 1px 2px 0px;
-}
-.stop-leaflet-label::before, .stop-leaflet-label::after {
-    content: normal;
-}
-.error {
-    color: rgb(200,35,38);
-    border: 1px solid rgb(235,167,168);
-    background: rgb(255,234,235);
-    border-radius: 5px;
-    padding: 3px 7px;
-    margin: 2px 0;
-    font-size: 0.8em;
-}
-.trips {
-    list-style: none;
-    display: block;
-    padding: 0;
-}
-.trips h4 {
-    font-weight: 400;
-    margin: 0.8em 0;
-    font-size: 1em;
-    border-bottom: 1px solid #E0E0E0;
-    padding-bottom: 5px;
-    color: #6E6E6E;
-}
-.trip {
-    background: rgb(237,254,219);
-    border: 1px solid rgb(177,231,121);
-    color: rgb(97,110,82);
-    border-radius: 5px;
-    display: inline-block;
-    position: relative;
-    padding: 5px;
-    margin: 5px 0 0 0;
-    font-size: 0.8em;
-    font-weight: 500;
-}
-.trip .exact {
-    color: rgb(136, 167, 139);
-}
-.trip.old, .trip.old .exact {
-    background-color: rgb(246,246,246);
-    border-color: rgb(235,235,235);
-    color: rgb(150,150,150);
-    font-weight: 400;
-}
-
-/* Desktops and laptops */
-@media only screen
-and (min-width : 1224px) {
-    .poop.bike {}
-    html, body {
-        width: 100%;
-        overflow: hidden;
-    }
-}
-
-/* iPhone 5 in portrait & landscape */
-@media only screen
-and (min-device-width: 320px)
-and (max-device-width: 1024px)
-{
-    #controls {
-        box-shadow: none;
-    }
-    #controls .wrapper {
-        padding: 0 0 0 10px;
-    }
-    #controls select, #controls button{
-        font-size: 15px;
-        line-height: 35px;
-    }
-    #controls .unicon {
-        margin-left: 0px;
-        margin-top: 7px;
-        margin-right: 5px;
-    }
-    #controls select {
-        float: left;
-        margin-top: 7px;
-    }
-    #controls button {
-        color: rgb(227,15,26);
-        background: none;
-        border: none;
-        text-align: right;
-        float: right;
-    }
-    .leaflet-popup-content {
-        max-width: 90%;
-        max-height: 90%;
-        width: 250px !important;
-    }
-}
-
-.leaflet-popup {
-    z-index: 30;
-}
-
-.leaflet-popup-content-wrapper {
-    border-radius: 2px;
-    border: 1px solid rgb(241,241,241);
-    border-top: 1px solid rgb(220,220,220);
-    border-bottom: none;
-    font-size: 1em;
-    padding: 10px 5px 5px 10px;
-}
-
-.leaflet-popup-content {
-    margin: 0;
-    font-size: 1.3em;
-}
-
-.leaflet-container a.leaflet-popup-close-button {
-    background-color: rgba(255,36,0, 0.8);
-    border-radius: 12px;
-    width: 18px;
-    height: 18px;
-    padding: 3px 2px 1px;
-    text-align: center;
+.page .title a {
     color: rgb(255, 255, 255);
-    right: -9px;
-    top: -9px;
-    transition: color 0.1s;
+    border: none;
+    text-decoration: none;
 }
-
-.leaflet-container a.leaflet-popup-close-button:hover {
-    color: rgb(133,0,11);
+.page .title {
+    background: rgb(207,30,30);
+    font-size: 15px;
+    color: rgb(255, 255, 255);
+    padding: 10px 10px;
 }
-
-
-.leaflet-popup-content .vehicle {
-    color: rgb(128,128,128);
-    padding: 0 10px 10px 5px;
+.page .title h1 {
+    display: inline-block;
+    font-weight: 300;
+    margin: 0;
+    padding: 0;
+    vertical-align: middle;
 }
-.leaflet-popup-content .vehicle .service {
-    font-size: 1.4em;
-    padding-bottom: 5px;
+.page .body {
+    padding: 20px 10px;
 }
-.leaflet-popup-content .vehicle .service.active {
-    color: rgb(45,153,206);
+/*
+ * Unicon
+ */
+.unicon {
+    width: 60px;
+    height: 60px;
+    border-radius: 30px;
+    background: rgb(255, 255, 255);
+    cursor: pointer;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 10px;
+    box-shadow: 0 2px 3px rgb(144,38,50);
+    transition: box-shadow 0.2s ease-in-out;
 }
-
+.unicon svg {
+    padding-top: 8px;
+    padding-left: 9px;
+}
+.page .title a:hover .unicon {
+    box-shadow: 0 6px 5px rgb(144,38,50);
+}
+/*
+ * NProgress
+ */
 #nprogress .bar {
     background: rgb(221,17,68);
 }
@@ -305,18 +71,4 @@ and (max-device-width: 1024px)
 #nprogress .spinner-icon {
   border-top-color: rgb(221,17,68);
   border-left-color: rgb(221,17,68);
-}
-.vehicle-icon {
-    margin-left: -20px !important;
-    margin-top: -20px !important;
-}
-.vehicle-leaflet-label {
-    border: 1px solid rgb(225,225,225);
-    color: rgb(75, 122, 169);
-    background: rgba(255, 255, 255, 0.9);
-    font-family: 'Trebuchet MS', Verdana, Arial, sans-serif;
-    font-weight: 600;
-}
-.vehicle-leaflet-label::before, .vehicle-leaflet-label::after {
-    content: normal;
 }

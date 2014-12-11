@@ -18,7 +18,6 @@ var StopCollection = {
                 deferred.resolve(stops);
             })
             .catch(function(err) {
-                console.error("Problem fetching stop", err);
                 deferred.reject(err);
             });
 
