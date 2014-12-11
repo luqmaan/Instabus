@@ -144,7 +144,7 @@ button, body {
 .locate-control a {
     cursor: pointer;
 }
-.lerappidaflet-touch .locate-control {
+.leaflet-touch .locate-control {
     width: 30px;
     height: 30px;
     line-height: 30px;
