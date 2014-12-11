@@ -184,7 +184,7 @@ Rappid.prototype = {
         }
     },
     reportProblem: function() {
-        window.location.href = "mailto:ldawoodjee@gmail.com?subject=MetroRappid Issue";
+        window.location.href = "mailto:ldawoodjee@gmail.com?subject=MetroRappid Issue&body=Issue:%0ADescription:%0ASteps To Reproduce:";
         setTimeout(function() {
             window.location.href = "https://www.youtube.com/watch?v=ygr5AHufBN4"
         }, 3000)
