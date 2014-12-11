@@ -12,7 +12,7 @@
     <link rel="apple-touch-icon" sizes="76x76" href="img/icon-76.png">
     <link rel="apple-touch-icon" sizes="120x120" href="img/icon-60@2x.png">
     <link rel="apple-touch-icon" sizes="152x152" href="img/icon-76@2x.png">
-    <link href="css/bundle.css?v=0.0.36" rel="stylesheet">
+    <link href="css/bundle.css?v=0.0.38" rel="stylesheet">
     <script type="text/javascript">
         window.analytics=window.analytics||[],window.analytics.methods=["identify","group","track","page","pageview","alias","ready","on","once","off","trackLink","trackForm","trackClick","trackSubmit"],window.analytics.factory=function(t){return function(){var a=Array.prototype.slice.call(arguments);return a.unshift(t),window.analytics.push(a),window.analytics}};for(var i=0;i<window.analytics.methods.length;i++){var key=window.analytics.methods[i];window.analytics[key]=window.analytics.factory(key)}window.analytics.load=function(t){if(!document.getElementById("analytics-js")){var a=document.createElement("script");a.type="text/javascript",a.id="analytics-js",a.async=!0,a.src=("https:"===document.location.protocol?"https://":"http://")+"cdn.segment.io/analytics.js/v1/"+t+"/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(a,n)}},window.analytics.SNIPPET_VERSION="2.0.9",
         window.analytics.load('rogws3jvr0');
@@ -25,12 +25,36 @@
             <div class="wrapper">
                 <img class="unicon" src="img/icon-40.png" />
                 <select id="route" data-bind="options: availableRoutes, optionsText: 'name', value: route, valueAllowUnset: true, event: {change: selectRoute}"></select>
+                <a class="info" href="#" data-bind="{click: toggleInfoLayover, text: infoText}"></a>
             </div>
         </div>
         <div id="map-wrapper" aria-hidden="true">
             <div id="map"></div>
         </div>
+        <div id="info-wrapper" data-bind="{visible: showInfoLayover}">
+            <div class="info-text">
+                <img class="close" data-bind="{click: toggleInfoLayover}"/>
+                <h2>Who is MetroRappid?</h2>
+                We are a team of developers who take pride in Austin's public transportation but not the tools the offer to make it better. We have reverse engineered their "real-time" offerings for a much simpler and intuitive UI so that you can quickly determine where your bus/train is.
+                
+                <h2>Frequently Asked Questions</h2>
+                <h4>What happened to MetroRappid for iOS and MetroRappid for Android?</h4>
+                <div class="faq-answer">
+                    MetroRappid for iOS is being replaced with this. MetroRappid for Android (winner of ATX Hack For Change) had problems working with the Google Maps API. We've chosen to move in the direction of open data, and now instead use OpenStreetMaps. This webapp replaces MetroRappid for Android.
+                </div>
+                
+                <h4>Why don't I see any buses or trains?</h4>
+                <div class="faq-answer">
+                    We're relying on Yahoo! Query Language to provide a backend that allows us to talk to CapMetro's API (avoiding CORS issues). This is a hacky and unreliable solution. You should encourage CapMetro to make their API more easily accessible.
+                </div>
+                
+                <h4>Why is the vehicle location out of date?</h4>
+                <div class="faq-answer">
+                    CapMetro only updates the vehicle location every 30-90 seconds. You should encourage them to provide more accurate realtime data.
+                </div>
+            </div>
+        </div>
     </div>
-    <script src="js/bundle.js?v=0.0.36"></script>
+    <script src="js/bundle.js?v=0.0.38"></script>
 </body>
 </html>
