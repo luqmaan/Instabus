@@ -110,7 +110,8 @@ gulp.task('bump', function() {
         .pipe(gulp.dest('./'))
         .pipe(git.commit('Update version for release :shit:'))
         .pipe(tag())
-        .pipe(git.push('origin', 'master', {args: '--tags'}));
+        .pipe(git.push('origin', 'master', {args: '--tags'}))
+        .on('error', gutil.error);
 });
 
 gulp.task('watch', function() {
