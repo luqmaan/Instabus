@@ -33,6 +33,7 @@ button, body {
 }
 #info-wrapper .faq-answer {
     font-size: 12px;
+    font-style: italic;
 }
 #info-wrapper .info-text {
     width: 75%;
