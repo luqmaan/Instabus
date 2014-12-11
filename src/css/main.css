@@ -15,6 +15,30 @@ button, body {
 .leaflet-container {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
+#info-wrapper {
+    position: absolute;
+    width: 100%;
+    top: 40px;
+    bottom: 0;
+    margin-top: 0px;
+    background-color: black;
+    opacity: .8;
+    color: white;
+    text-align: center;
+    overflow: auto
+}
+#info-wrapper img {
+    right: 0;
+    position: absolute;
+}
+#info-wrapper .faq-answer {
+    font-size: 12px;
+}
+#info-wrapper .info-text {
+    width: 75%;
+    margin-left: 10%;
+    margin-right: 10%;
+}
 #map-wrapper {
     position: absolute;
     width: 100%;
@@ -66,7 +90,10 @@ button, body {
     font-size: 1em;
     margin: 0;
     display: inline-block;
-
+}
+#controls .info {
+    float: right;
+    margin-right: 5px;
 }
 .status {
     padding: 4px 10px 2px;
@@ -117,7 +144,7 @@ button, body {
 .locate-control a {
     cursor: pointer;
 }
-.leaflet-touch .locate-control {
+.lerappidaflet-touch .locate-control {
     width: 30px;
     height: 30px;
     line-height: 30px;
@@ -294,6 +321,10 @@ and (max-device-width: 1024px)
 }
 .leaflet-popup-content .vehicle .service.active {
     color: rgb(45,153,206);
+}
+
+.leaflet-popup-content .info {
+    
 }
 
 #nprogress .bar {
