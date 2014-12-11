@@ -27,6 +27,9 @@ button, body {
     text-align: center;
     overflow: auto
 }
+#info-wrapper h2 {
+    text-decoration: underline;
+}
 #info-wrapper img {
     right: 0;
     position: absolute;

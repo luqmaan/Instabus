@@ -183,6 +183,12 @@ Rappid.prototype = {
             this.infoText("Show Info");
         }
     },
+    reportProblem: function() {
+        window.location.href = "mailto:ldawoodjee@gmail.com?subject=MetroRappid Issue";
+        setTimeout(function() {
+            window.location.href = "https://www.youtube.com/watch?v=ygr5AHufBN4"
+        }, 3000)
+    },
     track: function() {
         var routeDirection = this.route().id + '-' + this.route().direction;
         window.analytics.track('TripSelected', {
