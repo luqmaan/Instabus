@@ -7,6 +7,7 @@ var RoutesCollection = require('./models/RoutesCollection');
 var VehicleCollection = require('./models/VehicleCollection');
 var Shape = require('./models/Shape');
 var StopCollection = require('./models/StopCollection');
+var fs = require('fs');
 var config = require('./config');
 
 var CapMetroAPIError = config.errors.CapMetroAPIError();
@@ -22,6 +23,9 @@ function Rappid() {
     // data
     this.vehicles = null;
     this.shape = null;
+
+    this.infoText = ko.observable("Show Info");
+    this.showInfoLayover = ko.observable(false);
 
     // viewmodels
     this.availableRoutes = ko.observableArray();
@@ -168,6 +172,16 @@ Rappid.prototype = {
             }.bind(this));
 
         return when.all([shapePromise, stopsPromise]);
+    },
+    toggleInfoLayover: function() {
+        var previousState = this.showInfoLayover();
+        this.showInfoLayover(!previousState);
+
+        if (previousState === false) {
+            this.infoText("Hide Info");
+        } else {
+            this.infoText("Show Info");
+        }
     },
     track: function() {
         var routeDirection = this.route().id + '-' + this.route().direction;
