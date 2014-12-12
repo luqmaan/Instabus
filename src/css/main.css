@@ -267,6 +267,9 @@ and (max-device-width: 1024px)
     #controls .wrapper {
         padding: 0 0 0 10px;
     }
+    #controls .info {
+        margin-top: 7px;
+    }
     #controls select, #controls button{
         font-size: 15px;
         line-height: 35px;
