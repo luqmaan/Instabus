@@ -32,14 +32,12 @@
             <div id="map"></div>
         </div>
         <div id="info-wrapper" data-bind="{visible: showInfoLayover}">
+            <a href="https://github.com/luqmaan/MetroRappid">
+                <img class="test" src="https://camo.githubusercontent.com/c6286ade715e9bea433b4705870de482a654f78a/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f77686974655f6666666666662e706e67" alt="F**k me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_white_ffffff.png">
+            </a>
             <div class="info-text">
-                <a href="https://github.com/luqmaan/MetroRappid"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/c6286ade715e9bea433b4705870de482a654f78a/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f77686974655f6666666666662e706e67" alt="F**k me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_white_ffffff.png"></a>
-                <img class="close" data-bind="{click: toggleInfoLayover}"/>
                 <h2>Who is MetroRappid?</h2>
                 We are a team of developers who take pride in Austin's public transportation but not the tools the offer to make it better. We have reverse engineered their "real-time" offerings for a much simpler and intuitive UI so that you can quickly determine where your bus/train is.
-
-                <h2>Notice Any Issues?</h2>
-                <a href="#" data-bind="{click: reportProblem}">Report It!</a>
                 
                 <h2>Frequently Asked Questions</h2>
                 <h4>What happened to MetroRappid for iOS and MetroRappid for Android?</h4>
@@ -56,6 +54,9 @@
                 <div class="faq-answer">
                     CapMetro only updates the vehicle location every 30-90 seconds. You should encourage them to provide more accurate realtime data.
                 </div>
+
+                <h2>Notice Any Issues?</h2>
+                <button href="#" data-bind="{click: reportProblem}">Email Us!</button>
             </div>
         </div>
     </div>

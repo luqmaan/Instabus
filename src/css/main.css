@@ -25,14 +25,16 @@ button, body {
     opacity: .8;
     color: white;
     text-align: center;
-    overflow: auto
+    overflow: auto;
 }
 #info-wrapper h2 {
     text-decoration: underline;
 }
 #info-wrapper img {
-    right: 0;
-    position: absolute;
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    border: 0
 }
 #info-wrapper .faq-answer {
     font-size: 12px;
@@ -42,6 +44,16 @@ button, body {
     width: 75%;
     margin-left: 10%;
     margin-right: 10%;
+}
+#info-wrapper .info-text button {
+   border: 1px solid #000000;
+   background: #cf1417;
+   padding: 10px 20px;
+   -webkit-border-radius: 5px;
+   -moz-border-radius: 5px;
+   border-radius: 5px;
+   color: white;
+   font-size: 13px;
 }
 #map-wrapper {
     position: absolute;
@@ -246,6 +258,9 @@ and (min-width : 1224px) {
 and (min-device-width: 320px)
 and (max-device-width: 1024px)
 {
+    #info-wrapper img {
+        height: 14%;
+    }
     #controls {
         box-shadow: none;
     }
