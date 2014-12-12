@@ -45,6 +45,10 @@ button, body {
     margin-left: 10%;
     margin-right: 10%;
 }
+#info-wrapper .info-text a {
+    color: white;
+    padding-bottom: 10%;
+}
 #info-wrapper .info-text button {
    border: 1px solid #000000;
    background: #cf1417;
