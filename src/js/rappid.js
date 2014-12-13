@@ -37,9 +37,8 @@ Rappid.prototype = {
         window.addEventListener("hashchange", this.hashChange.bind(this));
 
         this.routes.start()
-            .tap(this.hashChange.bind(this));
 
-        this.routes.active.subscribe(this.selectRoute.bind(this));  // Remove binding??
+        this.routes.active.subscribe(this.selectRoute.bind(this));
     },
     refresh: function() {
         console.log('refreshing', this, arguments);
@@ -129,8 +128,6 @@ Rappid.prototype = {
         this.displayMap(true);
         this.setupMap();
 
-        history.pushState(null, null, '#/route/' + route.id() + '/direction/' + route.directionId());
-
         this.setupRoute(route)
             .then(this.refresh.bind(this))
             .catch(console.error);
@@ -215,19 +212,9 @@ Rappid.prototype = {
     },
     hashChange: function() {
         console.log('Hash changed to', location.hash);
+
         if (location.hash === '') {
             this.displayMap(false);
-        }
-        else if (location.hash.match(/route\/\d+\/direction\/\d+/g)) {
-            var routeId = /route\/(\d+)/g.exec(location.hash)[1];
-            var directionId = /direction\/(\d+)/g.exec(location.hash)[1];
-            debugger;
-            if (!!this.routes.active() &&
-                routeId !== this.routes.active().id() &&
-                directionId !== this.routes.active().directionID()) {
-                console.log('Route or direction has changed', routeId, directionId);
-                this.routes.findAndSelect(routeId, directionId);
-            }
         }
     }
 };

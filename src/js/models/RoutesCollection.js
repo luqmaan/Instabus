@@ -12,11 +12,15 @@ function RoutesCollection() {
 
 RoutesCollection.prototype.start = function() {
     this.applyBindings();
+    window.addEventListener("hashchange", this.hashChange.bind(this));
 
-    return this.fetch()
-                .tap(this.routes)
-                .tap(this.setupCache.bind(this))
-                .tap(this.restoreCache.bind(this));
+    var promise = this.fetch()
+        .tap(this.routes)
+        .tap(this.setupCache.bind(this))
+        .tap(this.restoreCache.bind(this))
+        .tap(this.hashChange.bind(this));
+
+    return promise;
 };
 
 RoutesCollection.prototype.applyBindings = function() {
@@ -62,8 +66,9 @@ RoutesCollection.prototype.restoreCache = function() {
     }
 };
 
-RoutesCollection.prototype.select = function(_, route, direction) {
+RoutesCollection.prototype.selectClicked = function(routedirection, route, direction, e) {
     console.log('Selecting route', route, direction);
+    history.pushState(null, null, '#/route/' + route.id() + '/direction/' + direction.directionId());
     route.activeDirection(direction);
     this.active(route);
 };
@@ -83,13 +88,35 @@ RoutesCollection.prototype.findAndSelect = function(routeId, directionId) {
         direction = direction.length ? direction[0]: null;
     }
 
-    console.log('wefwef', route, direction);
-
     if (route && direction) {
-        this.select(route, direction);
+        console.log('Selecting route', route, direction);
+        route.activeDirection(direction);
+        this.active(route);
     }
 
     return route, direction;
+};
+
+RoutesCollection.prototype.hashChange = function() {
+    if (location.hash.match(/route\/\d+\/direction\/\d+/g)) {
+        var routeId = /route\/(\d+)/g.exec(location.hash)[1];
+        var directionId = /direction\/(\d+)/g.exec(location.hash)[1];
+
+        if (!this.active()) {
+            console.log('First time');
+            this.findAndSelect(routeId, directionId);
+        }
+        else {
+            var routeChanged = routeId !== this.active().id();
+            var directionChanged = directionId !== this.active().directionId();
+
+            console.log('Route changed?', routeChanged, 'directionChanged?', directionChanged);
+
+            if (routeChanged || directionChanged) {
+                this.findAndSelect(routeId, directionId);
+            }
+        }
+    }
 };
 
 module.exports = RoutesCollection;
