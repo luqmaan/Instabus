@@ -17,6 +17,10 @@ function Route(data) {
         }
     }.bind(this));
 
+    this.prettyName = ko.computed(function() {
+        return this.id() + ' ' + this.headsign();
+    }, this);
+
     this.showDirections = ko.observable(false);
     this.toggleText = ko.computed(function() {
         if (this.showDirections()) {

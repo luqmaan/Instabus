@@ -52,15 +52,16 @@
                             </g>
                         </svg>
                     </div>
-                    <h1>MetroRappid</h1>
+                    <h1 data-bind="text: title">MetroRappid</h1>
                 </a>
             </div>
             <div id="routes" class="body"></div>
-        </div>
-        <div id="map-wrapper" aria-hidden="true" data-bind="visible: displayMap">
-            <div id="map"></div>
-        </div>
 
+            <div id="map-wrapper" class="body" aria-hidden="true" data-bind="visible: displayMap">
+                <div id="map"></div>
+            </div>
+
+        </div>
     </div>
     <script src="js/bundle.js"></script>
 </body>

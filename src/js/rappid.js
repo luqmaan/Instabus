@@ -12,8 +12,6 @@ var config = require('./config');
 var CapMetroAPIError = config.errors.CapMetroAPIError();
 
 function Rappid() {
-    this.displayMap = ko.observable(false);
-
     // leaflet
     this.map = null;
     this.latlng = {lat: null, lng: null};
@@ -28,6 +26,16 @@ function Rappid() {
     // viewmodels
     this.routes = new RoutesCollection();
     this.stops = ko.observableArray();
+
+    this.displayMap = ko.observable(false);
+    this.title = ko.computed(function() {
+        var name = 'MetroRappid';
+        if (this.routes.active()) {
+            name = this.routes.active().prettyName();
+        }
+        return name;
+    }, this);
+
 }
 
 Rappid.prototype = {
