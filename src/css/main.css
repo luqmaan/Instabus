@@ -36,6 +36,8 @@ button, body {
 }
 .page .body {
     padding: 20px 10px;
+    max-width: 800px;
+    margin: 0 auto;
 }
 /*
  * Unicon
