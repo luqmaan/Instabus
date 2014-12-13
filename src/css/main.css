@@ -294,6 +294,10 @@ and (max-device-width: 1024px)
         text-align: right;
         float: right;
     }
+    .leaflet-popup-content {
+        max-width: 90%;
+        max-height: 90%;
+    }
 }
 
 .leaflet-popup {
