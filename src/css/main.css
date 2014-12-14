@@ -297,7 +297,6 @@ and (max-device-width: 1024px)
     .leaflet-popup-content {
         max-width: 90%;
         max-height: 90%;
-        width: 250px !important;
     }
 }
 
