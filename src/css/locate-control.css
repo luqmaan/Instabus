@@ -1,0 +1,29 @@
+.locate-control {
+    background-color: #FFF;
+    border-bottom: 1px solid #CCC;
+    width: 26px;
+    height: 26px;
+    line-height: 26px;
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    color: #000;
+}
+.locate-control a {
+    cursor: pointer;
+}
+.locate-control.loading {
+    cursor: progress;
+    opacity: 0.5;
+    color: rgb(241,241,241);
+}
+.icon-location {
+    background: url('../img/locate.png') center center;
+    background-size: 50% 50%;
+}
+
+.leaflet-touch .locate-control {
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+}

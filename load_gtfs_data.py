@@ -19,11 +19,7 @@ import gtfsdb
 from gtfsdb.api import database_load
 
 # only routes with realtime data
-ROUTE_IDS = {
-    801: ('MetroRapid', 'Bus'),
-    803: ('MetroRapid', 'Bus'),
-    550: ('MetroRail', 'Train'),
-}
+ROUTE_IDS = ['801', '803', '550']
 
 # need to switch stale stop IDs from CapMetro GTFS with fresh ones
 SWAP_STOP_IDS = {
@@ -54,25 +50,76 @@ def fetch_gtfs_data():
     logger.info('saved to {}'.format(GTFS_DOWNLOAD_FILE))
 
 
-def _save_route_data(curr):
+def _get_route_types(curr):
+    route_types = {}
+
+    sql = '''
+        SELECT route_type, route_type_name
+        FROM route_type
+    '''
+    curr.execute(sql)
+
+    for row in curr:
+        route_type = int(row[0])
+        route_type_name = row[1]
+
+        route_types[route_type] = route_type_name
+
+    return route_types
+
+
+def _get_routes_for_types(curr, route_types):
+    routes = {}
+
+    sql = '''
+        SELECT route_id, route_long_name, route_type
+        FROM routes
+        WHERE route_id IN ({})
+    '''.format(', '.join('?' for _ in ROUTE_IDS))
+    curr.execute(sql, ROUTE_IDS)
+
+    for row in curr:
+        route_id = int(row[0])
+        route_long_name = row[1]
+        route_type = int(row[2])
+        routes[route_id] = {
+            'route_id': route_id,
+            'name': route_long_name,
+            'route_type': route_types[route_type],
+            'directions': [],
+        }
+
+    return routes
+
+
+def _get_directions_for_routes(curr, routes):
     sql = '''
         SELECT DISTINCT route_id, direction_id, trip_headsign
         FROM trips
         WHERE route_id IN ({})
         ORDER BY route_id DESC, trip_headsign ASC
-    '''.format(','.join('?' for _ in ROUTE_IDS))
-    curr.execute(sql, ROUTE_IDS.keys())
+    '''.format(', '.join('?' for _ in ROUTE_IDS))
+    curr.execute(sql, ROUTE_IDS)
 
-    data = []
     for row in curr:
-        route_id, direction_id, direction = int(row[0]), int(row[1]), row[2].title().replace('bound', '')
-        route_name, vehicle_type = ROUTE_IDS[route_id]
-        data.append({
-            'id': route_id,
-            'direction': direction_id,
-            'name': '{} {} {}'.format(route_id, route_name, direction),
-            'vehicle_type': vehicle_type,
-        })
+        route_id = int(row[0])
+        direction_id = int(row[1])
+        headsign = row[2].title()
+        direction = {
+            'direction_id': direction_id,
+            'headsign': headsign,
+        }
+        routes[route_id]['directions'].append(direction)
+
+    return routes
+
+
+def _save_route_data(curr):
+    route_types = _get_route_types(curr)
+    routes = _get_routes_for_types(curr, route_types)
+    directions = _get_directions_for_routes(curr, routes)
+
+    data = directions.values()
 
     filename = os.path.join(DATA_DIR, 'routes.json')
     logger.info('writing ROUTE data to {}'.format(filename))
@@ -95,7 +142,7 @@ def _get_shape_data(curr):
         GROUP BY shapes.shape_id
         ORDER BY num_shapes DESC
     '''.format(','.join('?' for _ in ROUTE_IDS))
-    curr.execute(sql, ROUTE_IDS.keys())
+    curr.execute(sql, ROUTE_IDS)
 
     biggest_data_by_route = {}
     for row in curr:
@@ -181,7 +228,7 @@ def _save_stop_data(curr):
             stop_times.stop_sequence
         ORDER BY stop_times.stop_sequence
     '''.format(','.join('?' for _ in ROUTE_IDS))
-    curr.execute(sql, ROUTE_IDS.keys())
+    curr.execute(sql, ROUTE_IDS)
 
     data_by_stops = defaultdict(list)
     for (route_id, direction_id, stop_id, stop_code, stop_name, stop_desc, stop_lat, stop_lon, zone_id, stop_url, location_type, parent_station, stop_timezone, wheelchair_boarding, platform_code, stop_sequence) in curr:

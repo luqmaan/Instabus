@@ -1,0 +1,157 @@
+#map-wrapper {
+    position: absolute;
+    width: 100%;
+    top: 80px;
+    margin-top: 0;
+    bottom: 0;
+}
+#map-wrapper.hide {
+    display: none;
+}
+#map {
+    position: relative;
+    height: 100%;
+}
+.leaflet-container {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/*
+ * Popup
+ */
+
+.leaflet-popup {
+    z-index: 30;
+}
+.leaflet-popup-content-wrapper {
+    border-radius: 2px;
+    border: 1px solid rgb(241,241,241);
+    border-top: 1px solid rgb(220,220,220);
+    border-bottom: none;
+    font-size: 1em;
+    padding: 10px 5px 5px 10px;
+}
+.leaflet-popup-content {
+    margin: 0;
+    font-size: 1.3em;
+}
+.leaflet-container a.leaflet-popup-close-button {
+    background-color: rgba(255,36,0, 0.8);
+    border-radius: 12px;
+    width: 18px;
+    height: 18px;
+    padding: 3px 2px 1px;
+    text-align: center;
+    color: rgb(255, 255, 255);
+    right: -9px;
+    top: -9px;
+    transition: color 0.1s;
+}
+.leaflet-container a.leaflet-popup-close-button:hover {
+    color: rgb(133,0,11);
+}
+.leaflet-popup-content .error {
+    color: rgb(200,35,38);
+    border: 1px solid rgb(235,167,168);
+    background: rgb(255,234,235);
+    border-radius: 5px;
+    padding: 3px 7px;
+    margin: 2px 0;
+    font-size: 0.8em;
+}
+/*
+ * Vehicle
+ */
+.leaflet-popup-content .vehicle {
+    color: rgb(128,128,128);
+    padding: 0 10px 10px 5px;
+}
+.leaflet-popup-content .vehicle .service {
+    font-size: 1.4em;
+    padding-bottom: 5px;
+}
+.leaflet-popup-content .vehicle .service.active {
+    color: rgb(45,153,206);
+}
+.vehicle-icon {
+    margin-left: -20px !important;
+    margin-top: -20px !important;
+}
+.vehicle-leaflet-label {
+    border: 1px solid rgb(225,225,225);
+    color: rgb(75, 122, 169);
+    background: rgba(255, 255, 255, 0.9);
+    font-family: 'Trebuchet MS', Verdana, Arial, sans-serif;
+    font-weight: 600;
+}
+.vehicle-leaflet-label::before, .vehicle-leaflet-label::after {
+    content: normal;
+}
+
+
+/*
+ * Stop
+ */
+.stop-name .desc, .stop-name .name {
+    display: block;
+    margin-bottom: 0.2em;
+}
+.stop-name .name {
+    font-size: 1.1em;
+    font-weight: 500;
+    color: #6B6969;
+}
+.stop-name .desc {
+    font-weight: 400;
+    font-size: 0.8em;
+    color: rgb(123,123,123);
+}
+.stop-leaflet-label {
+    background: none;
+    border: none;
+    font-weight: 600;
+    font-family: 'Trebuchet MS', Verdana, Arial, sans-serif;
+    color: rgb(110, 96, 101);
+    text-shadow: rgb(255,255,255) 1px 2px 0px;
+}
+.stop-leaflet-label::before, .stop-leaflet-label::after {
+    content: normal;
+}
+
+/*
+ * Trips
+ */
+.trips {
+    list-style: none;
+    display: block;
+    padding: 0;
+}
+.trips h4 {
+    font-weight: 400;
+    margin: 0.8em 0;
+    font-size: 1em;
+    border-bottom: 1px solid #E0E0E0;
+    padding-bottom: 5px;
+    color: #6E6E6E;
+}
+.trip {
+    background: rgb(237,254,219);
+    border: 1px solid rgb(177,231,121);
+    color: rgb(97,110,82);
+    border-radius: 5px;
+    display: inline-block;
+    position: relative;
+    padding: 5px;
+    margin: 5px 0 0 0;
+    font-size: 0.8em;
+    font-weight: 500;
+}
+.trip .exact {
+    color: rgb(136, 167, 139);
+}
+.trip.old, .trip.old .exact {
+    background-color: rgb(246,246,246);
+    border-color: rgb(235,235,235);
+    color: rgb(150,150,150);
+    font-weight: 400;
+}

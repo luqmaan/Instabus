@@ -7,6 +7,7 @@ var RoutesCollection = require('./models/RoutesCollection');
 var VehicleCollection = require('./models/VehicleCollection');
 var Shape = require('./models/Shape');
 var StopCollection = require('./models/StopCollection');
+var InfoViewModel = require('./models/InfoViewModel');
 var fs = require('fs');
 var config = require('./config');
 
@@ -28,32 +29,31 @@ function Rappid() {
     this.showInfoLayover = ko.observable(false);
 
     // viewmodels
-    this.availableRoutes = ko.observableArray();
-    this.route = ko.observable();
+    this.routes = new RoutesCollection();
     this.stops = ko.observableArray();
+    this.infoVM = new InfoViewModel();
+
+    this.displayMap = ko.observable(false);
+    this.displayInfoLayover = ko.observable(false);
+
+    this.hash = ko.observable(location.hash);
+    this.title = ko.computed(function() {
+        var name = 'MetroRappid';
+        if (this.hash().indexOf('route') !== -1 && this.routes.active()) {
+            name = this.routes.active().prettyName();
+        }
+        return name;
+    }, this);
 }
 
 Rappid.prototype = {
     start: function() {
         NProgress.configure({ showSpinner: false });
 
-        this.setupMap();
+        window.addEventListener("hashchange", this.hashChange.bind(this));
 
-        RoutesCollection.fetch()
-            .tap(function(routes) {
-                this.availableRoutes(routes);
-
-                var cachedRoute = JSON.parse(localStorage.getItem('rappid:route')),
-                    defaultRoute = this.availableRoutes()[0];
-
-                if (cachedRoute) {
-                    defaultRoute = this.availableRoutes().filter(function(r) { return cachedRoute.id === r.id && cachedRoute.direction === r.direction; })[0];
-                }
-
-                this.route(defaultRoute);
-            }.bind(this))
-            .then(this.selectRoute.bind(this))
-            .catch(console.error);
+        this.routes.start();
+        this.routes.active.subscribe(this.selectRoute.bind(this));
     },
     refresh: function() {
         console.log('refreshing', this, arguments);
@@ -103,6 +103,13 @@ Rappid.prototype = {
             zoomCtrl,
             locateCtrl;
 
+        if (!this.alreadySetupMap) {
+            this.alreadySetupMap = true;
+        }
+        else {
+            return;
+        }
+
         this.map = L.map('map', {zoomControl: false,});
         this.map.setView(config.MAP_INITIAL_COORDINATES, config.MAP_INITIAL_ZOOM_LEVEL);
 
@@ -132,19 +139,19 @@ Rappid.prototype = {
             this.latlng = e.latlng;
         }.bind(this));
     },
-    selectRoute: function() {
-        this.setupRoute()
+    selectRoute: function(route) {
+        this.displayMap(true);
+        this.setupMap();
+
+        this.setupRoute(route)
             .then(this.refresh.bind(this))
             .catch(console.error);
     },
-    setupRoute: function() {
-        var route = this.route().id,
-            direction = this.route().direction,
-            shapePromise,
+    setupRoute: function(route) {
+        var shapePromise,
             stopsPromise;
 
-        this.track();
-        localStorage.setItem('rappid:route', ko.toJSON(this.route()));
+        this.track(route);
 
         if (this.routeLayer) {
             this.map.removeLayer(this.routeLayer);
@@ -155,14 +162,14 @@ Rappid.prototype = {
         if (this.vehicles) {
             this.map.removeLayer(this.vehicles.layer);
         }
-        this.vehicles = new VehicleCollection(route, direction);
+        this.vehicles = new VehicleCollection(route.id(), route.directionId());
         this.vehicles.layer.addTo(this.map);
 
-        this.shape = new Shape(route, direction);
+        this.shape = new Shape(route.id(), route.directionId());
         shapePromise = this.shape.fetch()
             .tap(this.shape.draw.bind(this.shape, this.routeLayer));
 
-        stopsPromise = StopCollection.fetch(route, direction)
+        stopsPromise = StopCollection.fetch(route.id(), route.directionId())
             .tap(function(stops) {
                 StopCollection.draw(stops, this.routeLayer);
                 this.stops(stops);
@@ -173,28 +180,12 @@ Rappid.prototype = {
 
         return when.all([shapePromise, stopsPromise]);
     },
-    toggleInfoLayover: function() {
-        var previousState = this.showInfoLayover();
-        this.showInfoLayover(!previousState);
-
-        if (previousState === false) {
-            this.infoText("Hide Info");
-        } else {
-            this.infoText("Show Info");
-        }
-    },
-    reportProblem: function() {
-        window.location.href = "mailto:ldawoodjee@gmail.com?subject=MetroRappid Issue&body=Issue:%0ADescription:%0ASteps To Reproduce:";
-        setTimeout(function() {
-            window.location.href = "https://www.youtube.com/watch?v=ygr5AHufBN4"
-        }, 3000)
-    },
-    track: function() {
-        var routeDirection = this.route().id + '-' + this.route().direction;
+    track: function(route) {
+        var routeDirection = route.id() + '-' + route.directionId();
         window.analytics.track('TripSelected', {
             name: routeDirection,
-            route: this.route().id,
-            direction: this.route().direction,
+            route: route.id(),
+            direction: route.directionId(),
             fingerprint: window.fingerme,
             coordinates: [this.latlng.lat, this.latlng.lng],
             location: {
@@ -215,7 +206,7 @@ Rappid.prototype = {
             }, 5000);
         }, 2000);
     },
-    fitClosest: function(wef) {
+    fitClosest: function() {
         if (!this.latlng.lat || !this.latlng.lng) { return; }
 
         var bounds = [[this.latlng.lat, this.latlng.lng]],
@@ -233,6 +224,15 @@ Rappid.prototype = {
         this.map.fitBounds(bounds, {
             maxZoom: config.MAP_INITIAL_ZOOM_LEVEL,
         });
+    },
+    hashChange: function(e) {
+        console.log('Hash changed to', location.hash, 'e', e);
+
+        this.hash(location.hash);
+
+        if (location.hash.indexOf('route') === -1) {
+            this.displayMap(false);
+        }
     }
 };
 

@@ -124,7 +124,6 @@ Vehicle.prototype = {
         });
 
         marker.bindPopup(this.popupContent());
-        console.log("SHIT", this.updateTime())
         marker.bindLabel(this.updateTime(), {
             noHide: true,
             direction: 'left',
