@@ -21,6 +21,11 @@ from gtfsdb.api import database_load
 # only routes with realtime data
 ROUTE_IDS = ['801', '803', '550']
 
+# need to switch stale stop IDs from CapMetro GTFS with fresh ones
+SWAP_STOP_IDS = {
+    '5868': '2643'
+}
+
 # GTFS_DOWNLOAD_FILE = os.path.join(tempfile.gettempdir(), 'capmetro_gtfs.zip')
 GTFS_DOWNLOAD_FILE = os.path.join('/tmp', 'capmetro_gtfs.zip')
 GTFS_DB = os.path.join(tempfile.gettempdir(), 'capmetro_gtfs_data.db')
@@ -227,6 +232,12 @@ def _save_stop_data(curr):
 
     data_by_stops = defaultdict(list)
     for (route_id, direction_id, stop_id, stop_code, stop_name, stop_desc, stop_lat, stop_lon, zone_id, stop_url, location_type, parent_station, stop_timezone, wheelchair_boarding, platform_code, stop_sequence) in curr:
+        # swap stale stop IDs with new ones
+        if stop_id in SWAP_STOP_IDS:
+            stop_url = stop_url.replace(stop_id, SWAP_STOP_IDS[stop_id])
+            stop_code = SWAP_STOP_IDS[stop_id]
+            stop_id = SWAP_STOP_IDS[stop_id]
+
         data_by_stops[(route_id, direction_id)].append({
             'route_id': route_id,
             'direction_id': direction_id,
