@@ -36,9 +36,10 @@ function Rappid() {
     this.displayMap = ko.observable(false);
     this.displayInfoLayover = ko.observable(false);
 
+    this.hash = ko.observable(location.hash);
     this.title = ko.computed(function() {
         var name = 'MetroRappid';
-        if (this.routes.active()) {
+        if (this.hash().indexOf('route') !== -1 && this.routes.active()) {
             name = this.routes.active().prettyName();
         }
         return name;
@@ -226,6 +227,8 @@ Rappid.prototype = {
     },
     hashChange: function(e) {
         console.log('Hash changed to', location.hash, 'e', e);
+
+        this.hash(location.hash);
 
         if (location.hash.indexOf('route') === -1) {
             this.displayMap(false);
