@@ -5,6 +5,9 @@
     margin-top: 0;
     bottom: 0;
 }
+#map-wrapper.hide {
+    display: none;
+}
 #map {
     position: relative;
     height: 100%;

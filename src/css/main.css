@@ -34,10 +34,29 @@ button, body {
     padding: 0;
     vertical-align: middle;
 }
+.page .title .actions {
+    display: inline-block;
+    position: relative;
+    float: right;
+    top: 20px;
+    right: 10px;
+    font-size: 1.2em;
+
+}
+.page .title .actions a {
+    float: right;
+}
 .page .body {
     padding: 20px 10px;
     max-width: 800px;
     margin: 0 auto;
+    color: rgb(80,78,78);
+    font-size: 1.1em;
+}
+.page .body .inner {
+    box-shadow: 0 2px 3px rgb(208,208,208);
+    background: #fff;
+    padding: 20px;
 }
 /*
  * Unicon
@@ -73,4 +92,23 @@ button, body {
 #nprogress .spinner-icon {
   border-top-color: rgb(221,17,68);
   border-left-color: rgb(221,17,68);
+}
+
+/*
+ * NProgress
+ */
+.info button {
+    font-size: 1.2em;
+    padding: 10px 30px;
+    background: rgb(253,253,253);
+    border: 1px solid rgb(230,230,230);
+    border-radius: 3px;
+    transition: box-shadow 0.2s ease-in-out;
+    display: block;
+    box-shadow: 0 2px 3px rgb(228,228,228);
+    color: rgb(248,67,97);
+
+}
+.info .faq-answer {
+
 }

@@ -1,11 +1,9 @@
-.routes-list {
+.page .body .routes-list.inner {
     margin: 0;
     padding: 0;
-    color: rgb(80,78,78);
-    font-size: 1.1em;
-    box-shadow: 0 2px 3px rgb(208,208,208);
 }
 .routes-list li {
+    margin: 0;
     list-style-type: none;
     background: rgb(255, 255, 255);
     border-bottom: 1px solid rgb(207,207,207);

@@ -11,7 +11,6 @@ function RoutesCollection() {
 }
 
 RoutesCollection.prototype.start = function() {
-    this.applyBindings();
     window.addEventListener("hashchange", this.hashChange.bind(this));
 
     var promise = this.fetch()
@@ -24,9 +23,16 @@ RoutesCollection.prototype.start = function() {
 };
 
 RoutesCollection.prototype.applyBindings = function() {
-    var div = document.querySelector("#routes");
+    var div = document.querySelector("#content-wrapper");
+    var inner = div.querySelector('.inner');
+
+    if (inner) {
+        ko.cleanNode(inner);
+        inner.remove();
+    }
     div.innerHTML = routesListHTML;
-    ko.applyBindings(this, div);
+    inner = div.querySelector('.inner');
+    ko.applyBindings(this, inner);
 };
 
 RoutesCollection.prototype.fetch = function() {
@@ -68,7 +74,9 @@ RoutesCollection.prototype.restoreCache = function() {
 
 RoutesCollection.prototype.selectClicked = function(routedirection, route, direction, e) {
     console.log('Selecting route', route, direction);
-    history.pushState(null, null, '#/route/' + route.id() + '/direction/' + direction.directionId());
+    var hash = '#/route/' + route.id() + '/direction/' + direction.directionId();
+    location.hash = hash;
+    // history.pushState(null, null, hash);
     route.activeDirection(direction);
     this.active(route);
 };
@@ -98,6 +106,10 @@ RoutesCollection.prototype.findAndSelect = function(routeId, directionId) {
 };
 
 RoutesCollection.prototype.hashChange = function() {
+    if (location.hash === '#' || location.hash === '' || location.hash === '/') {
+        this.applyBindings();
+    }
+
     if (location.hash.match(/route\/\d+\/direction\/\d+/g)) {
         var routeId = /route\/(\d+)/g.exec(location.hash)[1];
         var directionId = /direction\/(\d+)/g.exec(location.hash)[1];

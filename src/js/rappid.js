@@ -7,6 +7,8 @@ var RoutesCollection = require('./models/RoutesCollection');
 var VehicleCollection = require('./models/VehicleCollection');
 var Shape = require('./models/Shape');
 var StopCollection = require('./models/StopCollection');
+var InfoViewModel = require('./models/InfoViewModel');
+var fs = require('fs');
 var config = require('./config');
 
 var CapMetroAPIError = config.errors.CapMetroAPIError();
@@ -23,11 +25,17 @@ function Rappid() {
     this.vehicles = null;
     this.shape = null;
 
+    this.infoText = ko.observable("Show Info");
+    this.showInfoLayover = ko.observable(false);
+
     // viewmodels
     this.routes = new RoutesCollection();
     this.stops = ko.observableArray();
+    this.infoVM = new InfoViewModel();
 
     this.displayMap = ko.observable(false);
+    this.displayInfoLayover = ko.observable(false);
+
     this.title = ko.computed(function() {
         var name = 'MetroRappid';
         if (this.routes.active()) {
@@ -35,7 +43,6 @@ function Rappid() {
         }
         return name;
     }, this);
-
 }
 
 Rappid.prototype = {
@@ -44,8 +51,7 @@ Rappid.prototype = {
 
         window.addEventListener("hashchange", this.hashChange.bind(this));
 
-        this.routes.start()
-
+        this.routes.start();
         this.routes.active.subscribe(this.selectRoute.bind(this));
     },
     refresh: function() {
@@ -218,10 +224,10 @@ Rappid.prototype = {
             maxZoom: config.MAP_INITIAL_ZOOM_LEVEL,
         });
     },
-    hashChange: function() {
-        console.log('Hash changed to', location.hash);
+    hashChange: function(e) {
+        console.log('Hash changed to', location.hash, 'e', e);
 
-        if (location.hash === '') {
+        if (location.hash.indexOf('route') === -1) {
             this.displayMap(false);
         }
     }
