@@ -23,7 +23,6 @@ InfoViewModel.prototype.applyBindings = function() {
 };
 
 InfoViewModel.prototype.hashChange = function() {
-    console.log('popp wefiowejfoij info');
     if (location.hash === '#/info') {
         this.applyBindings();
     }

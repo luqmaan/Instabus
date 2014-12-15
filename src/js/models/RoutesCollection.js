@@ -76,7 +76,6 @@ RoutesCollection.prototype.selectClicked = function(routedirection, route, direc
     console.log('Selecting route', route, direction);
     var hash = '#/route/' + route.id() + '/direction/' + direction.directionId();
     location.hash = hash;
-    // history.pushState(null, null, hash);
     route.activeDirection(direction);
     this.active(route);
 };
