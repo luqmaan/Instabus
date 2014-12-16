@@ -1,0 +1,24 @@
+.info button {
+    font-size: 1.2em;
+    padding: 10px 30px;
+    background: rgb(253,253,253);
+    border: 1px solid rgb(230,230,230);
+    border-radius: 3px;
+    transition: box-shadow 0.2s ease-in-out;
+    display: block;
+    box-shadow: 0 2px 3px rgb(228,228,228);
+    color: rgb(33,150,243);
+    cursor: pointer;
+    transition: box-shadow 0.2s ease-in-out;
+}
+.info button:hover {
+    box-shadow: 0 6px 5px rgb(228,228,228);
+}
+.info .faq-answer {
+    border-bottom: 1px solid rgb(236,236,235);
+    padding-bottom: 25px;
+}
+.fork-me {
+    float: right;
+    margin: -20px;
+}
