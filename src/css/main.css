@@ -22,14 +22,18 @@ button, body {
     text-decoration: none;
 }
 .page .title {
-    background: rgb(207,30,30);
+    z-index: 1000;
+    position: relative;
     font-size: 15px;
     color: rgb(255, 255, 255);
-    padding: 10px 10px;
+    padding: 0 10px;
+    background: rgb(207,30,30);
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.14),0 4px 8px rgba(0, 0, 0, 0.28);
 }
 .page .title h1 {
     display: inline-block;
     font-weight: 300;
+    font-size: 1.5em;
     margin: 0;
     padding: 0;
     vertical-align: middle;
@@ -38,7 +42,7 @@ button, body {
     display: inline-block;
     position: relative;
     float: right;
-    top: 20px;
+    top: 15px;
     right: 10px;
     font-size: 1.2em;
 }
@@ -61,23 +65,27 @@ button, body {
  * Unicon
  */
 .unicon {
-    width: 60px;
-    height: 60px;
-    border-radius: 30px;
-    background: rgb(255, 255, 255);
+    width: 35px;
+    height: 35px;
     cursor: pointer;
     display: inline-block;
     vertical-align: middle;
     margin-right: 10px;
-    box-shadow: 0 2px 3px rgb(144,38,50);
-    transition: box-shadow 0.2s ease-in-out;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    transition: box-shadow 0.2s ease-in-out, background-color 0.2s ease-in-out;
 }
 .unicon svg {
-    padding-top: 8px;
-    padding-left: 9px;
+    padding-top: 4px;
+    padding-left: 5px;
+}
+.unicon svg g {
+    fill: rgba(255, 255, 255, 0.9);
+}
+.page .title a:hover .unicon svg g {
+    fill: rgba(255, 255, 255, 1);
 }
 .page .title a:hover .unicon {
-    box-shadow: 0 6px 5px rgb(144,38,50);
 }
 /*
  * NProgress
