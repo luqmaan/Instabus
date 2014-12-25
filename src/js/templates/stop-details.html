@@ -1,0 +1,22 @@
+<div class="trips inner">
+    <div class="stop-name">
+        <span class="name" data-bind="text: name"></span>
+    </div>
+    <ul class="trips">
+        <div class="progress large" data-bind="visible: tripCollection.loading">
+            <div class="spinner">
+                <div class="double-bounce1"></div>
+                <div class="double-bounce2"></div>
+            </div>
+        </div>
+        <!-- ko foreach: tripCollection.trips -->
+            <li class="trip" data-bind="css: {old: old}">
+                <span class="minutes" data-bind="text: prettyMinutes"></span>
+                <span class="exact" data-bind="text: prettyHour"></span>
+            </li>
+        <!-- /ko -->
+        <!-- ko if: tripCollection.errorMsg -->
+            <li class="error"><span data-bind="text: tripCollection.errorMsg"></span></li>
+        <!-- /ko -->
+    </ul>
+</div>

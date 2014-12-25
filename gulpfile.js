@@ -32,6 +32,7 @@ gulp.task('build-css', function() {
         './src/css/main.css',
         './src/css/map.css',
         './src/css/info.css',
+        './src/css/panel.css',
         './src/css/locate-control.css',
         './src/css/routes-list.css',
     ];

@@ -4,7 +4,6 @@ var ko = require('knockout');
 var infoHTML = fs.readFileSync(__dirname + '/../templates/info.html', 'utf8');
 
 function InfoViewModel() {
-    console.log('new infoviewmodel')
     window.addEventListener("hashchange", this.hashChange.bind(this));
     this.hashChange();
 }
@@ -37,7 +36,7 @@ InfoViewModel.prototype.toggleInfo = function() {
         this.infoText('Hide Info');
         return true;
     }
-}
+};
 
 InfoViewModel.prototype.reportProblem = function() {
     window.location.href = "mailto:ldawoodjee@gmail.com?subject=MetroRappid Issue&body=Issue:%0ADescription:%0ASteps To Reproduce:";

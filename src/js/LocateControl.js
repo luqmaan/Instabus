@@ -19,11 +19,10 @@ var LocateControl = leaflet.Control.extend({
 
         var link = leaflet.DomUtil .create('a', 'leaflet-bar-part leaflet-bar-part-single ' + this.options.icon, this.container);
 
-        leaflet.DomEvent
-            .on(link, 'click', leaflet.DomEvent.stopPropagation)
-            .on(link, 'click', leaflet.DomEvent.preventDefault)
-            .on(link, 'click', this.zoomToLocation.bind(this))
-            .on(link, 'dblclick', leaflet.DomEvent.stopPropagation);
+        leaflet.DomEvent.on(link, 'click', leaflet.DomEvent.stopPropagation);
+        leaflet.DomEvent.on(link, 'click', leaflet.DomEvent.preventDefault);
+        leaflet.DomEvent.on(link, 'click', this.zoomToLocation.bind(this));
+        leaflet.DomEvent.on(link, 'dblclick', leaflet.DomEvent.stopPropagation);
 
         this.locate();
 
@@ -85,7 +84,6 @@ var LocateControl = leaflet.Control.extend({
             radius: 15
         });
         this.outerMarker.addTo(this.map);
-        this.outerMarker.bindPopup('Current Location');
         this.innerMarker.addTo(this.map);
     }
 });

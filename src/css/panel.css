@@ -1,0 +1,8 @@
+.panel .error {
+    color: rgb(200,35,38);
+    background: rgb(255,234,235);
+    border-radius: 1px;
+    padding: 10px 15px;
+    margin: 5px 0;
+    font-size: 0.8em;
+}

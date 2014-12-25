@@ -30,7 +30,7 @@ function Rappid() {
 
     // viewmodels
     this.routes = new RoutesCollection();
-    this.stops = ko.observableArray();
+    this.stopCollection = new StopCollection();
     this.infoVM = new InfoViewModel();
 
     this.displayMap = ko.observable(false);
@@ -57,13 +57,6 @@ Rappid.prototype = {
     },
     refresh: function() {
         console.log('refreshing', this, arguments);
-        function refreshCompletion() {
-            NProgress.done();
-            this.refreshTimeout = setTimeout(this.refresh.bind(this), config.REFRESH_INTERVAL);
-            // refresh on mobile unlock/maximize
-            // don't bind until the first refresh is done unless you want a world of race conditions with the animations ;_;
-            window.addEventListener('pageshow', this.refresh.bind(this));
-        }
 
         if (this.refreshTimeout) {
             clearTimeout(this.refreshTimeout);
@@ -80,23 +73,26 @@ Rappid.prototype = {
         console.log("firstVehiclesRefresh", firstVehiclesRefresh);
 
         this.vehicles.refresh()
-            .progress(function() {
-                // console.log('progress', arguments);
-                // FIXME: Show the progress notifications in the UI
-            }.bind(this))
             .then(function() {
                 if (firstVehiclesRefresh) {
-                    this.fitClosest(true);
+                    this.fitClosest();
                 }
-                var stopsRefresh = this.stops().map(function(stop) { return stop.refresh(); });
-                return when.all(stopsRefresh);
+
+                return this.stopCollection.refresh();
             }.bind(this))
             .catch(CapMetroAPIError, this.rustle.bind(this))
             .catch(function(e) {
                 // FIXME: Show the error in the UI
                 console.error(e);
             })
-            .finally(refreshCompletion.bind(this));
+            .finally(function() {
+                NProgress.done();
+                this.refreshTimeout = setTimeout(this.refresh.bind(this), config.REFRESH_INTERVAL);
+
+                // refresh on mobile unlock/maximize
+                // don't bind until the first refresh is done unless you want a world of race conditions with the animations ;_;
+                window.addEventListener('pageshow', this.refresh.bind(this));
+            }.bind(this));
     },
     setupMap: function() {
         var tileLayer,
@@ -140,6 +136,9 @@ Rappid.prototype = {
         }.bind(this));
     },
     selectRoute: function(route) {
+        if (!route) {
+            return;
+        }
         this.displayMap(true);
         this.setupMap();
 
@@ -148,11 +147,29 @@ Rappid.prototype = {
             .catch(console.error);
     },
     setupRoute: function(route) {
-        var shapePromise,
-            stopsPromise;
+        console.log('Setting up route', route);
 
         this.track(route);
 
+        this.removeMapLayers();
+
+        this.vehicles = new VehicleCollection(route.id(), route.directionId());
+        this.vehicles.layer.addTo(this.map);
+
+        this.shape = new Shape(route.id(), route.directionId());
+        var shapePromise = this.shape.fetch()
+            .tap(this.shape.draw.bind(this.shape, this.routeLayer));
+
+        this.stopCollection = new StopCollection(route.id(), route.directionId());
+        var stopsPromise = this.stopCollection.fetch()
+            .tap(function() {
+                this.stopCollection.draw(this.routeLayer);
+                this.fitClosest();
+            }.bind(this));
+
+        return when.all([shapePromise, stopsPromise]);
+    },
+    removeMapLayers: function() {
         if (this.routeLayer) {
             this.map.removeLayer(this.routeLayer);
         }
@@ -162,23 +179,6 @@ Rappid.prototype = {
         if (this.vehicles) {
             this.map.removeLayer(this.vehicles.layer);
         }
-        this.vehicles = new VehicleCollection(route.id(), route.directionId());
-        this.vehicles.layer.addTo(this.map);
-
-        this.shape = new Shape(route.id(), route.directionId());
-        shapePromise = this.shape.fetch()
-            .tap(this.shape.draw.bind(this.shape, this.routeLayer));
-
-        stopsPromise = StopCollection.fetch(route.id(), route.directionId())
-            .tap(function(stops) {
-                StopCollection.draw(stops, this.routeLayer);
-                this.stops(stops);
-                if (this.latlng.lat && this.latlng.lng) {
-                    this.fitClosest();
-                }
-            }.bind(this));
-
-        return when.all([shapePromise, stopsPromise]);
     },
     track: function(route) {
         var routeDirection = route.id() + '-' + route.directionId();

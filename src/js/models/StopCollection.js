@@ -1,42 +1,81 @@
+var _ = require('underscore');
+var ko = require('knockout');
 var geolib = require('geolib');
 var L = require('leaflet');
 var when = require('when');
+
 var config = require('../config');
-var Stop = require('./Stop');
 var requests = require('../requests');
+var Stop = require('./Stop');
 
-var StopCollection = {
-    fetch: function(route, direction) {
-        var deferred = when.defer();
+function StopCollection(routeID, directionID) {
+    this.routeID = ko.observable(routeID);
+    this.directionID = ko.observable(directionID);
 
-        requests.get('data/stops_' + route + '_' + direction + '.json')
-            .then(function(data) {
-                var stops = data.map(function(stopData) {
-                    return new Stop(stopData);
-                });
+    this.active = ko.observable();
+    this.stops = ko.observableArray();
 
-                deferred.resolve(stops);
-            })
-            .catch(function(err) {
-                deferred.reject(err);
+    window.addEventListener("hashchange", this.hashChange.bind(this));
+    this.hashChange();
+}
+
+StopCollection.prototype.fetch = function() {
+    var promise = requests.get('data/stops_' + this.routeID() + '_' + this.directionID() + '.json')
+        .then(function(data) {
+            var stops = data.map(function(stopData) {
+                return new Stop(stopData);
             });
 
-        return deferred.promise;
-    },
-    draw: function(stops, layer) {
-        stops.forEach(function(stop) {
-            stop.marker.addTo(layer);
+            return stops;
+        })
+        .tap(function(stops) {
+            this.stops(stops);
+        }.bind(this));
+
+    return promise;
+};
+
+StopCollection.prototype.refresh = function() {
+    return this.active().refresh();
+};
+
+StopCollection.prototype.draw = function(layer) {
+    this.stops().forEach(function(stop) {
+        stop.marker.addTo(layer);
+    });
+};
+
+StopCollection.prototype.closest = function(lat, lng) {
+    if (!lat || !lng || !this.stops() || !this.stops().length) {
+        return;
+    }
+
+    var points = this.stops().map(function(s) {
+        return {latitude: s.lat(), longitude: s.lon()};
+    });
+    var nearestPoint = geolib.findNearest({latitude: lat, longitude: lng}, points, 0, 1);
+    var closest = this.stops()[parseInt(nearestPoint.key)];
+
+    return closest;
+};
+
+StopCollection.prototype.hashChange = function() {
+    var routeMatches = location.hash.match(/route\/\d+\/direction\/\d+\/stop\/\d+/g);
+
+    if (routeMatches) {
+        var stopID = /stop\/(\d+)/g.exec(location.hash)[1];
+        var stop = _.find(this.stops(), function(s) {
+            return s.stopID().toString() === stopID.toString();
         });
-    },
-    closest: function(lat, lng, stops) {
-        if (!lat || !lng || !stops || !stops.length) return;
 
-        var points = stops.map(function(s) { return {latitude: s.lat(), longitude: s.lon()};}),
-            nearestPoint = geolib.findNearest({latitude: lat, longitude: lng}, points, 0, 1),
-            closest = stops[parseInt(nearestPoint.key)];
-
-        return closest;
+        if (stop) {
+            console.debug('/route/direction/stop: found', location.hash);
+            this.active(stop);
+            this.active().applyBindings();
+            this.active().refresh();
+        }
     }
 };
+
 
 module.exports = StopCollection;

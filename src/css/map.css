@@ -15,6 +15,23 @@
 .leaflet-container {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
+#map {
+    width: 80%;
+    display: inline-block;
+}
+.panel {
+    float: right;
+    width: 20%;
+    height: 100%;
+    display: inline-block;
+    background-color: rgb(250, 250, 250);
+    position: relative;
+    overflow: scroll;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.14),0 4px 8px rgba(0, 0, 0, 0.28);
+}
+.panel .inner {
+    padding: 20px;
+}
 
 /*
  * Popup
@@ -49,15 +66,6 @@
 }
 .leaflet-container a.leaflet-popup-close-button:hover {
     color: rgb(133,0,11);
-}
-.leaflet-popup-content .error {
-    color: rgb(200,35,38);
-    border: 1px solid rgb(235,167,168);
-    background: rgb(255,234,235);
-    border-radius: 5px;
-    padding: 3px 7px;
-    margin: 2px 0;
-    font-size: 0.8em;
 }
 /*
  * Vehicle
