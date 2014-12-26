@@ -1,17 +1,20 @@
+var fs = require('fs');
+
 var ko = require('knockout');
 var L = require('leaflet');
 var when = require('when');
 var NProgress = require('NProgress');
+
 var LocateControl = require('./LocateControl');
+var config = require('./config');
 var RoutesCollection = require('./models/RoutesCollection');
 var VehicleCollection = require('./models/VehicleCollection');
 var Shape = require('./models/Shape');
 var StopCollection = require('./models/StopCollection');
 var InfoViewModel = require('./models/InfoViewModel');
-var fs = require('fs');
-var config = require('./config');
 
 var CapMetroAPIError = config.errors.CapMetroAPIError();
+
 
 function Rappid() {
     // leaflet
@@ -21,25 +24,23 @@ function Rappid() {
     // vehicles go on rappid.vehicles.layer
     this.routeLayer = null;
 
-    // data
-    this.vehicles = null;
-    this.shape = null;
-
+    // observables
     this.infoText = ko.observable("Show Info");
-    this.showInfoLayover = ko.observable(false);
+    this.locationHash = ko.observable(location.hash);
+    this.displayStopPanel = ko.observable(false);
+    this.displayMap = ko.observable(false);
+    this.displayInfoLayover = ko.observable(false);
 
     // viewmodels
+    this.vehicles = null;
+    this.shape = null;
     this.routes = new RoutesCollection();
     this.stopCollection = new StopCollection();
     this.infoVM = new InfoViewModel();
 
-    this.displayMap = ko.observable(false);
-    this.displayInfoLayover = ko.observable(false);
-
-    this.hash = ko.observable(location.hash);
     this.title = ko.computed(function() {
         var name = 'MetroRappid';
-        if (this.hash().indexOf('route') !== -1 && this.routes.active()) {
+        if (this.locationHash().indexOf('route') !== -1 && this.routes.active()) {
             name = this.routes.active().prettyName();
         }
         return name;
@@ -48,12 +49,14 @@ function Rappid() {
 
 Rappid.prototype = {
     start: function() {
-        NProgress.configure({ showSpinner: false });
-
+        NProgress.configure({showSpinner: false});
         window.addEventListener("hashchange", this.hashChange.bind(this));
-
-        this.routes.start();
         this.routes.active.subscribe(this.selectRoute.bind(this));
+
+        var promise = this.routes.start()
+            .tap(this.hashChange.bind(this));
+
+        return promise;
     },
     refresh: function() {
         console.log('refreshing', this, arguments);
@@ -61,20 +64,13 @@ Rappid.prototype = {
         if (this.refreshTimeout) {
             clearTimeout(this.refreshTimeout);
             this.refreshTimeout = null;
-            // FIXME: Is there some way to abort any existings requests/promises?
-            // Two refreshes happening at once seems bad.
-            // We could do put a mutex on refresh(). But if refresh() gets stuck, no more refreshes will get scheduled.
         }
 
         NProgress.start();
 
-        // FIXME: suppeeeeer 💩
-        var firstVehiclesRefresh = !this.vehicles.vehicles.length;
-        console.log("firstVehiclesRefresh", firstVehiclesRefresh);
-
         this.vehicles.refresh()
             .then(function() {
-                if (firstVehiclesRefresh) {
+                if (!this.vehicles.vehicles.length) {
                     this.fitClosest();
                 }
 
@@ -95,9 +91,9 @@ Rappid.prototype = {
             }.bind(this));
     },
     setupMap: function() {
-        var tileLayer,
-            zoomCtrl,
-            locateCtrl;
+        var tileLayer;
+        var zoomCtrl;
+        var locateCtrl;
 
         if (!this.alreadySetupMap) {
             this.alreadySetupMap = true;
@@ -161,9 +157,8 @@ Rappid.prototype = {
             .tap(this.shape.draw.bind(this.shape, this.routeLayer));
 
         this.stopCollection = new StopCollection(route.id(), route.directionId());
-        var stopsPromise = this.stopCollection.fetch()
+        var stopsPromise = this.stopCollection.start(this.routeLayer)
             .tap(function() {
-                this.stopCollection.draw(this.routeLayer);
                 this.fitClosest();
             }.bind(this));
 
@@ -207,11 +202,13 @@ Rappid.prototype = {
         }, 2000);
     },
     fitClosest: function() {
-        if (!this.latlng.lat || !this.latlng.lng) { return; }
+        if (!this.latlng.lat || !this.latlng.lng) {
+            return;
+        }
 
-        var bounds = [[this.latlng.lat, this.latlng.lng]],
-            closestStop = StopCollection.closest(this.latlng.lat, this.latlng.lng, this.stops()),
-            closestVehicle = VehicleCollection.closest(this.latlng.lat, this.latlng.lng, this.vehicles);
+        var bounds = [[this.latlng.lat, this.latlng.lng]];
+        var closestStop = StopCollection.closest(this.latlng.lat, this.latlng.lng, this.stops());
+        var closestVehicle = VehicleCollection.closest(this.latlng.lat, this.latlng.lng, this.vehicles);
 
         if (closestStop) {
             bounds.push([closestStop.lat(), closestStop.lon()]);
@@ -228,10 +225,17 @@ Rappid.prototype = {
     hashChange: function(e) {
         console.log('Hash changed to', location.hash, 'e', e);
 
-        this.hash(location.hash);
+        this.locationHash(location.hash);
 
-        if (location.hash.indexOf('route') === -1) {
+        if (location.hash.indexOf('/route/') === -1) {
             this.displayMap(false);
+        }
+
+        if (location.hash.indexOf('/stop/') !== -1) {
+            this.displayStopPanel(true);
+        }
+        else {
+            this.displayStopPanel(false);
         }
     }
 };

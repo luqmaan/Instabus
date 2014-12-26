@@ -16,8 +16,15 @@ function StopCollection(routeID, directionID) {
     this.stops = ko.observableArray();
 
     window.addEventListener("hashchange", this.hashChange.bind(this));
-    this.hashChange();
 }
+
+StopCollection.prototype.start = function(layer) {
+    var promise = this.fetch()
+        .tap(this.draw.bind(this, layer))
+        .tap(this.hashChange.bind(this));
+
+    return promise;
+};
 
 StopCollection.prototype.fetch = function() {
     var promise = requests.get('data/stops_' + this.routeID() + '_' + this.directionID() + '.json')

@@ -6,7 +6,7 @@ require('leaflet.label');
 var leaflet = require('leaflet');
 
 var config = require('../config');
-var TripCollection = require('./TripCollection');
+var StopDetails = require('./StopDetails');
 var stopDetailsHTML = fs.readFileSync(__dirname + '/../templates/stop-details.html', 'utf8');
 
 
@@ -23,7 +23,7 @@ function Stop(data) {
     this.timezone = ko.observable(data.stop_timezone);
     this.url = ko.observable(data.url);
 
-    this.tripCollection = new TripCollection();
+    this.stopDetails = new StopDetails(this.routeID(), this.directionID(), this.stopID());
 
     this.cssId = ko.observable('stop-' + data.stop_id);
 
@@ -52,7 +52,7 @@ function Stop(data) {
 }
 
 Stop.prototype.refresh = function() {
-    return this.tripCollection.fetch();
+    return this.stopDetails.fetch();
 };
 
 Stop.prototype.centerMarker = function() {

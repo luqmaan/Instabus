@@ -19,18 +19,8 @@
     width: 80%;
     display: inline-block;
 }
-.panel {
-    float: right;
-    width: 20%;
-    height: 100%;
-    display: inline-block;
-    background-color: rgb(250, 250, 250);
-    position: relative;
-    overflow: scroll;
-    box-shadow: 0 0 4px rgba(0, 0, 0, 0.14),0 4px 8px rgba(0, 0, 0, 0.28);
-}
-.panel .inner {
-    padding: 20px;
+#map.full {
+    width: 100%;
 }
 
 /*

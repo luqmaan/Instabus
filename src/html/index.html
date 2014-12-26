@@ -63,10 +63,9 @@
                     </a>
                 </div>
             </div>
-            <div id="map-wrapper" aria-hidden="true" data-bind="visible: displayMap, css: { hide: !displayMap}">
-                <div id="map"></div>
-                <div id="stop-details-wrapper" class="panel">
-                </div>
+            <div id="map-wrapper" aria-hidden="true" data-bind="visible: displayMap, css: {hide: !displayMap}">
+                <div id="map" data-bind="css: {full: !displayStopPanel()}"></div>
+                <div id="stop-details-wrapper" class="panel" data-bind="visible: displayStopPanel"></div>
             </div>
 
         </div>
