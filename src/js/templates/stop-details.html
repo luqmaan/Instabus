@@ -1,8 +1,16 @@
-<div class="trips inner">
+<div class="inner">
     <div class="stop-name">
-        <span class="name" data-bind="text: name"></span>
+        <div class="direction"><span data-bind="text: stopDetails.direction"></span></div>
+        <div class="name" data-bind="text: prettyName"></div>
     </div>
-    <ul class="trips">
+
+    <!-- ko if: stopDetails.errorMsg -->
+        <div class="error">
+            <span data-bind="text: stopDetails.errorMsg"></span>
+        </div>
+    <!-- /ko -->
+
+    <div class="trips">
         <div class="progress large" data-bind="visible: stopDetails.loading">
             <div class="spinner">
                 <div class="double-bounce1"></div>
@@ -11,28 +19,32 @@
         </div>
 
         <!-- ko foreach: stopDetails.activeTripCollections -->
-            <h3><span data-bind="text: sign"></span></h3>
-            <!-- ko foreach: trips -->
-                <li class="trip" data-bind="css: {old: old}">
-                    <span class="minutes" data-bind="text: prettyMinutes"></span>
-                    <span class="exact" data-bind="text: prettyHour"></span>
-                </li>
-            <!-- /ko -->
+            <div class="tripCollection active" data-bind="">
+                <h3 class="sign" data-bind="text: sign"></h3>
+                <table>
+                    <tr data-bind="foreach: trips">
+                        <td class="trip" data-bind="css: {old: old}">
+                            <div class="minutes" data-bind="text: prettyMinutes"></div>
+                            <div class="exact" data-bind="text: prettyHour"></div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
         <!-- /ko -->
 
-        <h3>All Trips</h3>
-        <!-- ko foreach: stopDetails.tripCollections -->
-            <h3><span data-bind="text: sign"></span></h3>
-            <!-- ko foreach: trips -->
-                <li class="trip" data-bind="css: {old: old}">
-                    <span class="minutes" data-bind="text: prettyMinutes"></span>
-                    <span class="exact" data-bind="text: prettyHour"></span>
-                </li>
-            <!-- /ko -->
+        <!-- ko foreach: stopDetails.inactiveTripCollections -->
+            <div class="tripCollection" data-bind="foreach: stopDetails.inactiveTripCollections">
+                <h3 class="sign" data-bind="text: sign"></h3>
+                <table>
+                    <tr data-bind="foreach: trips">
+                        <td class="trip" data-bind="css: {old: old}">
+                            <div class="minutes" data-bind="text: prettyMinutes"></div>
+                            <div class="exact" data-bind="text: prettyHour"></div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
         <!-- /ko -->
-        <!-- ko if: stopDetails.errorMsg -->
-            <li class="error">
-                <span data-bind="text: stopDetails.errorMsg"></span></li>
-        <!-- /ko -->
-    </ul>
+
+    </div>
 </div>

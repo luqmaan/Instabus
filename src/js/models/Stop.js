@@ -13,6 +13,7 @@ var stopDetailsHTML = fs.readFileSync(__dirname + '/../templates/stop-details.ht
 function Stop(data) {
     var stop_name = data.stop_name.replace('(SB)', '').replace('(NB)', '');
     this.name = ko.observable(stop_name);
+    this.prettyName = ko.observable(this.titleCase(this.name()));
     this.stopID = ko.observable(data.stop_id);
     this.directionID = ko.observable(parseInt(data.direction_id));
     this.routeID = ko.observable(parseInt(data.route_id));
@@ -50,6 +51,12 @@ function Stop(data) {
     this.marker.on('click', this.centerMarker.bind(this));
     this.marker.on('click', this.stopClicked.bind(this));
 }
+
+Stop.prototype.titleCase = function(str) {
+    return str.replace(/\w\S*/g, function(txt) {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+};
 
 Stop.prototype.refresh = function() {
     return this.stopDetails.fetch();

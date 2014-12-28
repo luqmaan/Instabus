@@ -16,7 +16,7 @@
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 #map {
-    width: 80%;
+    width: 100%;
     display: inline-block;
 }
 #map.full {
@@ -90,20 +90,6 @@
 /*
  * Stop
  */
-.stop-name .desc, .stop-name .name {
-    display: block;
-    margin-bottom: 0.2em;
-}
-.stop-name .name {
-    font-size: 1.1em;
-    font-weight: 500;
-    color: #6B6969;
-}
-.stop-name .desc {
-    font-weight: 400;
-    font-size: 0.8em;
-    color: rgb(123,123,123);
-}
 .stop-leaflet-label {
     background: none;
     border: none;
@@ -116,40 +102,4 @@
     content: normal;
 }
 
-/*
- * Trips
- */
-.trips {
-    list-style: none;
-    display: block;
-    padding: 0;
-}
-.trips h4 {
-    font-weight: 400;
-    margin: 0.8em 0;
-    font-size: 1em;
-    border-bottom: 1px solid #E0E0E0;
-    padding-bottom: 5px;
-    color: #6E6E6E;
-}
-.trip {
-    background: rgb(237,254,219);
-    border: 1px solid rgb(177,231,121);
-    color: rgb(97,110,82);
-    border-radius: 5px;
-    display: inline-block;
-    position: relative;
-    padding: 5px;
-    margin: 5px 0 0 0;
-    font-size: 0.8em;
-    font-weight: 500;
-}
-.trip .exact {
-    color: rgb(136, 167, 139);
-}
-.trip.old, .trip.old .exact {
-    background-color: rgb(246,246,246);
-    border-color: rgb(235,235,235);
-    color: rgb(150,150,150);
-    font-weight: 400;
-}
+

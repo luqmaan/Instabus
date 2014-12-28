@@ -21,9 +21,19 @@ function StopDetails(routeID, directionID, stopID) {
 
     this.tripCollections = ko.observableArray();
 
+    this.direction = ko.computed(function() {
+        return utils.formatDirection(this.routeID(), this.directionID());
+    }, this);
+
     this.activeTripCollections = ko.computed(function() {
         return _.find(this.tripCollections(), function(t) {
             return t.routeID().toString() === this.routeID().toString();
+        }.bind(this));
+    }, this);
+
+    this.inactiveTripCollections = ko.computed(function() {
+        return _.find(this.tripCollections(), function(t) {
+            return t.routeID().toString() !== this.routeID().toString();
         }.bind(this));
     }, this);
 }
@@ -37,9 +47,11 @@ StopDetails.prototype.fetch = function() {
         format: 'json'
     };
 
+    this.errorMsg(null);
+
     function retryAtMost(maxRetries) {
-        // requests.get(yqlURL, params)
-        when.resolve(mockdata.arrivalsForStop)
+        requests.get(yqlURL, params)
+        // when.resolve(mockdata.arrivalsForStop)
             .then(this.parseResponse.bind(this))
             .tap(function(Services) {
                 var tripCollections = Services.map(function(Service) {

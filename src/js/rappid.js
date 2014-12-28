@@ -111,10 +111,10 @@ Rappid.prototype = {
             id: 'drmaples.ipbindf8'
         });
 
-        zoomCtrl = new L.Control.Zoom({position: 'bottomright'});
+        zoomCtrl = new L.Control.Zoom({position: 'bottomleft'});
 
         locateCtrl = new LocateControl({
-            position: 'bottomright',
+            position: 'bottomleft',
             zoomLevel: 16,
             zoomFunction: this.fitClosest.bind(this)
         });
@@ -140,7 +140,7 @@ Rappid.prototype = {
 
         this.setupRoute(route)
             .then(this.refresh.bind(this))
-            .catch(console.error);
+            // .catch(console.error);
     },
     setupRoute: function(route) {
         console.log('Setting up route', route);

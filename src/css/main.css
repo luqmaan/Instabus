@@ -17,9 +17,13 @@ button, body {
     width: 100%;
 }
 .page .title a {
-    color: rgb(255, 255, 255);
+    color: rgba(255, 255, 255, 0.9);
     border: none;
     text-decoration: none;
+    transition: all 0.2s ease-in-out;
+}
+.page .title a:hover {
+    color: rgba(255, 255, 255, 1);
 }
 .page .title {
     z-index: 1000;
@@ -73,7 +77,7 @@ button, body {
     margin-right: 10px;
     margin-top: 5px;
     margin-bottom: 10px;
-    transition: box-shadow 0.2s ease-in-out, background-color 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
 }
 .unicon svg {
     padding-top: 4px;
@@ -81,6 +85,7 @@ button, body {
 }
 .unicon svg g {
     fill: rgba(255, 255, 255, 0.9);
+    transition: all 0.2s ease-in-out;
 }
 .page .title a:hover .unicon svg g {
     fill: rgba(255, 255, 255, 1);
