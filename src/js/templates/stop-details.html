@@ -19,7 +19,7 @@
         </div>
 
         <!-- ko foreach: stopDetails.activeTripCollections -->
-            <div class="tripCollection active" data-bind="">
+            <div class="tripCollection active">
                 <h3 class="sign" data-bind="text: sign"></h3>
                 <table>
                     <tr data-bind="foreach: trips">
@@ -33,7 +33,7 @@
         <!-- /ko -->
 
         <!-- ko foreach: stopDetails.inactiveTripCollections -->
-            <div class="tripCollection" data-bind="foreach: stopDetails.inactiveTripCollections">
+            <div class="tripCollection">
                 <h3 class="sign" data-bind="text: sign"></h3>
                 <table>
                     <tr data-bind="foreach: trips">
