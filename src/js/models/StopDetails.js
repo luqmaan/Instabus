@@ -32,9 +32,9 @@ function StopDetails(routeID, directionID, stopID) {
     }, this);
 
     this.inactiveTripCollections = ko.computed(function() {
-        return _.find(this.tripCollections(), function(t) {
+        return _.filter(this.tripCollections(), function(t) {
             return t.routeID().toString() !== this.routeID().toString();
-        }.bind(this));
+        }.bind(this), 2);
     }, this);
 }
 

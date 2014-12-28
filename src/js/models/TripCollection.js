@@ -33,7 +33,7 @@ TripCollection.prototype.parseTrips = function(Service) {
         }
     }
 
-    return trips;
+    return trips.slice(0, 4);
 };
 
 module.exports = TripCollection;

@@ -1,14 +1,12 @@
 .panel {
-    width: 240px;
+    width: 210px;
     display: block;
     background-color: rgb(250, 250, 250);
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.14),0 4px 8px rgba(0, 0, 0, 0.28);
     position: absolute;
     top: 20px;
     right: 20px;
-    max-height: 100%;
     overflow-x: hidden;
-    overflow-y: scroll;
 }
 .panel .inner {
     padding: 0;
@@ -46,6 +44,10 @@
 /*
  * Trips
  */
+ .trips {
+    max-height: 400px !important;
+    overflow: scroll;
+ }
  .stop-name {
     color: rgb(255, 255, 255);
     font-size: 1.3em;
@@ -83,7 +85,7 @@
     text-align: center;
     padding: 5px;
     margin: 0;
-    font-size: 0.8em;
+    font-size: 0.9em;
     font-weight: 400;
     width: 40px;
     max-width: 40px;
