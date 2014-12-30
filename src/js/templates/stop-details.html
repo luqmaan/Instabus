@@ -1,6 +1,9 @@
 <div class="inner">
     <div class="stop-name">
-        <div class="direction"><span data-bind="text: stopDetails.direction"></span></div>
+        <div class="stop-meta">
+            <span class="stop-id">Stop #<span data-bind="text: stopID"></span></span>
+            <span class="direction" data-bind="text: stopDetails.direction"></span>
+        </div>
         <div class="name" data-bind="text: prettyName"></div>
     </div>
 

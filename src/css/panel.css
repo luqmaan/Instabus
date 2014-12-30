@@ -4,9 +4,11 @@
     background-color: rgb(250, 250, 250);
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.14),0 4px 8px rgba(0, 0, 0, 0.28);
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 0px;
+    right: 0px;
     overflow-x: hidden;
+    height: 100%;
+    overflow: scroll;
 }
 .panel .inner {
     padding: 0;
@@ -30,7 +32,7 @@
     border: none;
     text-align: center;
     font-size: 12px;
-    color: rgb(251,46,69);
+    color: rgb(132,129,129);
     font-weight: 300;
 }
 .panel button:hover {
@@ -44,27 +46,33 @@
 /*
  * Trips
  */
- .trips {
-    max-height: 400px !important;
-    overflow: scroll;
- }
- .stop-name {
+.stop-name {
     color: rgb(255, 255, 255);
     font-size: 1.3em;
-    background-color: rgb(251,46,69);
+    background-color: rgb(132,129,129);
     margin: 0;
     padding: 10px 10px 10px 10px;
     font-weight: 300;
 }
-.stop-name .direction {
+.stop-name .stop-meta {
     font-size: 0.8em;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 0.5em;
+}
+.stop-name .direction {
+    display: inline-block;;
+    float: right;
+}
+.stop-name .stop-id {
+    display: inline-block;;
 }
 .tripCollection {
     padding: 0 0;
-    border: 1px solid rgb(240,240,240);
     box-shadow: 0 0 1px rgba(0, 0, 0, 0.05);
+    background-color: rgb(250,250,250);
 }
 .tripCollection.active {
+    background-color: rgb(255,255,255);
 }
 .tripCollection ul {
     padding: 5px;
@@ -78,10 +86,13 @@
     padding: 5px;
     padding-left: 10px;
     background-color: rgb(245, 245, 245);
-    color: rgb(110,96,101);
+    color: rgba(110,96,101, 0.7);
+}
+.tripCollection.active .sign {
+    background-color: rgb(235,235,235);
+    color: rgb(90,36,57);
 }
 .trip {
-    color: rgb(25,60,53);
     text-align: center;
     padding: 5px;
     margin: 0;
@@ -90,26 +101,31 @@
     width: 40px;
     max-width: 40px;
     border: none;
+    display: inline-block;
 }
-.trip.old, .trip.old .exact {
-    color: rgb(150,150,150);
-    font-weight: 400;
+/* default */
+.trip {
+    color: rgba(63,152,133, 0.7);
 }
-/*.tripCollection.active .sign {
-    background: rgb(255, 58, 80);
-    color: #fff;
-    font-weight: bold;
+.trip .exact {
+    color: rgba(63,152,133, 0.5);
 }
-.tripCollection.active {
-    background: rgb(255, 58, 80);
-    width: 100%;
-    align-self: left;
-    display: block;
-    border: none;
+.trip.old {
+    color: rgba(150,150,150, 0.8);
 }
-.tripCollection.active *, .tripCollection.active .trip * {
-    color: #fff;
+.trip.old .exact {
+    color: rgba(150,150,150, 0.6);
 }
-.tripCollection.active .trip.old * {
-    color: rgba(255, 255, 255, 0.7);
-}*/
+/* active */
+.active .trip {
+    color: rgba(63,152,133, 1);
+}
+.active .trip .exact {
+    color: rgba(63,152,133, 0.8);
+}
+.active .trip.old {
+    color: rgba(150,150,150, 1);
+}
+.active .trip.old .exact {
+    color: rgba(150,150,150, 0.8);
+}

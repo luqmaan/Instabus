@@ -108,7 +108,7 @@ Rappid.prototype = {
         tileLayer = L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
             maxZoom: 18,
             attribution: '<a href="http://openstreetmap.org">OpenStreetMap</a> | <a href="http://mapbox.com">Mapbox</a>',
-            id: 'drmaples.ipbindf8'
+            id: 'drmaples.ipbindf8',
         });
 
         zoomCtrl = new L.Control.Zoom({position: 'bottomleft'});

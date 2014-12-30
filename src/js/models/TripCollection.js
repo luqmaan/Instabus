@@ -23,7 +23,7 @@ TripCollection.prototype.parseTrips = function(Service) {
         return new Trip(tripData);
     });
 
-    // show only the most recent old trip
+    // show only the most recent missed trip
     for (var i = 0; i < trips.length; i++) {
         if (! trips[i].old()) {
             if (i > 0) {
@@ -33,7 +33,8 @@ TripCollection.prototype.parseTrips = function(Service) {
         }
     }
 
-    return trips.slice(0, 4);
+    console.log('poop', trips.length)
+    return trips.slice(0, 104);
 };
 
 module.exports = TripCollection;
