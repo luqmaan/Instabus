@@ -25,15 +25,20 @@ RoutesCollection.prototype.start = function() {
 
 RoutesCollection.prototype.applyBindings = function() {
     var div = document.querySelector("#content-wrapper");
+    div.innerHTML = routesListHTML;
+
+    var inner = div.querySelector('.inner');
+    ko.applyBindings(this, inner);
+};
+
+RoutesCollection.prototype.removeBindings = function() {
+    var div = document.querySelector("#content-wrapper");
     var inner = div.querySelector('.inner');
 
     if (inner) {
         ko.cleanNode(inner);
         inner.remove();
     }
-    div.innerHTML = routesListHTML;
-    inner = div.querySelector('.inner');
-    ko.applyBindings(this, inner);
 };
 
 RoutesCollection.prototype.fetch = function() {
@@ -107,10 +112,13 @@ RoutesCollection.prototype.hashChange = function() {
 
     if (location.hash === '#' || location.hash === '' || location.hash === '/') {
         this.active(null);
+        this.removeBindings();
         this.applyBindings();
     }
 
     if (location.hash.match(/route\/\d+\/direction\/\d+/g)) {
+        this.removeBindings();
+
         var routeId = /route\/(\d+)/g.exec(location.hash)[1];
         var directionId = /direction\/(\d+)/g.exec(location.hash)[1];
 

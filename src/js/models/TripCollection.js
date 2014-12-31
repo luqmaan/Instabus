@@ -1,6 +1,7 @@
 var _ = require('underscore');
 var ko = require('knockout');
 
+var config = require('../config');
 var Trip = require('./Trip');
 
 
@@ -33,8 +34,7 @@ TripCollection.prototype.parseTrips = function(Service) {
         }
     }
 
-    console.log('poop', trips.length)
-    return trips.slice(0, 104);
+    return trips.slice(0, config.MAX_TRIPS);
 };
 
 module.exports = TripCollection;

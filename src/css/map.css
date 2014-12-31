@@ -17,7 +17,7 @@
 }
 #map {
     width: 100%;
-    display: inline-block;
+    position: absolute;
 }
 #map.full {
     width: 100%;
@@ -101,5 +101,4 @@
 .stop-leaflet-label::before, .stop-leaflet-label::after {
     content: normal;
 }
-
 
