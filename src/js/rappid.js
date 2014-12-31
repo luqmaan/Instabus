@@ -111,10 +111,10 @@ Rappid.prototype = {
             id: 'drmaples.ipbindf8',
         });
 
-        zoomCtrl = new L.Control.Zoom({position: 'bottomleft'});
+        zoomCtrl = new L.Control.Zoom({position: 'bottomright'});
 
         locateCtrl = new LocateControl({
-            position: 'bottomleft',
+            position: 'bottomright',
             zoomLevel: 16,
             zoomFunction: this.fitClosest.bind(this)
         });

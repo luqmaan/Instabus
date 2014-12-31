@@ -50,8 +50,8 @@ StopDetails.prototype.fetch = function() {
     this.errorMsg(null);
 
     function retryAtMost(maxRetries) {
-        // requests.get(yqlURL, params)
-        when.resolve(mockdata.arrivalsForStop)
+        requests.get(yqlURL, params)
+        // when.resolve(mockdata.arrivalsForStop)
             .then(this.parseResponse.bind(this))
             .tap(function(Services) {
                 var tripCollections = Services.map(function(Service) {
