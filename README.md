@@ -1,6 +1,8 @@
 [**www.MetroRappid.com**](http://metrorappid.com)
 ====================
 
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/luqmaan/MetroRappid?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 #### [Realtime map of Austin's MetroRapid bus and MetroRail train](http://metrorappid.com)
 
 [![](https://cloud.githubusercontent.com/assets/1275831/3210441/0128e4a2-eec1-11e3-8622-fc947f7c305c.png)](http://metrorappid.com)
