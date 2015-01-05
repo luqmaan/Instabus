@@ -86,6 +86,14 @@ Stop.prototype.applyBindings = function() {
     div.innerHTML = stopDetailsHTML;
     inner = div.querySelector('.inner');
     ko.applyBindings(this, inner);
+
+    var mc = new Hammer(inner);
+    mc.get('swipe').set({ direction: Hammer.DIRECTION_ALL });
+    mc.on("swipe", function (ev) {
+        console.log('ev', ev);1
+        ev.preventDefault();
+        el.innerText = ev.toDirString();
+    });
 };
 
 Stop.prototype.stopClicked = function() {
