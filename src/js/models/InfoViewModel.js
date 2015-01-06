@@ -4,11 +4,30 @@ var ko = require('knockout');
 var infoHTML = fs.readFileSync(__dirname + '/../templates/info.html', 'utf8');
 
 function InfoViewModel() {
+    var self = this;
     console.log('new infoviewmodel')
 
-    this.infoText = ko.observable('Show Info');
-    window.addEventListener("hashchange", this.hashChange.bind(this));
-    this.hashChange();
+    this.infoText = ko.observable('');
+    this.infoShown = ko.observable(false);
+    this.infoShown.subscribe(function(newValue) {
+        if (newValue) {
+            location = '#/info'
+            self.infoText('Hide Info');
+        } else {
+            location = '#'
+            self.infoText('Show Info');
+        }
+
+        self.applyBindings();
+    });
+
+    if (location.hash === '#/info') {
+        this.infoShown(true);
+        this.infoText('Hide Info');
+    } else {
+        this.infoShown(false);
+        this.infoText('Show Info');
+    }
 }
 
 InfoViewModel.prototype.applyBindings = function() {
@@ -24,24 +43,11 @@ InfoViewModel.prototype.applyBindings = function() {
     ko.applyBindings(this, inner);
 };
 
-InfoViewModel.prototype.hashChange = function() {
-    if (location.hash === '#/info') {
-        this.applyBindings();
-        this.infoText('Hide Info');
-    }
-};
-
 InfoViewModel.prototype.toggleInfo = function() {
-    if (location.hash === '#/info') {
-        this.infoVM.infoText('Show Info');
-        if (history.length > 2)
-            history.back();
-        else
-            location = '#';
-    }
-    else {
-        this.infoVM.infoText('Hide Info');
-        return true;
+    if (this.infoVM.infoShown() === true) {
+        this.infoVM.infoShown(false);
+    } else {
+        this.infoVM.infoShown(true);
     }
 }
 

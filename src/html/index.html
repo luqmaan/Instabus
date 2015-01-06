@@ -58,9 +58,7 @@
                     <h1 data-bind="text: title">MetroRappid</h1>
                 </a>
                 <div class="actions">
-                    <a class="info" href="#/info" data-bind="click: infoVM.toggleInfo, text: infoText">
-                    Info
-                    </a>
+                    <a class="info" href="#/info" data-bind="click: infoVM.toggleInfo, text: infoVM.infoText"></a>
                 </div>
             </div>
             <div id="map-wrapper" aria-hidden="true" data-bind="visible: displayMap, css: { hide: !displayMap}">
