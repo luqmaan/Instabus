@@ -33,14 +33,14 @@ InfoViewModel.prototype.hashChange = function() {
 
 InfoViewModel.prototype.toggleInfo = function() {
     if (location.hash === '#/info') {
-        this.infoVM.infoText('Show Info');
+        this.infoText('Show Info');
         if (history.length > 2)
             history.back();
         else
             location = '#';
     }
     else {
-        this.infoVM.infoText('Hide Info');
+        this.infoText('Hide Info');
         return true;
     }
 }
