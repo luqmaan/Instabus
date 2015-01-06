@@ -28,6 +28,8 @@ InfoViewModel.prototype.hashChange = function() {
     if (location.hash === '#/info') {
         this.applyBindings();
         this.infoText('Hide Info');
+    } else {
+        this.infoText('Show Info');
     }
 };
 
