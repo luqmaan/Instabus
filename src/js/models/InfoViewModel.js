@@ -5,6 +5,8 @@ var infoHTML = fs.readFileSync(__dirname + '/../templates/info.html', 'utf8');
 
 function InfoViewModel() {
     console.log('new infoviewmodel')
+
+    this.infoText = ko.observable('Show Info');
     window.addEventListener("hashchange", this.hashChange.bind(this));
     this.hashChange();
 }
@@ -25,16 +27,20 @@ InfoViewModel.prototype.applyBindings = function() {
 InfoViewModel.prototype.hashChange = function() {
     if (location.hash === '#/info') {
         this.applyBindings();
+        this.infoText('Hide Info');
     }
 };
 
 InfoViewModel.prototype.toggleInfo = function() {
     if (location.hash === '#/info') {
-        this.infoText('Show Info');
-        history.go(-1);
+        this.infoVM.infoText('Show Info');
+        if (history.length > 2)
+            history.back();
+        else
+            location = '#';
     }
     else {
-        this.infoText('Hide Info');
+        this.infoVM.infoText('Hide Info');
         return true;
     }
 }

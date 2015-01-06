@@ -25,7 +25,6 @@ function Rappid() {
     this.vehicles = null;
     this.shape = null;
 
-    this.infoText = ko.observable("Show Info");
     this.showInfoLayover = ko.observable(false);
 
     // viewmodels
