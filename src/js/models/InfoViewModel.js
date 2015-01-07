@@ -25,25 +25,27 @@ InfoViewModel.prototype.applyBindings = function() {
 };
 
 InfoViewModel.prototype.hashChange = function() {
-    if (location.hash === '#/info') {
+    if (window.location.hash === '#/info') {
         this.applyBindings();
         this.infoText('Hide Info');
     }
 };
 
 InfoViewModel.prototype.toggleInfo = function() {
-    if (location.hash === '#/info') {
+    if (window.location.hash === '#/info') {
         this.infoText('Show Info');
-        if (history.length > 2)
+        if (history.length > 2) {
             history.back();
-        else
-            location = '#';
+        }
+        else {
+            window.location = '#';
+        }
     }
     else {
         this.infoText('Hide Info');
         return true;
     }
-}
+};
 
 InfoViewModel.prototype.reportProblem = function() {
     window.location.href = "mailto:ldawoodjee@gmail.com?subject=MetroRappid Issue&body=Issue:%0ADescription:%0ASteps To Reproduce:";
