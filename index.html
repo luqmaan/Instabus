@@ -58,7 +58,7 @@
                     <h1 data-bind="text: title">MetroRappid</h1>
                 </a>
                 <div class="actions">
-                    <a class="info" href="#/info" data-bind="click: infoVM.toggleInfo, text: infoText">
+                    <a class="info" href="#/info" data-bind="click: infoVM.toggleInfo.bind(infoVM), text: infoVM.infoText">
                     Info
                     </a>
                 </div>
