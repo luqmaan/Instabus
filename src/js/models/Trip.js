@@ -13,7 +13,14 @@ function Trip(data) {
         return this.moment().format('h:mm');
     }.bind(this));
     this.prettyMinutes = ko.computed(function() {
-        return this.moment().diff(moment(), 'minutes') + 'm';
+        var diff = this.moment().diff(moment(), 'minutes');
+        if (diff < 60) {
+            return diff + 'm';
+        }
+        else {
+            diff = this.moment().diff(moment(), 'hours');
+            return diff + 'h';
+        }
     }.bind(this));
     this.old = ko.computed(function() { return ! this.moment().isAfter(); }.bind(this));
 }

@@ -1,3 +1,4 @@
+var _ = require('underscore');
 var fs = require('fs');
 var ko = require('knockout');
 var when = require('when');
@@ -24,15 +25,20 @@ RoutesCollection.prototype.start = function() {
 
 RoutesCollection.prototype.applyBindings = function() {
     var div = document.querySelector("#content-wrapper");
+    div.innerHTML = routesListHTML;
+
+    var inner = div.querySelector('.inner');
+    ko.applyBindings(this, inner);
+};
+
+RoutesCollection.prototype.removeBindings = function() {
+    var div = document.querySelector("#content-wrapper");
     var inner = div.querySelector('.inner');
 
     if (inner) {
         ko.cleanNode(inner);
         inner.remove();
     }
-    div.innerHTML = routesListHTML;
-    inner = div.querySelector('.inner');
-    ko.applyBindings(this, inner);
 };
 
 RoutesCollection.prototype.fetch = function() {
@@ -46,9 +52,12 @@ RoutesCollection.prototype.fetch = function() {
 
 RoutesCollection.prototype.setupCache = function() {
     this.active.subscribe(function(route) {
-        var key = 'rappid:route:id',
-            item = route.id();
-        console.debug(key, item);
+        if (!route) {
+            return;
+        }
+        var key = 'rappid:route:id';
+        var item = route.id();
+        console.debug('localstorage', key, item);
         localStorage.setItem(key, item);
     }.bind(this));
 };
@@ -75,24 +84,21 @@ RoutesCollection.prototype.restoreCache = function() {
 RoutesCollection.prototype.selectClicked = function(routedirection, route, direction, e) {
     console.log('Selecting route', route, direction);
     var hash = '#/route/' + route.id() + '/direction/' + direction.directionId();
-    location.hash = hash;
+    window.location.hash = hash;
     route.activeDirection(direction);
     this.active(route);
 };
 
-RoutesCollection.prototype.findAndSelect = function(routeId, directionId) {
-    var route = this.routes().filter(function(route) {
+RoutesCollection.prototype.findAndSelectRouteDirection = function(routeId, directionId) {
+    var route = _.find(this.routes(), function(route) {
         return route.id().toString() === routeId;
     });
     var direction;
 
-    route = route.length ? route[0]: null;
-
     if (route) {
-        direction = route.directions().filter(function(direction) {
+        direction = _.find(route.directions(), function(direction) {
             return direction.directionId().toString() === directionId;
         });
-        direction = direction.length ? direction[0]: null;
     }
 
     if (route && direction) {
@@ -100,33 +106,38 @@ RoutesCollection.prototype.findAndSelect = function(routeId, directionId) {
         route.activeDirection(direction);
         this.active(route);
     }
-
-    return route, direction;
 };
 
 RoutesCollection.prototype.hashChange = function() {
+
     if (location.hash === '#' || location.hash === '' || location.hash === '/') {
+        this.active(null);
+        this.removeBindings();
         this.applyBindings();
     }
 
     if (location.hash.match(/route\/\d+\/direction\/\d+/g)) {
+        this.removeBindings();
+
         var routeId = /route\/(\d+)/g.exec(location.hash)[1];
         var directionId = /direction\/(\d+)/g.exec(location.hash)[1];
 
         if (!this.active()) {
             console.log('First time');
-            this.findAndSelect(routeId, directionId);
+            this.findAndSelectRouteDirection(routeId, directionId);
         }
         else {
-            var routeChanged = routeId !== this.active().id();
-            var directionChanged = directionId !== this.active().directionId();
-
-            console.log('Route changed?', routeChanged, 'directionChanged?', directionChanged);
+            var routeChanged = routeId.toString() !== this.active().id().toString();
+            var directionChanged = directionId.toString() !== this.active().directionId().toString();
 
             if (routeChanged || directionChanged) {
-                this.findAndSelect(routeId, directionId);
+                console.debug('/route/direction: found', location.hash);
+                this.findAndSelectRouteDirection(routeId, directionId);
             }
         }
+    }
+    else {
+        this.active(null);
     }
 };
 

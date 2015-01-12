@@ -25,20 +25,17 @@ function Rappid() {
     this.vehicles = null;
     this.shape = null;
 
-    this.showInfoLayover = ko.observable(false);
-
     // viewmodels
     this.routes = new RoutesCollection();
-    this.stops = ko.observableArray();
+    this.stopCollection = new StopCollection();
     this.infoVM = new InfoViewModel();
 
     this.displayMap = ko.observable(false);
-    this.displayInfoLayover = ko.observable(false);
 
-    this.hash = ko.observable(location.hash);
+    this.locationHash = ko.observable(window.location.hash);
     this.title = ko.computed(function() {
         var name = 'MetroRappid';
-        if (this.hash().indexOf('route') !== -1 && this.routes.active()) {
+        if (this.locationHash().indexOf('route') !== -1 && this.routes.active()) {
             name = this.routes.active().prettyName();
         }
         return name;
@@ -47,60 +44,51 @@ function Rappid() {
 
 Rappid.prototype = {
     start: function() {
-        NProgress.configure({ showSpinner: false });
-
+        NProgress.configure({showSpinner: false});
         window.addEventListener("hashchange", this.hashChange.bind(this));
-
-        this.routes.start();
         this.routes.active.subscribe(this.selectRoute.bind(this));
+        
+        var promise = this.routes.start()
+            .tap(this.hashChange.bind(this));
+
+        return promise;
     },
     refresh: function() {
         console.log('refreshing', this, arguments);
-        function refreshCompletion() {
-            NProgress.done();
-            this.refreshTimeout = setTimeout(this.refresh.bind(this), config.REFRESH_INTERVAL);
-            // refresh on mobile unlock/maximize
-            // don't bind until the first refresh is done unless you want a world of race conditions with the animations ;_;
-            window.addEventListener('pageshow', this.refresh.bind(this));
-        }
 
         if (this.refreshTimeout) {
             clearTimeout(this.refreshTimeout);
             this.refreshTimeout = null;
-            // FIXME: Is there some way to abort any existings requests/promises?
-            // Two refreshes happening at once seems bad.
-            // We could do put a mutex on refresh(). But if refresh() gets stuck, no more refreshes will get scheduled.
         }
 
         NProgress.start();
 
-        // FIXME: suppeeeeer 💩
-        var firstVehiclesRefresh = !this.vehicles.vehicles.length;
-        console.log("firstVehiclesRefresh", firstVehiclesRefresh);
-
         this.vehicles.refresh()
-            .progress(function() {
-                // console.log('progress', arguments);
-                // FIXME: Show the progress notifications in the UI
-            }.bind(this))
             .then(function() {
-                if (firstVehiclesRefresh) {
-                    this.fitClosest(true);
+                if (!this.vehicles.vehicles.length) {
+                    this.fitClosest();
                 }
-                var stopsRefresh = this.stops().map(function(stop) { return stop.refresh(); });
-                return when.all(stopsRefresh);
+
+                return this.stopCollection.refresh();
             }.bind(this))
             .catch(CapMetroAPIError, this.rustle.bind(this))
             .catch(function(e) {
                 // FIXME: Show the error in the UI
                 console.error(e);
             })
-            .finally(refreshCompletion.bind(this));
+            .finally(function() {
+                NProgress.done();
+                this.refreshTimeout = setTimeout(this.refresh.bind(this), config.REFRESH_INTERVAL);
+
+                // refresh on mobile unlock/maximize
+                // don't bind until the first refresh is done unless you want a world of race conditions with the animations ;_;
+                window.addEventListener('pageshow', this.refresh.bind(this));
+            }.bind(this));
     },
     setupMap: function() {
-        var tileLayer,
-            zoomCtrl,
-            locateCtrl;
+        var tileLayer;
+        var zoomCtrl;
+        var locateCtrl;
 
         if (!this.alreadySetupMap) {
             this.alreadySetupMap = true;
@@ -115,7 +103,7 @@ Rappid.prototype = {
         tileLayer = L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
             maxZoom: 18,
             attribution: '<a href="http://openstreetmap.org">OpenStreetMap</a> | <a href="http://mapbox.com">Mapbox</a>',
-            id: 'drmaples.ipbindf8'
+            id: 'drmaples.ipbindf8',
         });
 
         zoomCtrl = new L.Control.Zoom({position: 'bottomright'});
@@ -139,6 +127,9 @@ Rappid.prototype = {
         }.bind(this));
     },
     selectRoute: function(route) {
+        if (!route) {
+            return;
+        }
         this.displayMap(true);
         this.setupMap();
 
@@ -147,11 +138,28 @@ Rappid.prototype = {
             .catch(console.error);
     },
     setupRoute: function(route) {
-        var shapePromise,
-            stopsPromise;
+        console.log('Setting up route', route);
 
         this.track(route);
 
+        this.removeMapLayers();
+
+        this.vehicles = new VehicleCollection(route.id(), route.directionId());
+        this.vehicles.layer.addTo(this.map);
+
+        this.shape = new Shape(route.id(), route.directionId());
+        var shapePromise = this.shape.fetch()
+            .tap(this.shape.draw.bind(this.shape, this.routeLayer));
+
+        this.stopCollection = new StopCollection(route.id(), route.directionId());
+        var stopsPromise = this.stopCollection.start(this.routeLayer)
+            .tap(function() {
+                this.fitClosest();
+            }.bind(this));
+
+        return when.all([shapePromise, stopsPromise]);
+    },
+    removeMapLayers: function() {
         if (this.routeLayer) {
             this.map.removeLayer(this.routeLayer);
         }
@@ -161,23 +169,6 @@ Rappid.prototype = {
         if (this.vehicles) {
             this.map.removeLayer(this.vehicles.layer);
         }
-        this.vehicles = new VehicleCollection(route.id(), route.directionId());
-        this.vehicles.layer.addTo(this.map);
-
-        this.shape = new Shape(route.id(), route.directionId());
-        shapePromise = this.shape.fetch()
-            .tap(this.shape.draw.bind(this.shape, this.routeLayer));
-
-        stopsPromise = StopCollection.fetch(route.id(), route.directionId())
-            .tap(function(stops) {
-                StopCollection.draw(stops, this.routeLayer);
-                this.stops(stops);
-                if (this.latlng.lat && this.latlng.lng) {
-                    this.fitClosest();
-                }
-            }.bind(this));
-
-        return when.all([shapePromise, stopsPromise]);
     },
     track: function(route) {
         var routeDirection = route.id() + '-' + route.directionId();
@@ -206,11 +197,13 @@ Rappid.prototype = {
         }, 2000);
     },
     fitClosest: function() {
-        if (!this.latlng.lat || !this.latlng.lng) { return; }
+        if (!this.latlng.lat || !this.latlng.lng || this.stopCollection.active()) {
+            return;
+        }
 
-        var bounds = [[this.latlng.lat, this.latlng.lng]],
-            closestStop = StopCollection.closest(this.latlng.lat, this.latlng.lng, this.stops()),
-            closestVehicle = VehicleCollection.closest(this.latlng.lat, this.latlng.lng, this.vehicles);
+        var bounds = [[this.latlng.lat, this.latlng.lng]];
+        var closestStop = this.stopCollection.closest(this.latlng.lat, this.latlng.lng);
+        var closestVehicle = VehicleCollection.closest(this.latlng.lat, this.latlng.lng, this.vehicles);
 
         if (closestStop) {
             bounds.push([closestStop.lat(), closestStop.lon()]);
@@ -225,11 +218,11 @@ Rappid.prototype = {
         });
     },
     hashChange: function(e) {
-        console.log('Hash changed to', location.hash, 'e', e);
+        console.log('Hash changed to', window.location.hash, 'e', e);
 
-        this.hash(location.hash);
+        this.locationHash(window.location.hash);
 
-        if (location.hash.indexOf('route') === -1) {
+        if (window.location.hash.indexOf('route') === -1) {
             this.displayMap(false);
         }
     }

@@ -4,8 +4,6 @@ var ko = require('knockout');
 var infoHTML = fs.readFileSync(__dirname + '/../templates/info.html', 'utf8');
 
 function InfoViewModel() {
-    console.log('new infoviewmodel')
-
     this.infoText = ko.observable('Show Info');
     window.addEventListener("hashchange", this.hashChange.bind(this));
     this.hashChange();
