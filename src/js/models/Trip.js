@@ -2,9 +2,8 @@ var ko = require('knockout');
 var moment = require('moment');
 
 function Trip(data) {
-    this.tripTime = ko.observable(data.Triptime);
+    this.tripTime = ko.observable(data.Estimatedtime);
     this.id = ko.observable(data.Tripid);
-    this.skedTripID = ko.observable(data.Skedtripid);
     this.block = ko.observable(data.Block);
     this.exception = ko.observable(data.Exception);
 

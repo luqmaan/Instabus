@@ -5,23 +5,17 @@ var config = require('../config');
 var Trip = require('./Trip');
 
 
-function TripCollection(stopID, Service) {
+function TripCollection(stopID, routeID, Runs) {
     this.stopID = ko.observable(stopID);
+    this.routeID = ko.observable(routeID);
+    this.sign = ko.observable(Runs[0].Sign);
 
-    this.routeID = ko.observable(Service.Route);
-    this.sign = ko.observable(Service.Sign);
-
-    this.trips = ko.observableArray(this.parseTrips(Service));
+    this.trips = ko.observableArray(this.parseTrips(Runs));
 }
 
-TripCollection.prototype.parseTrips = function(Service) {
-    var Tripinfo = Service.Tripinfo;
-    if (!Array.isArray(Tripinfo)) {
-        Tripinfo = [Tripinfo];
-    }
-
-    var trips = Tripinfo.map(function(tripData) {
-        return new Trip(tripData);
+TripCollection.prototype.parseTrips = function(Runs) {
+    var trips = Runs.map(function(Run) {
+        return new Trip(Run);
     });
 
     // show only the most recent missed trip

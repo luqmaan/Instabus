@@ -17,19 +17,13 @@ function StopDetails(routeID, directionID, stopID) {
     this.errorMsg = ko.observable();
     this.loading = ko.observable(true);
 
-    this.tripCollections = ko.observableArray();
-
-    this.activeTripCollections = ko.computed(function() {
-        return _.find(this.tripCollections(), function(t) {
-            return t.routeID().toString() === this.routeID().toString();
-        }.bind(this));
-    }, this);
+    this.tripCollection = null;
 }
 
 StopDetails.prototype.fetch = function() {
     var deferred = when.defer();
     var yqlURL = 'http://query.yahooapis.com/v1/public/yql';
-    var capURL = 'http://www.capmetro.org/planner/s_service.asp?output=xml&opt=2&tool=SI&stopid=' + this.stopID();
+    var capURL = 'http://www.capmetro.org/planner/s_nextbus2.asp?stopid=' + this.stopID();
     var params = {
         q: 'select * from xml where url="' + capURL + '"',
         format: 'json'
@@ -40,12 +34,8 @@ StopDetails.prototype.fetch = function() {
     function retryAtMost(maxRetries) {
         requests.get(yqlURL, params)
             .then(this.parseResponse.bind(this))
-            .tap(function(Services) {
-                var tripCollections = Services.map(function(Service) {
-                    return new TripCollection(this.stopID(), Service);
-                }.bind(this));
-
-                this.tripCollections(tripCollections);
+            .tap(function(Runs) {
+                this.tripCollection = new TripCollection(this.stopID(), this.routeID(), Runs);
                 deferred.resolve();
             }.bind(this))
             .catch(CapMetroAPIError, function(err) {
@@ -76,7 +66,8 @@ StopDetails.prototype.fetch = function() {
 };
 
 StopDetails.prototype.parseResponse = function(res) {
-    var Services;
+    // har de har
+    var Runs;
 
     if (!res.query.results || !res.query.results.Envelope) {
         throw new CapMetroAPIError('The CapMetro Stop Arrival Times API is unavailable');
@@ -89,13 +80,22 @@ StopDetails.prototype.parseResponse = function(res) {
 
         throw new Error(faultcode + ' ' + faultstring);
     }
+    Runs = res.query.results.Envelope.Body.Nextbus2Response.Runs.Run;
 
-    Services = res.query.results.Envelope.Body.SchedulenearbyResponse.Atstop.Service;
-    if (!Array.isArray(Services)) {
-        Services = [Services];
+    if (!Array.isArray(Runs)) {
+        Runs = [Runs];
     }
 
-    return Services;
+    Runs = _.filter(Runs, function(Run) {
+        var stopDirection = utils.formatDirection(this.routeID(), this.directionID());
+        var runDirection = utils.formatDirection(Run.Route, Run.Direction);
+
+        var routeMatches = Run.Route == this.routeID() && stopDirection == runDirection;
+        var validRealtime = Run.Realtime.Valid == "Y";
+        return routeMatches && validRealtime;
+    }.bind(this));
+
+    return Runs;
 };
 
 module.exports = StopDetails;
