@@ -35,7 +35,7 @@ StopDetails.prototype.fetch = function() {
         requests.get(yqlURL, params)
             .then(this.parseResponse.bind(this))
             .tap(function(Runs) {
-                this.tripCollection = new TripCollection(this.stopID(), Runs);
+                this.tripCollection = new TripCollection(this.stopID(), this.routeID(), Runs[0].Sign, Runs);
                 deferred.resolve();
             }.bind(this))
             .catch(CapMetroAPIError, function(err) {
@@ -81,6 +81,10 @@ StopDetails.prototype.parseResponse = function(res) {
         throw new Error(faultcode + ' ' + faultstring);
     }
     Runs = res.query.results.Envelope.Body.Nextbus2Response.Runs.Run;
+
+    if (!Array.isArray(Runs)) {
+        Runs = [Runs];
+    }
 
     Runs = _.filter(Runs, function(Run) {
         var stopDirection = utils.formatDirection(this.routeID(), this.directionID());

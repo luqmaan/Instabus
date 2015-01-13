@@ -5,10 +5,10 @@ var config = require('../config');
 var Trip = require('./Trip');
 
 
-function TripCollection(stopID, Runs) {
+function TripCollection(stopID, routeID, sign, Runs) {
     this.stopID = ko.observable(stopID);
-    this.routeID = ko.observable(Runs[0].Route);
-    this.sign = ko.observable(Runs[0].Sign);
+    this.routeID = ko.observable(routeID);
+    this.sign = ko.observable(sign);
 
     this.trips = ko.observableArray(this.parseTrips(Runs));
 }
