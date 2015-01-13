@@ -35,7 +35,7 @@ StopDetails.prototype.fetch = function() {
         requests.get(yqlURL, params)
             .then(this.parseResponse.bind(this))
             .tap(function(Runs) {
-                this.tripCollection = new TripCollection(this.stopID(), this.routeID(), Runs[0].Sign, Runs);
+                this.tripCollection = new TripCollection(this.stopID(), this.routeID(), Runs);
                 deferred.resolve();
             }.bind(this))
             .catch(CapMetroAPIError, function(err) {
