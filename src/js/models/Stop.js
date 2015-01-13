@@ -72,9 +72,9 @@ Stop.prototype = {
                 this.errorMsg(msg);
             }.bind(this))
             .then(function() {
-                var activeTrip = this.stopDetails.tripCollections()[0];
-                if (activeTrip.trips()[0]) {
-                    this.trips(activeTrip.trips());
+                var tc = this.stopDetails.tripCollection;
+                if (tc.trips()) {
+                    this.trips(tc.trips());
                 }
                 this.loadedTrips(true);
                 this.loading(false);
