@@ -35,7 +35,12 @@ StopDetails.prototype.fetch = function() {
         requests.get(yqlURL, params)
             .then(this.parseResponse.bind(this))
             .tap(function(Runs) {
-                this.tripCollection = new TripCollection(this.stopID(), this.routeID(), Runs);
+                if (Runs.length > 0) {
+                    this.tripCollection = new TripCollection(this.stopID(), this.routeID(), Runs);
+                }
+                else {
+                    this.errorMsg("No trips available at this time.");
+                }
                 deferred.resolve();
             }.bind(this))
             .catch(CapMetroAPIError, function(err) {
@@ -91,8 +96,7 @@ StopDetails.prototype.parseResponse = function(res) {
         var runDirection = utils.formatDirection(Run.Route, Run.Direction);
 
         var routeMatches = Run.Route == this.routeID() && stopDirection == runDirection;
-        var validRealtime = Run.Realtime.Valid == "Y";
-        return routeMatches && validRealtime;
+        return routeMatches;
     }.bind(this));
 
     return Runs;
