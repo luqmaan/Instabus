@@ -20,10 +20,14 @@ function Stop(data) {
     this.lon = ko.observable(data.stop_lon);
     this.timezone = ko.observable(data.stop_timezone);
     this.url = ko.observable(data.url);
-    this.errorMsg = ko.observable();
 
     this.stopDetails = new StopDetails(this.routeID(), this.directionID(), this.stopID());
     this.trips = ko.observableArray();
+
+    this._errorMsg = ko.observable();
+    this.errorMsg = ko.computed(function() {
+        return this.stopDetails.errorMsg() || this._errorMsg();
+    }, this);
 
     this.cssId = ko.observable('stop-' + data.stop_id);
 
@@ -69,18 +73,20 @@ Stop.prototype = {
 
         this.stopDetails.fetch()
             .progress(function(msg) {
-                this.errorMsg(msg);
+                this._errorMsg(msg);
             }.bind(this))
             .then(function() {
-                this.trips(this.stopDetails.tripCollection.trips());
+                if (this.stopDetails.tripCollection) {
+                    this.trips(this.stopDetails.tripCollection.trips());
+                }
                 this.loadedTrips(true);
                 this.loading(false);
-                this.errorMsg(null);
+                this._errorMsg(null);
             }.bind(this))
             .catch(function(e) {
                 this.loadedTrips(false);
                 this.loading(false);
-                this.errorMsg(e.message);
+                this._errorMsg(e.message);
             }.bind(this));
     },
     setupMarker: function() {
