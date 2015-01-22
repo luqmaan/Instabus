@@ -1,13 +1,13 @@
-[**www.Instabus.com**](http://instabus.com)
+[**www.Instabus.org**](http://instabus.org)
 ====================
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/luqmaan/Instabus?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-#### [Realtime map of Austin's MetroRapid bus and MetroRail train](http://instabus.com)
+#### [Realtime map of Austin's MetroRapid bus and MetroRail train](http://instabus.org)
 
-[![](https://cloud.githubusercontent.com/assets/1275831/3210441/0128e4a2-eec1-11e3-8622-fc947f7c305c.png)](http://instabus.com)
+[![](https://cloud.githubusercontent.com/assets/1275831/3210441/0128e4a2-eec1-11e3-8622-fc947f7c305c.png)](http://instabus.org)
 
-##### Works on your desktop, your iPhone, and your Android device. Just go to [instabus.com](http://instabus.com)
+##### Works on your desktop, your iPhone, and your Android device. Just go to [instabus.org](http://instabus.org)
 
 ![placeit](https://cloud.githubusercontent.com/assets/1275831/3565798/3078cb22-0ad3-11e4-8285-005d3c211766.jpg)
 
@@ -52,7 +52,7 @@ Step 2. Instabus automatically finds the nearest stop and vehicle
 
 ![View the closest stop and vehicle](https://cloud.githubusercontent.com/assets/1275831/3613329/f7e0cdc8-0db6-11e4-972f-9de75b036372.png))
 
-Step 3. Get on the bus. Let everybody around you know about [instabus.com](http://instabus.com)
+Step 3. Get on the bus. Let everybody around you know about [instabus.org](http://instabus.org)
 
 ## FAQ
 
