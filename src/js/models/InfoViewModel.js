@@ -48,10 +48,7 @@ InfoViewModel.prototype.toggleInfo = function() {
 };
 
 InfoViewModel.prototype.reportProblem = function() {
-    window.location.href = "mailto:ldawoodjee@gmail.com?subject=MetroRappid Issue&body=Issue:%0ADescription:%0ASteps To Reproduce:";
-    setTimeout(function() {
-        window.location.href = "https://www.youtube.com/watch?v=ygr5AHufBN4";
-    }, 3000);
+    window.location.href = "mailto:ldawoodjee@gmail.com?subject=Instabus Issue&body=Issue:%0ADescription:%0ASteps To Reproduce:";
 };
 
 module.exports = InfoViewModel;

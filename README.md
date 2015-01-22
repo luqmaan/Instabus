@@ -1,13 +1,13 @@
-[**www.MetroRappid.com**](http://metrorappid.com)
+[**www.Instabus.com**](http://instabus.com)
 ====================
 
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/luqmaan/MetroRappid?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/luqmaan/Instabus?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-#### [Realtime map of Austin's MetroRapid bus and MetroRail train](http://metrorappid.com)
+#### [Realtime map of Austin's MetroRapid bus and MetroRail train](http://instabus.com)
 
-[![](https://cloud.githubusercontent.com/assets/1275831/3210441/0128e4a2-eec1-11e3-8622-fc947f7c305c.png)](http://metrorappid.com)
+[![](https://cloud.githubusercontent.com/assets/1275831/3210441/0128e4a2-eec1-11e3-8622-fc947f7c305c.png)](http://instabus.com)
 
-##### Works on your desktop, your iPhone, and your Android device. Just go to [metrorappid.com](http://metrorappid.com)
+##### Works on your desktop, your iPhone, and your Android device. Just go to [instabus.com](http://instabus.com)
 
 ![placeit](https://cloud.githubusercontent.com/assets/1275831/3565798/3078cb22-0ad3-11e4-8285-005d3c211766.jpg)
 
@@ -41,24 +41,26 @@ CapMetro provides realtime data for these routes:
 
 ## Solution
 
-We reverse engineered CapMetro's app to find out how they were getting real-time data. Then we [documented the hidden/secret CapMetro API](https://github.com/luqmaan/MetroRappid/wiki/The-CapMetro-API).
+We reverse engineered CapMetro's app to find out how they were getting real-time data. Then we [documented the hidden/secret CapMetro API](https://github.com/luqmaan/Instabus/wiki/The-CapMetro-API).
 We then used that API and built an Android app that shows real-time arrivals for MetroRapid and MetroRail, really quickly.
 
 Step 1. Select A Route And Direction
 
 ![Select A Route And Direction](https://cloud.githubusercontent.com/assets/1275831/3613330/f7e6324a-0db6-11e4-96f9-77adfff913bc.png
 
-Step 2. MetroRappid automatically finds the nearest stop and vehicle
+Step 2. Instabus automatically finds the nearest stop and vehicle
 
 ![View the closest stop and vehicle](https://cloud.githubusercontent.com/assets/1275831/3613329/f7e0cdc8-0db6-11e4-972f-9de75b036372.png))
 
-Step 3. Get on the bus. Let everybody around you know about [metrorappid.com](http://metrorappid.com)
+Step 3. Get on the bus. Let everybody around you know about [instabus.com](http://instabus.com)
 
 ## FAQ
 
-### What happened to MetroRappid for iOS and MetroRappid for Android?
+### What happened to MetroRappid?
 
-MetroRappid for iOS is being replaced with this.
+MetroRappid has been renamed to Instabus.
+
+MetroRappid for iOS has been replaced with Instabus.
 
 MetroRappid for Android (winner of ATX Hack For Change) had problems working with the Google Maps API. We've chosen to move in the direction of open data, and now instead use OpenStreetMaps. This webapp replaces MetroRappid for Android.
 
@@ -72,7 +74,7 @@ CapMetro only updates the vehicle location every 30-90 seconds. You should encou
 
 ## Contributing
 
-We really need help making this app awesome. We use GitHub issues to track bugs, features, and ideas. Issues that we think are important/can use help are tagged as `help wanted`. You can filter by the `help wanted` tag: https://github.com/luqmaan/MetroRappid/issues?labels=help+wanted&state=open.
+We really need help making this app awesome. We use GitHub issues to track bugs, features, and ideas. Issues that we think are important/can use help are tagged as `help wanted`. You can filter by the `help wanted` tag: https://github.com/luqmaan/Instabus/issues?labels=help+wanted&state=open.
 
 Run `gulp deploy` when submitting a pull request. This packages up the .js and .css files.
 
@@ -81,8 +83,8 @@ Run `gulp deploy` when submitting a pull request. This packages up the .js and .
 Clone the repo and checkout the `dev` branch:
 
 ```
-git clone git@github.com:luqmaan/MetroRappid.git
-cd MetroRappid
+git clone git@github.com:luqmaan/Instabus.git
+cd Instabus
 git checkout -b dev origin/dev
 ```
 

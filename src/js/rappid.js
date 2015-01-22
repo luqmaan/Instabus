@@ -34,7 +34,7 @@ function Rappid() {
 
     this.locationHash = ko.observable(window.location.hash);
     this.title = ko.computed(function() {
-        var name = 'MetroRappid';
+        var name = 'Instabus';
         if (this.locationHash().indexOf('route') !== -1 && this.routes.active()) {
             name = this.routes.active().prettyName();
         }
@@ -47,7 +47,7 @@ Rappid.prototype = {
         NProgress.configure({showSpinner: false});
         window.addEventListener("hashchange", this.hashChange.bind(this));
         this.routes.active.subscribe(this.selectRoute.bind(this));
-        
+
         var promise = this.routes.start()
             .tap(this.hashChange.bind(this));
 
