@@ -1,11 +1,11 @@
 {
-    "name": "metrorappid",
-    "version": "0.0.61",
-    "description": "MetroRappid",
+    "name": "instabus",
+    "version": "0.0.62",
+    "description": "Instabus",
     "author": "",
     "repository": {
         "type": "git",
-        "url": "https://github.com/luqmaan/MetroRappid.git"
+        "url": "https://github.com/luqmaan/Instabus.git"
     },
     "//": "https://github.com/Leaflet/Leaflet.label/issues/101",
     "dependencies": {
