@@ -61,6 +61,11 @@ button, body {
     background: #fff;
     padding: 20px;
 }
+.page h3 {
+    font-size: 1.1em;
+    font-weight: 400;
+    margin: 10px 0 10px 5px;
+}
 /*
  * Unicon
  */
