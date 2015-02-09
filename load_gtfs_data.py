@@ -18,9 +18,6 @@ import requests
 import gtfsdb
 from gtfsdb.api import database_load
 
-# only routes with realtime data
-ROUTE_IDS = ['801', '803', '550']
-
 # need to switch stale stop IDs from CapMetro GTFS with fresh ones
 SWAP_STOP_IDS = {
     '5868': '2643'
@@ -74,9 +71,8 @@ def _get_routes_for_types(curr, route_types):
     sql = '''
         SELECT route_id, route_long_name, route_type
         FROM routes
-        WHERE route_id IN ({})
-    '''.format(', '.join('?' for _ in ROUTE_IDS))
-    curr.execute(sql, ROUTE_IDS)
+    '''
+    curr.execute(sql)
 
     for row in curr:
         route_id = int(row[0])
@@ -96,10 +92,9 @@ def _get_directions_for_routes(curr, routes):
     sql = '''
         SELECT DISTINCT route_id, direction_id, trip_headsign
         FROM trips
-        WHERE route_id IN ({})
         ORDER BY route_id DESC, trip_headsign ASC
-    '''.format(', '.join('?' for _ in ROUTE_IDS))
-    curr.execute(sql, ROUTE_IDS)
+    '''
+    curr.execute(sql)
 
     for row in curr:
         route_id = int(row[0])
@@ -119,7 +114,7 @@ def _save_route_data(curr):
     routes = _get_routes_for_types(curr, route_types)
     directions = _get_directions_for_routes(curr, routes)
 
-    data = directions.values()
+    data = sorted(directions.values(), key=lambda x: x['route_id'])
 
     filename = os.path.join(DATA_DIR, 'routes.json')
     logger.info('writing ROUTE data to {}'.format(filename))
@@ -135,14 +130,14 @@ def _get_shape_data(curr):
             (
                 SELECT *
                 FROM trips, calendar
-                WHERE calendar.service_id = trips.service_id and trips.route_id in ({})
+                WHERE calendar.service_id = trips.service_id
                 GROUP BY trips.shape_id
             ) as trips
         WHERE shapes.shape_id = trips.shape_id
         GROUP BY shapes.shape_id
         ORDER BY num_shapes DESC
-    '''.format(','.join('?' for _ in ROUTE_IDS))
-    curr.execute(sql, ROUTE_IDS)
+    '''
+    curr.execute(sql)
 
     biggest_data_by_route = {}
     for row in curr:
@@ -205,9 +200,7 @@ def _save_stop_data(curr):
             stop_times.stop_sequence
         FROM
             stop_times, trips, stops
-        WHERE
-            trips.route_id in ({})
-            AND trips.trip_id = stop_times.trip_id
+        WHERE trips.trip_id = stop_times.trip_id
             AND stop_times.stop_id = stops.stop_id
         GROUP BY
             trips.route_id,
@@ -227,8 +220,8 @@ def _save_stop_data(curr):
             stops.platform_code,
             stop_times.stop_sequence
         ORDER BY stop_times.stop_sequence
-    '''.format(','.join('?' for _ in ROUTE_IDS))
-    curr.execute(sql, ROUTE_IDS)
+    '''
+    curr.execute(sql)
 
     data_by_stops = defaultdict(list)
     for (route_id, direction_id, stop_id, stop_code, stop_name, stop_desc, stop_lat, stop_lon, zone_id, stop_url, location_type, parent_station, stop_timezone, wheelchair_boarding, platform_code, stop_sequence) in curr:
