@@ -2,72 +2,75 @@ var geolib = require('geolib');
 var L = require('leaflet');
 var when = require('when');
 var _ = require('underscore');
-var utils = require('../utils');
+
 var config = require('../config');
 var requests = require('../requests');
+var utils = require('../utils');
+var mapController = ('../MapController');
 var Vehicle = require('./Vehicle');
 
 var CapMetroAPIError = config.errors.CapMetroAPIError();
 
-function VehicleCollection(route, direction) {
-    this.route = route;
-    this.direction = direction;
+function VehicleCollection(routeID) {
+    this.routeID = routeID;
     this.vehicles = [];
-    this.layer = L.layerGroup();
+
+    this._layer = null;
+    this._refreshTimeout = null;
+
+    window.addEventListener("hashchange", this.hashChange.bind(this));
+
+    this.hashChange();
 }
 
-VehicleCollection.prototype = {
+_.extend(VehicleCollection.prototype, {
+    start: function() {
+        var promise = this.fetch()
+                          .with(this)
+                          .tap(this.applyBindings)
+                          .tap(this.draw)
+                          .finally(function() {
+                              this._refreshTimeout = setTimeout(this.refresh, config.REFRESH_INTERVAL);
+                          });
+        return promise;
+    },
     refresh: function() {
-        return this.fetch()
-            .tap(this.draw.bind(this));
+        var promise = this.fetch()
+                          .with(this)
+                          .tap(this.draw)
+                          .finally(function() {
+                              this._refreshTimeout = setTimeout(this.refresh, config.REFRESH_INTERVAL);
+                          });
+
+        return promise;
     },
     fetch: function() {
-        var deferred = when.defer(),
-            yqlURL = 'http://query.yahooapis.com/v1/public/yql',
-            capURL = 'http://www.capmetro.org/planner/s_buslocation.asp?route=' + this.route,
-            params = {
-                q: 'select * from xml where url="' + capURL + '"',
-                format: 'json' // let yql do the conversion from xml to json
-            };
+        var yqlURL = 'http://query.yahooapis.com/v1/public/yql';
+        var capURL = 'http://www.capmetro.org/planner/s_buslocation.asp?route=' + this.routeID;
+        var params = {
+            q: 'select * from xml where url="' + capURL + '"',
+            format: 'json' // let yql do the conversion from xml to json
+        };
 
-        function retryAtMost(maxRetries) {
-            requests.get(yqlURL, params)
-                .then(this.parseLocationResponse.bind(this, this.direction))
-                .then(function(vehicles) {
-                    console.info('API responded with', vehicles.length, 'vehicles');
-                    deferred.resolve(vehicles);
-                })
-                .catch(CapMetroAPIError, function(err) {
-                    var msg = err.message + '. Retrying ' + maxRetries + ' more times';
-                    console.error(msg);
-                    deferred.notify(msg);
-                    if (maxRetries > 0) {
-                        return retryAtMost.call(this, maxRetries - 1);
-                    }
-                    else {
-                        deferred.reject(CapMetroAPIError);
-                    }
-                }.bind(this))
-                .catch(function(err) {
-                    deferred.reject(err);
-                });
-        }
+        // FIXME: Make the retries option actually work
+        var promise = requests.get(yqlURL, params, {retries: config.MAX_RETRIES})
+            .with(this)
+            .then(this.parseResponse)
+            .tap(function(vehicles) {
+                this.vehicles = vehicles;
+                console.info('API responded with', vehicles.length, 'vehicles');
+            });
 
-        retryAtMost.call(this, config.MAX_RETRIES);
-
-        return deferred.promise;
+        return promise;
     },
-    parseLocationResponse: function(direction, res) {
-        var vehicles = [],
-            BuslocationResponse;
-
+    parseResponse: function(res) {
         if (!res.query.results || !res.query.results.Envelope) {
             throw new CapMetroAPIError('The CapMetro Bus Location API is unavailable');
         }
         if (res.query.results.Envelope.Body.Fault) {
-            var fault = res.query.results.Envelope.Body.Fault,
-                faultstring = fault.faultstring,
-                faultcode = fault.faultcode;
+            var fault = res.query.results.Envelope.Body.Fault;
+            var faultstring = fault.faultstring;
+            var faultcode = fault.faultcode;
 
             throw new Error(faultcode + ' ' + faultstring);
         }
@@ -80,20 +83,27 @@ VehicleCollection.prototype = {
             data = [data];
         }
 
-        data.forEach(function(v) {
-            var vehicle = new Vehicle(v);
-            if (vehicle.directionID() === direction) {
-                return vehicles.push(vehicle);
-            }
+        var vehicles = data.forEach(function(v) {
+            return new Vehicle(v);
         });
 
         return vehicles;
     },
+    applyBindings: function() {
+        this._layer = L.layerGroup();
+        this._layer.addTo(mapController.map);
+    },
+    removeBindings: function() {
+        clearTimeout(this._refreshTimeout);
+
+        mapController.map.removeLayer(this._layer);
+        this._layer = null;
+    },
     draw: function(newVehicles) {
-        var addedVehicles = [],
-            existingVehicles = [],
-            deletedVehicles = [],
-            vehicleComparator = function(a, b) { return a.id === b.id; };
+        var addedVehicles = [];
+        var existingVehicles = [];
+        var deletedVehicles = [];
+        var vehicleComparator = function(a, b) { return a.id === b.id; };
 
         // find added and existing vehicles
         newVehicles.forEach(function(v) {
@@ -120,7 +130,7 @@ VehicleCollection.prototype = {
 
         // remove from map and delete from this.vehicles
         deletedVehicles.forEach(function(v) {
-            v.remove(this.layer);
+            v.remove(this._layer);
 
             var index = this.vehicles.indexOf(v);
             if (index > -1) {
@@ -131,7 +141,7 @@ VehicleCollection.prototype = {
         // draw on map and add to this.vehicles
         addedVehicles.forEach(function(v) {
             this.vehicles.push(v);
-            v.draw(this.layer);
+            v.draw(this._layer);
         }.bind(this));
 
         // update the existing vehicle with the new vehicle's data
@@ -141,20 +151,17 @@ VehicleCollection.prototype = {
 
             v.update(newVehicle);
         });
+    },
+    hashChange: function() {
+        var hashRouteID = !!location.hash.match(/route\/\d+/g) ? /route\/(\d+)/g.exec(location.hash)[1] : null;
+
+        if (hashRouteID === this.routeID && !this._layer) {
+            this.start();
+        }
+        else if (hashRouteID && hashRouteID !== this.routeID && this._layer){
+            this.removeBindings();
+        }
     }
-};
-
-// FIXME: VehicleCollection really needs to be refactored to be more like StopsCollection
-//        It is suppeeeeer 💩 as is.
-VehicleCollection.closest = function(lat, lng, vehicles) {
-    if (!lat || !lng || !vehicles || !vehicles.vehicles.length) return;
-
-    var points = vehicles.vehicles.map(function(v) { return {latitude: v.lat(), longitude: v.lon()}; }),
-        nearestPoint = geolib.findNearest({latitude: lat, longitude: lng}, points, 0, 1),
-        closest = vehicles.vehicles[parseInt(nearestPoint.key)];
-
-    return closest;
-}
-
+});
 
 module.exports = VehicleCollection;

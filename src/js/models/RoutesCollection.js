@@ -7,17 +7,14 @@ var Route = require('./Route');
 var routesListHTML = fs.readFileSync(__dirname + '/../templates/routes-list.html', 'utf8');
 
 function RoutesCollection() {
-    this.routes = ko.observableArray();
-    this.active = ko.observable();
+    this.routeModels = ko.observableArray();
+    window.addEventListener("hashchange", this.hashChange.bind(this));
+    this.hashChange();
 }
 
-RoutesCollection.prototype.start = function() {
-    window.addEventListener("hashchange", this.hashChange.bind(this));
-
+RoutesCollection.prototype.init = function() {
     var promise = this.fetch()
-        .tap(this.routes)
-        .tap(this.setupCache.bind(this))
-        .tap(this.restoreCache.bind(this))
+        .tap(this.applyBindings)
         .tap(this.hashChange.bind(this));
 
     return promise;
@@ -50,90 +47,38 @@ RoutesCollection.prototype.fetch = function() {
         });
 };
 
-RoutesCollection.prototype.setupCache = function() {
-    this.active.subscribe(function(route) {
-        if (!route) {
-            return;
-        }
-        var key = 'rappid:route:id';
-        var item = route.id();
-        console.debug('localstorage', key, item);
-        localStorage.setItem(key, item);
-    }.bind(this));
-};
-
-RoutesCollection.prototype.restoreCache = function() {
-    var cachedRouteID = localStorage.getItem('rappid:route:id'),
-        filteredRoutes,
-        route;
-
-    console.log('cachedRouteID', cachedRouteID);
-
-    if (cachedRouteID) {
-        filteredRoutes = this.routes().filter(function(r) {
-            return cachedRouteID.toString() === r.id().toString();
-        });
-        if (filteredRoutes) {
-            route = filteredRoutes[0];
-            route.showDirections(true);
-            console.log('Restoring cached route', route);
-        }
-    }
-};
-
-RoutesCollection.prototype.selectClicked = function(routedirection, route, direction, e) {
-    console.log('Selecting route', route, direction);
-    var hash = '#/route/' + route.id() + '/direction/' + direction.directionId();
+RoutesCollection.prototype.selectRoute = function(route) {
+    console.log('Selecting route', route);
+    var hash = '#/route/' + route.id();
     window.location.hash = hash;
-    route.activeDirection(direction);
-    this.active(route);
 };
 
-RoutesCollection.prototype.findAndSelectRouteDirection = function(routeId, directionId) {
-    var route = _.find(this.routes(), function(route) {
+RoutesCollection.prototype.findRouteById = function(routeId) {
+    return _.find(this.routes(), function(route) {
         return route.id().toString() === routeId;
     });
-    var direction;
-
-    if (route) {
-        direction = _.find(route.directions(), function(direction) {
-            return direction.directionId().toString() === directionId;
-        });
-    }
-
-    if (route && direction) {
-        console.log('Selecting route', route, direction);
-        route.activeDirection(direction);
-        this.active(route);
-    }
 };
 
 RoutesCollection.prototype.hashChange = function() {
-
     if (location.hash === '#' || location.hash === '' || location.hash === '/') {
+        console.log('/ found:', location.hash);
         this.active(null);
         this.removeBindings();
         this.applyBindings();
     }
 
-    if (location.hash.match(/route\/\d+\/direction\/\d+/g)) {
+    if (location.hash.match(/route\/\d+/g)) {
+        var routeId = /route\/(\d+)/g.exec(location.hash)[1];
+        var route;
+        var routeChanged = this.active() && (routeId.toString() !== this.active().id().toString());
+
+        // Hide the route list
         this.removeBindings();
 
-        var routeId = /route\/(\d+)/g.exec(location.hash)[1];
-        var directionId = /direction\/(\d+)/g.exec(location.hash)[1];
-
-        if (!this.active()) {
-            console.log('First time');
-            this.findAndSelectRouteDirection(routeId, directionId);
-        }
-        else {
-            var routeChanged = routeId.toString() !== this.active().id().toString();
-            var directionChanged = directionId.toString() !== this.active().directionId().toString();
-
-            if (routeChanged || directionChanged) {
-                console.debug('/route/direction: found', location.hash);
-                this.findAndSelectRouteDirection(routeId, directionId);
-            }
+        // Set the active route
+        if (!this.active() || routeChanged) {
+            console.log('/route/id/: The active route changed');
+            route = this.findRouteById(routeId);
         }
     }
     else {
@@ -141,4 +86,4 @@ RoutesCollection.prototype.hashChange = function() {
     }
 };
 
-module.exports = RoutesCollection;
+module.exports = new RoutesCollection();
