@@ -1,18 +1,18 @@
 <h3>Routes</h3>
 
-<ul class="routes-list inner" data-bind="foreach: routes">
-    <li data-bind="click: $parent.selectRoute">
-        <div>
-            <span class="id" data-bind="text: id"></span>
-            <span class="name" data-bind="text: name"></span>
-        </div>
+<ul class="routes-list inner" data-bind="foreach: routesCollection.routes">
+    <li>
+        <a data-bind="attr: {href: url}">
+            <div>
+                <span class="id" data-bind="text: id"></span>
+                <span class="name" data-bind="text: name"></span>
+            </div>
+        </a>
     </li>
 </ul>
 
 <h3>News</h3>
 
 <ul class="routes-list inner">
-    <li>
-    MetroRappid is now Instabus!
-    </li>
+    <li>MetroRappid is now Instabus!</li>
 </ul>

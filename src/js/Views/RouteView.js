@@ -1,25 +1,23 @@
 var ko = require('knockout');
+var _ = require('underscore');
 
 var mapController = require('../MapController');
-var VehicleCollection = require('./models/VehicleCollection');
-var StopCollection = require('./models/StopCollection');
+var VehiclesView = require('./views/VehiclesView');
+var StopsView = require('./views/StopCollection');
 var Shape = require('./models/Shape');
 var config = require('./config');
 
 
-function Route(data) {
-    this.routeID = ko.observable(data.route_id);
-    this.routeType = ko.observable(data.route_type);
-    this.name = ko.observable(data.name);
+function RouteView(route) {
+    this.route = route;
 
-    this.directions = data.directions;
     this.shapes = [];
     this.stopCollections = [];
 
-    this.vehicleCollection = new VehicleCollection(this.routeID());
+    this.vehiclesView = new VehiclesView(this.routeID());
 
-    data.directions.forEach(function(direction) {
-        var shape = new Shape(this.routeID(), direction.direction_id);
+    this.route.directions.forEach(function(direction) {
+        var shape = new Shape(this.route.routeID(), direction.direction_id);
         this.shapes.push(shape);
 
         var stopCollection = new StopCollection(this.routeID(), direction.direction_id);
@@ -27,6 +25,16 @@ function Route(data) {
     }, this);
 
     window.addEventListener("hashchange", this.hashChange.bind(this));
+    this.hashChange();
 }
 
-module.exports = Route;
+_.extend(RouteView.prototype, {
+    init: function() {
+
+    },
+    hashChange: function() {
+
+    }
+});
+
+module.exports = RouteView;
