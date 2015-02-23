@@ -34,14 +34,11 @@ CapMetro provides realtime data for these routes:
 - People don't ride the bus because it can seem unreliable: buses arrive anytime from 10 minutes before their scheduled time to 20 minutes after
 - The solution to that is real-time data
 - But if the real-time data is hard to access, people won't use it
-- The MetroRapid (801) and MetroRail (550) routes have real-time data
-- Only CapMetro's official app have access to that real-time data
+- CapMetro's app has real-time data
 - But, CapMetro's app is **hard** to use. See [CapMetroApp: When should I take the bus home?](https://github.com/sethgho/MetroRappidAndroid/wiki/CapMetro-App---When-should-I-take-the-bus-home)
 
 
 ## Solution
-
-We reverse engineered CapMetro's app to find out how they were getting real-time data. We then used that API and built an Android app that shows real-time arrivals for MetroRapid and MetroRail, really quickly.
 
 Step 1. Select A Route And Direction
 
