@@ -41,8 +41,7 @@ CapMetro provides realtime data for these routes:
 
 ## Solution
 
-We reverse engineered CapMetro's app to find out how they were getting real-time data. Then we [documented the hidden/secret CapMetro API](https://github.com/luqmaan/Instabus/wiki/The-CapMetro-API).
-We then used that API and built an Android app that shows real-time arrivals for MetroRapid and MetroRail, really quickly.
+We reverse engineered CapMetro's app to find out how they were getting real-time data. We then used that API and built an Android app that shows real-time arrivals for MetroRapid and MetroRail, really quickly.
 
 Step 1. Select A Route And Direction
 
