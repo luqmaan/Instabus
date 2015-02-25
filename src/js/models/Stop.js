@@ -53,10 +53,11 @@ function Stop(data) {
     });
 
     this.marker.bindLabel(this.name(), {
-        noHide: true,
+        noHide: false,
         direction: 'right',
         className: 'stop-leaflet-label',
         offset: [15, -10],
+        clickable: true
    });
 
     this.marker.on('click', this.centerMarker.bind(this));
