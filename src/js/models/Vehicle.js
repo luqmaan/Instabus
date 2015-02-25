@@ -106,7 +106,7 @@ Vehicle.prototype = {
         });
 
         marker.bindPopup(this.popupContent());
-        marker.bindLabel(this.updateTime(), {
+        marker.bindLabel(this.updateTime() + ' ' + this.direction(), {
             noHide: true,
             direction: 'left',
             className: 'vehicle-leaflet-label',
