@@ -23,7 +23,7 @@ function StopDetails(routeID, directionID, stopID) {
 StopDetails.prototype.fetch = function() {
     var deferred = when.defer();
     var yqlURL = 'http://query.yahooapis.com/v1/public/yql';
-    var capURL = 'http://www.capmetro.org/planner/s_nextbus2.asp?stopid=' + this.stopID();
+    var capURL = 'http://www.capmetro.org/planner/s_nextbus2.asp?stopid=' + this.stopID() + '&route=' + this.routeID();
     var params = {
         q: 'select * from xml where url="' + capURL + '"',
         format: 'json'
@@ -90,15 +90,6 @@ StopDetails.prototype.parseResponse = function(res) {
     if (!Array.isArray(Runs)) {
         Runs = [Runs];
     }
-
-    Runs = _.filter(Runs, function(Run) {
-        var stopDirection = utils.formatDirection(this.routeID(), this.directionID());
-        var runDirection = utils.formatDirection(Run.Route, Run.Direction);
-
-        var routeMatches = Run.Route == this.routeID() && stopDirection == runDirection;
-        return routeMatches;
-    }.bind(this));
-
     return Runs;
 };
 
