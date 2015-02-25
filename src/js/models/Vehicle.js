@@ -25,23 +25,21 @@ function animateMarker(marker, i, steps, startLatLng, deltaLatLng) {
 }
 
 function Vehicle(data) {
-    this.id = this.vehicleID = Number(data.Vehicleid);
-    this.positions = this.parsePositions(data.Positions.Position);
-    this.oldestPos = this.positions[0];
-    this.newestPos = this.positions[this.positions.length - 1];
+    this.id = this.vehicleID = Number(data.vehicleid);
+    this.location = this.parseLocationString(data.location);
 
     // observables
-    this.route = ko.observable(data.Route);
-    this.directionID = ko.observable(utils.getDirectionID(this.route(), data.Direction));
-    this.direction =  ko.observable(utils.formatDirection(this.route(), this.directionID()));
-    this.updateTime = ko.observable(data.Updatetime.replace(/^0/g, ''));
-    this.inService = ko.observable(data.Inservice === "Y" ? true : false);
-    this.routeID = ko.observable(data.Routeid);
-    this.heading = ko.observable(data.Heading * 10);  // heading is a value between 0 and 36
+    this.route = ko.observable(Number(data.routeid));
+    this.direction = ko.observable(data.direction);
+    this.directionID = ko.observable(utils.getDirectionID(this.route(), data.direction));
+    this.updateTime = ko.observable(data.updatetime.replace(/^0/g, ''));
+    this.inService = ko.observable(data.inservice === "Y" ? true : false);
+    this.routeID = ko.observable(Number(data.routeid));
+    this.heading = ko.observable(Number(data.heading) * 10);  // heading is a value between 0 and 36
 
     // computeds
-    this.lat = ko.computed(function() { return this.newestPos[0]; }.bind(this));
-    this.lon = ko.computed(function() { return this.newestPos[1]; }.bind(this));
+    this.lat = ko.observable(this.location[0]);
+    this.lon = ko.observable(this.location[1]);
     this.inServiceReadable = ko.computed(function() { return this.inService() ? "In Service": "Not In Service"; }.bind(this));
     this.svgTransform = ko.computed(function() { return "rotate(" + this.heading() + " 15 15)"; }.bind(this));
 
@@ -49,19 +47,9 @@ function Vehicle(data) {
 }
 
 Vehicle.prototype = {
-    parsePositions: function (positions) {
-        if (!Array.isArray(positions)) {
-            positions = [positions];
-        }
-        var parsed = positions.map(function(pos) {
-            pos = pos.split(',');
-            return [Number(pos[0]), Number(pos[1])];
-        });
-
-        // reverse so the positions are in chronological order
-        parsed.reverse();
-
-        return parsed;
+    parseLocationString: function (location) {
+        var pos = location.split(',');
+        return [Number(pos[0]), Number(pos[1])];
     },
     update: function(newVehicle) {
         this.route(newVehicle.route());
@@ -72,11 +60,9 @@ Vehicle.prototype = {
         this.routeID(newVehicle.routeID());
         this.heading(newVehicle.heading());
 
-        this.positions = newVehicle.positions;
-        this.oldestPos = newVehicle.oldestPos;
-        this.newestPos = newVehicle.newestPos;
+        this.location = newVehicle.location;
 
-        this.marker.label._content = this.updateTime();
+        this.marker.label._content = this.updateTime() + ' ' +  this.direction();
         this.marker.label._update();
 
         this.move();
@@ -95,13 +81,9 @@ Vehicle.prototype = {
         var steps = 50;
 
         this.marker.addTo(layer);
-
-        this.positions.forEach(function(pos) {
-            this.animateTo(pos[0], pos[1], steps);
-        }.bind(this));
     },
     move: function() {
-        this.animateTo(this.newestPos[0], this.newestPos[1]);
+        this.animateTo(this.location[0], this.location[1]);
         this.rotate();
     },
     rotate: function() {
@@ -118,7 +100,7 @@ Vehicle.prototype = {
             html: svg,  // has to be string, otherwise could data-bind this.svgTransform
         });
 
-        var marker = L.marker([this.oldestPos[0], this.oldestPos[1]], {
+        var marker = L.marker([this.location[0], this.location[1]], {
             icon: icon,
             zIndexOffset: config.VEHICLE_Z_INDEX
         });

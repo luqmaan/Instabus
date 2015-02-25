@@ -22,69 +22,19 @@ VehicleCollection.prototype = {
             .tap(this.draw.bind(this));
     },
     fetch: function() {
-        var deferred = when.defer(),
-            yqlURL = 'http://query.yahooapis.com/v1/public/yql',
-            capURL = 'http://www.capmetro.org/planner/s_buslocation.asp?route=' + this.route,
-            params = {
-                q: 'select * from xml where url="' + capURL + '"',
-                format: 'json' // let yql do the conversion from xml to json
-            };
+        var capURL = 'https://data.texas.gov/resource/9e7h-gz56.json?Route=' + this.route;
 
-        function retryAtMost(maxRetries) {
-            requests.get(yqlURL, params)
-                .then(this.parseLocationResponse.bind(this, this.direction))
-                .then(function(vehicles) {
-                    console.info('API responded with', vehicles.length, 'vehicles');
-                    deferred.resolve(vehicles);
-                })
-                .catch(CapMetroAPIError, function(err) {
-                    var msg = err.message + '. Retrying ' + maxRetries + ' more times';
-                    console.error(msg);
-                    deferred.notify(msg);
-                    if (maxRetries > 0) {
-                        return retryAtMost.call(this, maxRetries - 1);
-                    }
-                    else {
-                        deferred.reject(CapMetroAPIError);
-                    }
-                }.bind(this))
-                .catch(function(err) {
-                    deferred.reject(err);
-                });
-        }
-
-        retryAtMost.call(this, config.MAX_RETRIES);
-
-        return deferred.promise;
+        return requests.get(capURL)
+            .then(this.parseResponse.bind(this, this.direction));
     },
-    parseLocationResponse: function(direction, res) {
-        var vehicles = [],
-            BuslocationResponse;
+    parseResponse: function(direction, res) {
+        var vehicles = [];
 
-        if (!res.query.results || !res.query.results.Envelope) {
-            throw new CapMetroAPIError('The CapMetro Bus Location API is unavailable');
-        }
-        if (res.query.results.Envelope.Body.Fault) {
-            var fault = res.query.results.Envelope.Body.Fault,
-                faultstring = fault.faultstring,
-                faultcode = fault.faultcode;
-
-            throw new Error(faultcode + ' ' + faultstring);
-        }
-        if (!res.query.results.Envelope.Body.BuslocationResponse.Vehicles) {
-            throw new Error('Zero active vehicles');
-        }
-
-        var data = res.query.results.Envelope.Body.BuslocationResponse.Vehicles.Vehicle;
-        if (!Array.isArray(data)) {
-            data = [data];
-        }
-
-        data.forEach(function(v) {
+        vehicles = res.map(function(v) {
             var vehicle = new Vehicle(v);
-            if (vehicle.directionID() === direction) {
-                return vehicles.push(vehicle);
-            }
+            // if (vehicle.directionID() === direction) {
+                return vehicle;
+            // }
         });
 
         return vehicles;
