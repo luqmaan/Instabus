@@ -31,6 +31,12 @@ var utils = {
         if (direction === 'N') {
             return 'North';
         }
+        if (direction === 'C') {
+            return 'Clockwise';
+        }
+        if (direction === 'K') {
+            return 'Counter-Clockwise';
+        }
     },
     getDirectionID: function(route, direction) {
         route = parseInt(route);

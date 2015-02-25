@@ -9,6 +9,7 @@ var routesListHTML = fs.readFileSync(__dirname + '/../templates/routes-list.html
 function RoutesCollection() {
     this.routes = ko.observableArray();
     this.active = ko.observable();
+    this.originalRoutes = ko.observableArray();
 }
 
 RoutesCollection.prototype.start = function() {
@@ -16,6 +17,13 @@ RoutesCollection.prototype.start = function() {
 
     var promise = this.fetch()
         .tap(this.routes)
+        .tap(function(allRoutes) {
+            var originalRoutes = allRoutes.filter(function(route) {
+                return [801, 803, 550].indexOf(Number(route.id())) !== -1;
+            });
+            originalRoutes.sort(function(route) { return route.id(); });
+            this.originalRoutes(originalRoutes);
+        }.bind(this))
         .tap(this.setupCache.bind(this))
         .tap(this.restoreCache.bind(this))
         .tap(this.hashChange.bind(this));
@@ -27,13 +35,13 @@ RoutesCollection.prototype.applyBindings = function() {
     var div = document.querySelector("#content-wrapper");
     div.innerHTML = routesListHTML;
 
-    var inner = div.querySelector('.inner');
+    var inner = div.querySelector('.shitty-inner');
     ko.applyBindings(this, inner);
 };
 
 RoutesCollection.prototype.removeBindings = function() {
     var div = document.querySelector("#content-wrapper");
-    var inner = div.querySelector('.inner');
+    var inner = div.querySelector('.shitty-inner');
 
     if (inner) {
         ko.cleanNode(inner);
