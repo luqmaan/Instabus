@@ -225,6 +225,10 @@ Rappid.prototype = {
         if (window.location.hash.indexOf('route') === -1) {
             this.displayMap(false);
         }
+
+        window.ga('send', 'pageview', {
+         'page': location.pathname + location.search  + location.hash
+        });
     }
 };
 
