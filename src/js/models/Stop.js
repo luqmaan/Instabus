@@ -85,6 +85,7 @@ Stop.prototype = {
                 this._errorMsg(null);
             }.bind(this))
             .catch(function(e) {
+                window.Bugsnag.notifyException(e);
                 this.loadedTrips(false);
                 this.loading(false);
                 this._errorMsg(e.message);

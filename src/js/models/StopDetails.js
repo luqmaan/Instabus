@@ -44,6 +44,7 @@ StopDetails.prototype.fetch = function() {
                 deferred.resolve();
             }.bind(this))
             .catch(CapMetroAPIError, function(err) {
+                window.Bugsnag.notify('CapMetroAPIError', err);
                 var msg = err.message + '. Retrying ' + maxRetries + ' more times';
                 console.error(msg);
                 this.errorMsg(msg);
@@ -56,6 +57,7 @@ StopDetails.prototype.fetch = function() {
                 }
             }.bind(this))
             .catch(function(err) {
+                window.Bugsnag.notifyException(err);
                 console.error(err);
                 this.errorMsg(err);
                 deferred.reject(err);

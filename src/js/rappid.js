@@ -73,8 +73,8 @@ Rappid.prototype = {
             }.bind(this))
             .catch(CapMetroAPIError, this.rustle.bind(this))
             .catch(function(e) {
-                // FIXME: Show the error in the UI
                 console.error(e);
+                window.Bugsnag.notifyException(e);
             })
             .finally(function() {
                 NProgress.done();
@@ -135,7 +135,10 @@ Rappid.prototype = {
 
         this.setupRoute(route)
             .then(this.refresh.bind(this))
-            .catch(console.error);
+            .catch(function(e) {
+                window.Bugsnag.notifyException(e);
+                console.error(e);
+            });
     },
     setupRoute: function(route) {
         console.log('Setting up route', route);
