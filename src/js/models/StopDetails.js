@@ -23,7 +23,7 @@ function StopDetails(routeID, directionID, stopID) {
 StopDetails.prototype.fetch = function() {
     var deferred = when.defer();
     var yqlURL = 'http://query.yahooapis.com/v1/public/yql';
-    var capURL = 'http://www.capmetro.org/planner/s_nextbus2.asp?stopid=' + this.stopID() + '&route=' + this.routeID();
+    var capURL = 'https://www.capmetro.org/planner/s_nextbus2.asp?stopid=' + this.stopID() + '&route=' + this.routeID();
     var params = {
         q: 'select * from xml where url="' + capURL + '"',
         format: 'json'
