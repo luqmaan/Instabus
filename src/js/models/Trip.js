@@ -5,8 +5,6 @@ function Trip(data) {
     this.tripTime = ko.observable(data.estimated_time);
     this.id = ko.observable(data.trip_id);
     this.block = ko.observable(data.block);
-    // this.exception = ko.observable(data.Exception);
-
     this.moment = ko.computed(function() { return moment(this.tripTime(), 'hh:mm A'); }.bind(this));
     this.prettyHour = ko.computed(function() {
         return this.moment().format('h:mm');
