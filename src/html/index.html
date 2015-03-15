@@ -20,10 +20,12 @@
         window.analytics.page();
     </script>
     <script src="//d2wy8f7a9ursnm.cloudfront.net/bugsnag-2.min.js" data-apikey="404aa12dc2bcc2a33e26a2498a83d6cf"></script>
+    <script src="//cdn.ravenjs.com/1.1.15/jquery,native/raven.min.js"></script>
+    <script>Raven.config('https://eaceb7cd004540e790225cb7397bf44c@app.getsentry.com/39712', {}).install();</script>
 </head>
 <body>
     <div id="index" class="page">
-        <div id="lerappid">
+    <div id="lerappid">
             <div class="title">
                 <a href="/#">
                     <div class="unicon">

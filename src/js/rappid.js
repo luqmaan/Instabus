@@ -74,6 +74,7 @@ Rappid.prototype = {
             .catch(CapMetroAPIError, this.rustle.bind(this))
             .catch(function(e) {
                 console.error(e);
+                window.Raven.captureException(e);
                 window.Bugsnag.notifyException(e);
             })
             .finally(function() {
@@ -136,6 +137,7 @@ Rappid.prototype = {
         this.setupRoute(route)
             .then(this.refresh.bind(this))
             .catch(function(e) {
+                window.Raven.captureException(e);
                 window.Bugsnag.notifyException(e);
                 console.error(e);
             });

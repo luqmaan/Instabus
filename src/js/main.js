@@ -11,3 +11,4 @@ ko.applyBindings(rappid, document.getElementById('lerappid'));
 rappid.start();
 
 window.analytics.identify(fingerme);
+window.Raven.setUser({id: fingerme});
