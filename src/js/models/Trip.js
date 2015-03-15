@@ -22,6 +22,7 @@ function Trip(data) {
         }
     }.bind(this));
     this.old = ko.computed(function() { return ! this.moment().isAfter(); }.bind(this));
+    this.direction = ko.observable(data.Direction);
 }
 
 module.exports = Trip;
