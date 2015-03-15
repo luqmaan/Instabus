@@ -22,21 +22,20 @@ function StopDetails(routeID, directionID, stopID) {
 
 StopDetails.prototype.fetch = function() {
     var deferred = when.defer();
-    var yqlURL = 'http://query.yahooapis.com/v1/public/yql';
+    var proxyURL = 'http://scenic-cedar-88515.appspot.com/';
     var capURL = 'https://www.capmetro.org/planner/s_nextbus2.asp?stopid=' + this.stopID() + '&route=' + this.routeID();
     var params = {
-        q: 'select * from xml where url="' + capURL + '"',
-        format: 'json'
+        url: capURL,
     };
 
     this.errorMsg(null);
 
     function retryAtMost(maxRetries) {
-        requests.get(yqlURL, params)
-            .then(this.parseResponse.bind(this))
-            .tap(function(Runs) {
-                if (Runs.length > 0) {
-                    this.tripCollection = new TripCollection(this.stopID(), this.routeID(), Runs);
+        requests.get(proxyURL, params)
+            // .then(this.parseResponse.bind(this))
+            .tap(function(res) {
+                if (res.runs.length > 0) {
+                    this.tripCollection = new TripCollection(this.stopID(), this.routeID(), res.runs);
                 }
                 else {
                     this.errorMsg("No trips available at this time.");
@@ -72,29 +71,6 @@ StopDetails.prototype.fetch = function() {
     retryAtMost.call(this, config.MAX_RETRIES);
 
     return deferred.promise;
-};
-
-StopDetails.prototype.parseResponse = function(res) {
-    // har de har
-    var Runs;
-
-    if (!res.query.results || !res.query.results.Envelope) {
-        throw new CapMetroAPIError('The CapMetro Stop Arrival Times API is unavailable');
-    }
-
-    if (res.query.results.Envelope.Body.Fault) {
-        var fault = res.query.results.Envelope.Body.Fault,
-            faultstring = fault.faultstring,
-            faultcode = fault.faultcode;
-
-        throw new Error(faultcode + ' ' + faultstring);
-    }
-    Runs = res.query.results.Envelope.Body.Nextbus2Response.Runs.Run;
-
-    if (!Array.isArray(Runs)) {
-        Runs = [Runs];
-    }
-    return Runs;
 };
 
 module.exports = StopDetails;
