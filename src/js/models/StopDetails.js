@@ -33,7 +33,7 @@ StopDetails.prototype.fetch = function() {
     function retryAtMost(maxRetries) {
         requests.get(proxyURL, params)
             .tap(function(res) {
-                if (res.runs.length > 0) {
+                if (res.runs && res.runs.length > 0) {
                     this.tripCollection = new TripCollection(this.stopID(), this.routeID(), res.runs);
                 }
                 else {
