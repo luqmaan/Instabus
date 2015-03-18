@@ -12,7 +12,9 @@
         <li class="trip" data-bind="css: {old: old}">
             <span class="minutes" data-bind="text: prettyMinutes"></span>
             <span class="exact" data-bind="text: prettyHour"></span>
-            (<span class="minutes" data-bind="text: direction"></span>)
+            <!-- ko if: route() == "550" -->
+                (<span class="minutes" data-bind="text: direction"></span>)
+            <!-- /ko -->
         </li>
     <!-- /ko -->
     <!-- ko if: errorMsg -->
