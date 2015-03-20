@@ -14,8 +14,9 @@ import logging
 from collections import defaultdict
 
 import arrow
-import requests
 import gtfsdb
+import futures
+import requests
 from lxml import etree
 from gtfsdb.api import database_load
 
@@ -42,12 +43,28 @@ def fetch_gtfs_data():
 
 
 def _valid_stop_id(stop_id):
+    no_runs_code = 'soap:15034'
     nextbus_url = 'http://www.capmetro.org/planner/s_nextbus2.asp'
     r = requests.get(nextbus_url, params={'stopid': stop_id})
     root = etree.fromstring(r.text.encode('utf-8'))
 
     error = root.findtext('soap:Body/soap:Fault/faultcode', namespaces={'soap': 'http://schemas.xmlsoap.org/soap/envelope/'})
-    return error is None
+    valid = error is None or error == no_runs_code
+    return valid, stop_id
+
+
+def _get_valid_stops(curr):
+    sql = '''
+        SELECT DISTINCT stop_id
+        FROM stops
+    '''
+    curr.execute(sql)
+    stops = [stop_id[0] for stop_id in curr]
+    with futures.ThreadPoolExecutor(max_workers=5) as executor:
+        futs = [executor.submit(_valid_stop_id, stop_id) for stop_id in stops]
+        done, _ = futures.wait(futs, timeout=90)
+        futs = [fut.result() for fut in futs]
+        return [stop_id for (valid, stop_id) in futs if valid]
 
 
 def _get_route_types(curr):
@@ -182,7 +199,7 @@ def _save_shape_data(curr, shape_data):
             f.write(json.dumps(data) + '\n')
 
 
-def _save_stop_data(curr):
+def _save_stop_data(curr, valid_stops):
     sql = '''
         SELECT
             trips.route_id,
@@ -228,8 +245,7 @@ def _save_stop_data(curr):
 
     data_by_stops = defaultdict(list)
     for (route_id, direction_id, stop_id, stop_code, stop_name, stop_desc, stop_lat, stop_lon, zone_id, stop_url, location_type, parent_station, stop_timezone, wheelchair_boarding, platform_code, stop_sequence) in curr:
-        
-        if _valid_stop_id(stop_id):
+        if stop_id in valid_stops:
             data_by_stops[(route_id, direction_id)].append({
                 'route_id': route_id,
                 'direction_id': direction_id,
@@ -272,7 +288,8 @@ def parse_gtfs_data():
         _save_route_data(curr)
         shape_data = _get_shape_data(curr)
         _save_shape_data(curr, shape_data)
-        _save_stop_data(curr)
+        valid_stops = _get_valid_stops(curr)
+        _save_stop_data(curr, valid_stops)
 
 
 if __name__ == '__main__':
