@@ -1,8 +1,10 @@
 var ko = require('knockout');
 var L = require('leaflet');
 var when = require('when');
+var requests = require('./requests');
 var NProgress = require('NProgress');
 var LocateControl = require('./LocateControl');
+var Geohash = require('latlon-geohash');
 var RoutesCollection = require('./models/RoutesCollection');
 var VehicleCollection = require('./models/VehicleCollection');
 var Shape = require('./models/Shape');
@@ -40,6 +42,8 @@ function Rappid() {
         }
         return name;
     }, this);
+
+    this.CELL_SIZE = 7;
 }
 
 Rappid.prototype = {
@@ -124,6 +128,30 @@ Rappid.prototype = {
                 this.latlng = e.latlng;
                 this.fitClosest();
             }
+            
+            var promise = requests.get('data/stop_geohashes.json')
+                .then(function(data) {
+                    var locationGeohash = Geohash.encode(this.latlng.lat, this.latlng.lng);
+                    var ghKey = locationGeohash.substring(0, this.CELL_SIZE);
+                    var neighbors = Geohash.neighbours(ghKey);
+                    neighbors.center = ghKey;
+
+                    var nearby_routes = [];
+                    for (var direction in neighbors) {
+                        if (neighbors.hasOwnProperty(direction)) {
+                            var nearby = data[neighbors[direction]];
+                            if (nearby != undefined)
+                                nearby_routes.push(nearby);
+                            }
+                    }
+                    for (var i = 0; i < nearby_routes.length; i++) {
+                        for (var j = 0; j < nearby_routes[j].length; j++) {
+                            if (nearby_routes[i][j] != undefined)
+                                console.log('nearby route: route_id ' + nearby_routes[i][j].route_id + ' stop_id ' + nearby_routes[i][j].stop_id);
+                        }
+                    }
+                }.bind(this));
+
             this.latlng = e.latlng;
         }.bind(this));
     },

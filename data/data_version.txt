@@ -1,2 +1,2 @@
-https://www.capmetro.org/gisdata/google_transit.zip
-2014-10-15T16:58:56.413978-05:00
+https://data.texas.gov/api/file_data/RmVEH1KgATQsVU3m2eoAiyyWI2bTA8yMhDUxlOOoIyU?filename=google_transit.zip
+2015-04-02T20:14:43.958094-05:00

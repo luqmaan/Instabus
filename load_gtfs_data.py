@@ -14,8 +14,9 @@ import logging
 from collections import defaultdict
 
 import arrow
-import requests
 import gtfsdb
+import geohash
+import requests
 from gtfsdb.api import database_load
 
 # GTFS_DOWNLOAD_FILE = os.path.join(tempfile.gettempdir(), 'capmetro_gtfs.zip')
@@ -23,12 +24,13 @@ GTFS_DOWNLOAD_FILE = os.path.join('/tmp', 'capmetro_gtfs.zip')
 GTFS_DB = os.path.join(tempfile.gettempdir(), 'capmetro_gtfs_data.db')
 DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
 DATA_VERSION_FILE = os.path.join(DATA_DIR, 'data_version.txt')
+CELL_SIZE = 7 # 7-char long geohash represents a ~153^2m cell
 
 
 def fetch_gtfs_data():
     logger.info('fetching gtfs data....')
     # for other cities we can use http://www.gtfs-data-exchange.com/agency/capital-metro/latest.zip
-    gtfs_url = 'https://www.capmetro.org/gisdata/google_transit.zip'
+    gtfs_url = 'https://data.texas.gov/download/r4v4-vz24/application/zip'
     r = requests.get(gtfs_url, stream=True)
     assert r.ok, 'problem fetching data. status_code={}'.format(r.status_code)
 
@@ -219,6 +221,7 @@ def _save_stop_data(curr):
     curr.execute(sql)
 
     data_by_stops = defaultdict(list)
+    stop_geohashes = {}
     for (route_id, direction_id, stop_id, stop_code, stop_name, stop_desc, stop_lat, stop_lon, zone_id, stop_url, location_type, parent_station, stop_timezone, wheelchair_boarding, platform_code, stop_sequence) in curr:
         data_by_stops[(route_id, direction_id)].append({
             'route_id': route_id,
@@ -236,14 +239,22 @@ def _save_stop_data(curr):
             'stop_timezone': stop_timezone,
             'wheelchair_boarding': wheelchair_boarding,
             'platform_code': platform_code,
-            'stop_sequence': stop_sequence,
+            'stop_sequence': stop_sequence
         })
+        gh = geohash.encode(stop_lat, stop_lon)
+        gh_key = gh[:CELL_SIZE]
+        if stop_geohashes.get(gh_key) is None:
+            stop_geohashes[gh_key] = []
+        stop_geohashes[gh_key].append({'route_id': route_id, 'stop_id': stop_id})
 
     for (route_id, direction_id), data in data_by_stops.items():
         filename = os.path.join(DATA_DIR, 'stops_{}_{}.json'.format(route_id, direction_id))
         logger.info('writing STOP data to {}'.format(filename))
         with open(filename, 'wb') as f:
             f.write(json.dumps(data) + '\n')
+
+    with open(os.path.join(DATA_DIR, 'stop_geohashes.json'), 'w') as f:
+        json.dump(stop_geohashes, f)
 
 
 def parse_gtfs_data():
@@ -259,9 +270,9 @@ def parse_gtfs_data():
 
     with sqlite3.connect(GTFS_DB) as conn:
         curr = conn.cursor()
-        _save_route_data(curr)
-        shape_data = _get_shape_data(curr)
-        _save_shape_data(curr, shape_data)
+        # _save_route_data(curr)
+        # shape_data = _get_shape_data(curr)
+        # _save_shape_data(curr, shape_data)
         _save_stop_data(curr)
 
 
@@ -272,6 +283,6 @@ if __name__ == '__main__':
     # Manually download the GTFS file from socrata https://data.texas.gov/Transportation/Capital-Metro-Google-Transit/8s4f-jd2a
     # And copy pasta it to /tmp/capmetro_gtfs.zip
     # The file is still behind a socrata login wall during the beta
-    # fetch_gtfs_data()
+    fetch_gtfs_data()
 
     parse_gtfs_data()
