@@ -1,4 +1,5 @@
 var ko = require('knockout');
+var favorites = require('../favorites');
 
 function Route(data) {
     this.type = ko.observable(data.route_type);
@@ -28,6 +29,8 @@ function Route(data) {
         }
         return '+';
     }.bind(this));
+
+    this.isFavorite = ko.observable(favorites.isFavorite(this.id()));
 }
 
 function RouteDirection(direction) {
@@ -43,6 +46,10 @@ Route.prototype.parseDirections = function(data) {
 
 Route.prototype.toggleDirections = function() {
     this.showDirections(!this.showDirections());
+};
+
+Route.prototype.toggleFavorite = function() {
+    this.isFavorite(favorites.toggleFavorite(this.id()));
 };
 
 

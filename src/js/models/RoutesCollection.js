@@ -3,6 +3,7 @@ var fs = require('fs');
 var ko = require('knockout');
 var when = require('when');
 var requests = require('../requests');
+var favorites = require('../favorites');
 var Route = require('./Route');
 var routesListHTML = fs.readFileSync(__dirname + '/../templates/routes-list.html', 'utf8');
 
@@ -10,6 +11,8 @@ function RoutesCollection() {
     this.routes = ko.observableArray();
     this.active = ko.observable();
     this.originalRoutes = ko.observableArray();
+    this.favoriteRoutes = ko.observableArray();
+    this.showFavorites = ko.observable(false);
 }
 
 RoutesCollection.prototype.start = function() {
@@ -21,12 +24,20 @@ RoutesCollection.prototype.start = function() {
             var originalRoutes = allRoutes.filter(function(route) {
                 return [801, 803, 550].indexOf(Number(route.id())) !== -1;
             });
+            var favoriteRoutes = allRoutes.filter(function(route) {
+                return favorites.isFavorite(route.id());
+            });
             originalRoutes.sort(function(route) { return route.id(); });
+            favoriteRoutes.sort(function(route) { return route.id(); });
             this.originalRoutes(originalRoutes);
+            this.favoriteRoutes(favoriteRoutes);
+            this.showFavorites(favoriteRoutes.length > 0);
         }.bind(this))
         .tap(this.setupCache.bind(this))
         .tap(this.restoreCache.bind(this))
         .tap(this.hashChange.bind(this));
+
+    favorites.subscribe(this.updateFavorites.bind(this));
 
     return promise;
 };
@@ -147,6 +158,13 @@ RoutesCollection.prototype.hashChange = function() {
     else {
         this.active(null);
     }
+};
+
+RoutesCollection.prototype.updateFavorites = function() {
+    this.favoriteRoutes(this.routes().filter(function(route) {
+        return favorites.isFavorite(route.id());
+    }));
+    this.showFavorites(this.favoriteRoutes().length > 0);
 };
 
 module.exports = RoutesCollection;
