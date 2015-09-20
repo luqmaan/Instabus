@@ -17,7 +17,6 @@
 .routes-list li .chevron,
 .routes-list li .star {
     float: right;
-    margin-right: 1rem;
 }
 .routes-list li .star.favorite polygon {
     fill: #fbfb00;
@@ -25,6 +24,7 @@
 
 .routes-list li .star {
     fill: rgb(199, 199, 204);
+    margin-right: 1rem;
 }
 
 .routes-list li .chevron svg {
