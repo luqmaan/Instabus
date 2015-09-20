@@ -1,17 +1,56 @@
 <div class="shitty-inner">
+    <div data-bind="if: showFavorites">
+        <h3>Favorite Routes</h3>
+
+        <ul class="routes-list inner" data-bind="foreach: favoriteRoutes">
+            <li data-bind="css: {expand: showDirections}">
+                <div>
+                    <span class="id" data-bind="text: id, click: toggleDirections"></span>
+                    <span class="name" data-bind="text: name, click: toggleDirections"></span>
+                    <span class="chevron" data-bind="click: toggleDirections">
+                        <svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+                            <defs></defs>
+                            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+                                <path d="M7.07544741,17 L5.2420497,15.1932909 L11.3325608,9.44317952 L5,3.84499453 L6.95442256,2 L15,9.51914273 L7.07544741,17 Z" id="Chevron" fill="#C7C7CC" sketch:type="MSShapeGroup" transform="translate(10.000000, 9.500000) rotate(90.000000) translate(-10.000000, -9.500000) "></path>
+                            </g>
+                        </svg>
+                    </span>
+                    <span class="star" data-bind="click: toggleFavorite, css: {favorite: isFavorite}">
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 480 480" style="enable-background:new 0 0 480 480;" xml:space="preserve">
+                            <polygon style="fill-rule:evenodd;clip-rule:evenodd;" points="403.112,203.555 287.292,186.042 240,81.067 192.09,185.423    76.27,202.937 157.686,284.974 140,394.577 240,346.667 339.375,394.577 322.937,283.73    "/>
+                        </svg>
+                    </span>
+                </div>
+
+                <div class="directions" data-bind="foreach: directions, visible: showDirections">
+                    <button data-bind="click: $root.selectClicked.bind($root, $data, $parent), clickBubble: false">
+                        <span data-bind="text: headsign"></span>
+                        <span class="chevron">
+                        </span>
+                    </button>
+                </div>
+            </li>
+        </ul>
+    </div>
+
     <h3>Original Routes</h3>
 
     <ul class="routes-list inner" data-bind="foreach: originalRoutes">
-        <li data-bind="click: toggleDirections, css: {expand: showDirections}">
+        <li data-bind="css: {expand: showDirections}">
             <div>
-                <span class="id" data-bind="text: id"></span>
-                <span class="name" data-bind="text: name"></span>
-                <span class="chevron">
+                <span class="id" data-bind="text: id, click: toggleDirections"></span>
+                <span class="name" data-bind="text: name, click: toggleDirections"></span>
+                <span class="chevron" data-bind="click: toggleDirections">
                     <svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
                         <defs></defs>
                         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
                             <path d="M7.07544741,17 L5.2420497,15.1932909 L11.3325608,9.44317952 L5,3.84499453 L6.95442256,2 L15,9.51914273 L7.07544741,17 Z" id="Chevron" fill="#C7C7CC" sketch:type="MSShapeGroup" transform="translate(10.000000, 9.500000) rotate(90.000000) translate(-10.000000, -9.500000) "></path>
                         </g>
+                    </svg>
+                </span>
+                <span class="star" data-bind="click: toggleFavorite, css: {favorite: isFavorite}">
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 480 480" style="enable-background:new 0 0 480 480;" xml:space="preserve">
+                        <polygon style="fill-rule:evenodd;clip-rule:evenodd;" points="403.112,203.555 287.292,186.042 240,81.067 192.09,185.423    76.27,202.937 157.686,284.974 140,394.577 240,346.667 339.375,394.577 322.937,283.73    "/>
                     </svg>
                 </span>
             </div>
@@ -30,16 +69,21 @@
     <h3>All Routes</h3>
 
     <ul class="routes-list inner" data-bind="foreach: routes">
-        <li data-bind="click: toggleDirections, css: {expand: showDirections}">
+        <li data-bind="css: {expand: showDirections}">
             <div>
-                <span class="id" data-bind="text: id"></span>
-                <span class="name" data-bind="text: name"></span>
-                <span class="chevron">
+                <span class="id" data-bind="text: id, click: toggleDirections"></span>
+                <span class="name" data-bind="text: name, click: toggleDirections"></span>
+                <span class="chevron" data-bind="click: toggleDirections">
                     <svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
                         <defs></defs>
                         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
                             <path d="M7.07544741,17 L5.2420497,15.1932909 L11.3325608,9.44317952 L5,3.84499453 L6.95442256,2 L15,9.51914273 L7.07544741,17 Z" id="Chevron" fill="#C7C7CC" sketch:type="MSShapeGroup" transform="translate(10.000000, 9.500000) rotate(90.000000) translate(-10.000000, -9.500000) "></path>
                         </g>
+                    </svg>
+                </span>
+                <span class="star" data-bind="click: toggleFavorite, css: {favorite: isFavorite}">
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 480 480" style="enable-background:new 0 0 480 480;" xml:space="preserve">
+                        <polygon style="fill-rule:evenodd;clip-rule:evenodd;" points="403.112,203.555 287.292,186.042 240,81.067 192.09,185.423    76.27,202.937 157.686,284.974 140,394.577 240,346.667 339.375,394.577 322.937,283.73    "/>
                     </svg>
                 </span>
             </div>

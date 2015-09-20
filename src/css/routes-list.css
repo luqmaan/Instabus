@@ -9,15 +9,24 @@
     border-bottom: 1px solid rgb(207,207,207);
     border-top: none;
     padding: 15px 15px 15px 20px;
-    cursor: pointer;
     transition: box-shadow 0.2s ease-in-out;
 }
 .routes-list li:last-child {
     border: none;
 }
-.routes-list li .chevron {
+.routes-list li .chevron,
+.routes-list li .star {
     float: right;
+    margin-right: 1rem;
 }
+.routes-list li .star.favorite polygon {
+    fill: #fbfb00;
+}
+
+.routes-list li .star {
+    fill: rgb(199, 199, 204);
+}
+
 .routes-list li .chevron svg {
     overflow: visible;
 }
@@ -45,6 +54,14 @@
     margin-left: 15px;
     color: rgb(163,163,163);
 }
+
+.routes-list .name,
+.routes-list .id,
+.routes-list .star,
+.routes-list .chevron {
+    cursor: pointer;
+}
+
 .routes-list .directions button {
     font-size: 1.0em;
     width: 100%;

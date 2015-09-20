@@ -10,6 +10,7 @@ var StopCollection = require('./models/StopCollection');
 var InfoViewModel = require('./models/InfoViewModel');
 var fs = require('fs');
 var config = require('./config');
+var favorites = require('./favorites');
 
 var CapMetroAPIError = config.errors.CapMetroAPIError();
 
