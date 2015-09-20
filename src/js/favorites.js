@@ -24,7 +24,6 @@ function sync() {
 			localStorage.setItem(lsKey, JSON.stringify(favorites));
 		} catch (e) {
 			console.error(e);
-			alert('We\'re sorry, your browser does not support this feature.');
 		}
 	}
 }
