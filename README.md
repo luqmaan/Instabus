@@ -1,7 +1,7 @@
 [**www.Instabus.org**](http://instabus.org)
 ====================
 
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/luqmaan/Instabus?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Slack](http://slack.open-austin.org/badge.svg)](Chat on the Open Austin #instabus Slack channel) Chat on the Open Austin **#instabus** Slack channel
 
 #### [Realtime map of Austin's MetroRapid bus and MetroRail train](http://instabus.org)
 
