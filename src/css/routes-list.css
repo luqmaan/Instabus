@@ -11,21 +11,32 @@
     padding: 15px 15px 15px 20px;
     transition: box-shadow 0.2s ease-in-out;
 }
+.routes-list li .row {
+    display: flex;
+}
 .routes-list li:last-child {
     border: none;
-}
-.routes-list li .chevron,
-.routes-list li .star {
-    float: right;
-}
-.routes-list li .star.favorite polygon {
-    fill: #fbfb00;
 }
 
 .routes-list li .star {
     fill: rgb(199, 199, 204);
     margin-right: 1rem;
+    margin-top: -2px;
 }
+.routes-list li .star polygon {
+    -webkit-transition: fill 0.1s linear;
+    transition: fill 0.1s linear;
+}
+.routes-list li .star:hover polygon {
+    fill: rgb(150,148,148);
+}
+.routes-list li .star.favorite polygon {
+    fill: rgb(150,148,148);
+}
+.routes-list li .star.favorite:hover polygon {
+    fill: rgb(199, 199, 204);
+}
+
 
 .routes-list li .chevron svg {
     overflow: visible;
@@ -53,6 +64,7 @@
 .routes-list .name {
     margin-left: 15px;
     color: rgb(163,163,163);
+    flex: 1;
 }
 
 .routes-list .name,
