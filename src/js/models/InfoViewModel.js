@@ -4,7 +4,20 @@ var ko = require('knockout');
 var infoHTML = fs.readFileSync(__dirname + '/../templates/info.html', 'utf8');
 
 function InfoViewModel() {
-    this.infoText = ko.observable('Show Info');
+    this.infoText = ko.observable('About');
+    this.showTransitime = ko.observable(!!localStorage.getItem('showtransitime'));
+    console.log('wef', !!localStorage.getItem('showtransitime'))
+
+    this.showTransitime.subscribe(function(value) {
+        console.log('Setting transitime to', !!value);
+        if (!!value) {
+            localStorage.setItem('showtransitime', 'hi');
+        }
+        else {
+            localStorage.removeItem('showtransitime');
+        }
+    });
+
     window.addEventListener("hashchange", this.hashChange.bind(this));
     this.hashChange();
 }
@@ -25,15 +38,11 @@ InfoViewModel.prototype.applyBindings = function() {
 InfoViewModel.prototype.hashChange = function() {
     if (window.location.hash === '#/info') {
         this.applyBindings();
-        this.infoText('Hide Info');
-    } else {
-        this.infoText('Show Info');
     }
 };
 
 InfoViewModel.prototype.toggleInfo = function() {
     if (window.location.hash === '#/info') {
-        this.infoText('Show Info');
         if (history.length > 2) {
             history.back();
         }
@@ -42,7 +51,6 @@ InfoViewModel.prototype.toggleInfo = function() {
         }
     }
     else {
-        this.infoText('Hide Info');
         return true;
     }
 };

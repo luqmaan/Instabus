@@ -1,12 +1,17 @@
 var ko = require('knockout');
 var when = require('when');
 var leaflet = require('leaflet');
+var moment = require('moment');
 require('leaflet.label');
 var StopDetails = require('./StopDetails');
 var fs = require('fs');
 var config = require('../config');
+var requests = require('../requests');
 
 var stopPopupHTML = fs.readFileSync(__dirname + '/../templates/stop-popup.html', 'utf8');
+
+var uniqueTrips = window.uniqueTrips = {};
+
 
 function Stop(data) {
     var stop_name = data.stop_name.replace('(SB)', '').replace('(NB)', '');
@@ -23,6 +28,7 @@ function Stop(data) {
 
     this.stopDetails = new StopDetails(this.routeID(), this.directionID(), this.stopID());
     this.trips = ko.observableArray();
+    this.transitimeTrips = ko.observableArray();
 
     this._errorMsg = ko.observable();
     this.errorMsg = ko.computed(function() {
@@ -91,6 +97,8 @@ Stop.prototype = {
                 this.loading(false);
                 this._errorMsg(e.message);
             }.bind(this));
+
+        this.transitimeRefresh();
     },
     setupMarker: function() {
         this.marker.bindPopup(this.popupContent());
@@ -112,6 +120,76 @@ Stop.prototype = {
                 this.marker._map.setView(this.marker._latlng);
             }.bind(this), 1000);
         }
+    },
+    transitimeRefresh: function() {
+        if (!localStorage.getItem('showtransitime')) {
+            return;
+        }
+
+        var routeStop = this.routeID() + '|' + this.stopID();
+        var url = 'http://transitime-host.cloudapp.net/api/v1/key/f18a8240/agency/cap-metro/command/predictions?rs=' + routeStop;
+        var routeID = this.routeID;
+
+        return requests.get(url)
+            .then(function (data) {
+                var transitimeTrips = data.predictions[0].dest[0].pred.map(function(prediction) {
+                    var intervalId;
+                    var trip = {
+                        route: routeID,
+                        moment: moment.unix(prediction.time),
+                        prettySeconds: ko.observable(),
+                        prettyMinutes: ko.observable(),
+                        prettyHour: ko.observable(),
+                        old: ko.observable(),
+                    };
+
+                    function seconds() {
+                        return (trip.moment.diff(moment(), 'seconds') % 60) + 's';
+                    }
+                    function minutes() {
+                        var diff = trip.moment.diff(moment(), 'minutes');
+                        if (diff < 60) {
+                            return diff + 'm';
+                        }
+                        else {
+                            diff = trip.moment.diff(moment(), 'hours');
+                            return diff + 'h';
+                        }
+                    }
+                    function hours() {
+                        return trip.moment.format('h:mm');
+                    }
+                    function old() {
+                        return !trip.moment.isAfter();
+                    }
+                    function calculate() {
+                        console.log('interval', intervalId);
+                        trip.prettySeconds(seconds());
+                        trip.prettyMinutes(minutes());
+                        trip.prettyHour(hours());
+                        trip.old(old());
+                    }
+
+                    if (uniqueTrips[prediction.trip]) {
+                        clearInterval(uniqueTrips[prediction.trip]);
+                    }
+                    uniqueTrips[prediction.trip] = intervalId = setInterval(calculate, 1000);
+
+                    calculate();
+
+                    return trip;
+                });
+
+                return transitimeTrips;
+            }.bind(this))
+            .then(function(transitimeTrips) {
+                console.log('transitimeTrips', transitimeTrips);
+                this.transitimeTrips(transitimeTrips);
+            }.bind(this))
+            .catch(function(err) {
+                console.error(err);
+                window.Raven.captureException(e);
+            });
     }
 };
 

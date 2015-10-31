@@ -6,21 +6,28 @@
         <h2>Notice Any Issues?</h2>
         <button href="#" data-bind="{click: reportProblem}">Contact Us</button>
 
+        <h2>Beta Features</h2>
+        <div>
+            <input name="showtransitime" type="checkbox" data-bind="{checked: showTransitime}" />
+            <label for="showtransitime">Show Transitime predictions</label>
+            <p style="padding-left: 20px; color: #888;">We're trying to generate our own predictions. Learn more about this feature at <a target="_blank" href="https://github.com/luqmaan/Instabus/issues/210">github.com/luqmaan/Instabus/issues/210</a>.</p>
+        </div>
+
         <h2>Frequently Asked Questions</h2>
+
+        <h4>What is Instabus?</h4>
+        <div class="faq-answer">
+            Instabus is a webapp that shows you where your bus is in realtime. Instabus works in Austin and uses <a href="http://www.capmetro.org/metrolabs/" target="_blank">data published by CapMetro</a>.
+        </div>
 
         <h4>Is Instabus open source?</h4>
         <div class="faq-answer">
             Instabus is open source and licensed under the <a href="http://www.gnu.org/licenses/gpl-3.0-standalone.html">GNU GPL V3 License</a>. The source is available at <a href="https://github.com/luqmaan/Instabus">github.com/luqmaan/Instabus</a>.
         </div>
 
-        <h4>What is Instabus?</h4>
-        <div class="faq-answer">
-            Instabus is a webapp that shows you where your bus is in realtime.
-        </div>
-
         <h4>Why is the vehicle location out of date?</h4>
         <div class="faq-answer">
-            CapMetro only updates vehicle locations every 90 seconds, except for MetroRapid vehicles which are updated every 60seconds. You should encourage CapMetro to provide more accurate realtime data.
+            CapMetro only updates vehicle locations every 90 seconds, except for MetroRapid vehicles which are updated every 60 seconds. You should encourage CapMetro to provide more accurate realtime data.
         </div>
     </div>
 </div>
