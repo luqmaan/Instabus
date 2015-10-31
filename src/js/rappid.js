@@ -232,9 +232,7 @@ Rappid.prototype = {
             this.displayMap(false);
         }
 
-        window.ga('send', 'pageview', {
-         'page': location.pathname + location.search  + location.hash
-        });
+        window.analytics.page(location.pathname + location.search  + location.hash);
     }
 };
 

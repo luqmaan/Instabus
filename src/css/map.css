@@ -154,3 +154,7 @@
     color: rgb(150,150,150);
     font-weight: 400;
 }
+
+.predictions-name {
+    font-weight: 300;
+}
