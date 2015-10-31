@@ -75,7 +75,7 @@ gulp deploy
 Instabus has gone through many iterations and has had many contributors. Some get credit in the [Contributors graph](https://github.com/luqmaan/Instabus/graphs/contributors), and some don't. 
 
 - https://github.com/luqmaan - :hankey:
-- https://github.com/drmaples - :rooster: The inspiration behind making Instabus a webapp instead of a native app.
+- https://github.com/drmaples - :rooster: The inspiration behind making Instabus a webapp instead of a native app. Wrote 50% of the Instabus webapp with @luqmaan early in the morning before work.
 - https://github.com/scascketta - The name Instabus, the Go proxy, many bugfixes, sanity, plenty of testing, beans, and much more.
 - https://github.com/walkeriniraq - So much help with Transitime and figuring out Java
 - https://github.com/paulserraino - Map usability and CSS minification
