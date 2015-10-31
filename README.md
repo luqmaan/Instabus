@@ -28,9 +28,15 @@ CapMetro only updates the vehicle location every 30-90 seconds. You should encou
 
 ## Contributing
 
-We really need help making this app awesome. We use GitHub issues to track bugs, features, and ideas. Issues that we think are important/can use help are tagged as `help wanted`. You can filter by the `help wanted` tag: https://github.com/luqmaan/Instabus/issues?labels=help+wanted&state=open.
+~~We really need help making this app awesome. We use GitHub issues to track bugs, features, and ideas. Issues that we think are important/can use help are tagged as `help wanted`. You can filter by the `help wanted` tag: https://github.com/luqmaan/Instabus/issues?labels=help+wanted&state=open.~~
 
-Run `gulp deploy` when submitting a pull request. This packages up the .js and .css files.
+The code in this repo is too messy. Instabus needs to be rewritten from scratch. It also needs to be rewritten to work for other cities. We can do this by supporting the [OneBusAway REST API](http://developer.onebusaway.org/modules/onebusaway-application-modules/1.1.13/api/where/index.html) or [Transitime](http://www.transitime.org/). Unfortunately, Austin doesn't have a OneBusAway instance. So, we're slowly taking the necessary steps to run our own OneBusAway instance. See luqmaan/Instabus#210. 
+
+We need help getting OneBusAway/Transitime running. If you have experience with **Java** come help. Join the #instabus or #transitime channel on the [Open Austin Slack](http://slack.open-austin.org). 
+
+If you're interested in rewriting the Instabus webapp, contact on Slack. One attempt at rewriting Instabus has been started: https://github.com/luqmaan/instabus-react. But it is nowhere near complete.
+
+**In the meantime, pull requests for bugs and UI changes to this repo are welcome.**
 
 ### Installation
 
@@ -66,12 +72,19 @@ gulp deploy
 
 ## Contributors
 
-- https://github.com/luqmaan
-- https://github.com/drmaples
-- https://github.com/paulserraino
-- https://github.com/ECatx
-- https://github.com/fleeting
-- Mayhaps you?
+Instabus has gone through many iterations and has had many contributors. Some get credit in the [Contributors graph](https://github.com/luqmaan/Instabus/graphs/contributors), and some don't. 
+
+- https://github.com/luqmaan - :hankey:
+- https://github.com/drmaples - :rooster: The inspiration behind making Instabus a webapp instead of a native app. Wrote 50% of the Instabus webapp with @luqmaan early in the morning before work.
+- https://github.com/scascketta - The name Instabus, the Go proxy, many bugfixes, sanity, plenty of testing, beans, and much more.
+- https://github.com/walkeriniraq - So much help with Transitime and figuring out Java
+- https://github.com/paulserraino - Map usability and CSS minification
+- https://github.com/ECatx - Accessibility contributions
+- https://github.com/jpmensching - :star2: Added favorites
+- https://github.com/sethgho - Created MetroRappid for Android, MetroRappid for iOS contributions
+- https://github.com/johntyree - MetroRappid for Android contributions, help with arrival time prediction algorithms , and much more
+- https://github.com/fleeting - Default map location and README contributions
+- https://github.com/Caskman - MetroRappid for Android contributions, beans, Android theme color
 
 ## License
 
