@@ -72,12 +72,19 @@ gulp deploy
 
 ## Contributors
 
-- https://github.com/luqmaan
-- https://github.com/drmaples
-- https://github.com/paulserraino
-- https://github.com/ECatx
-- https://github.com/fleeting
-- Mayhaps you?
+Instabus has gone through many iterations and has had many contributors. Some get credit in the [Contributors graph](https://github.com/luqmaan/Instabus/graphs/contributors), and some don't. 
+
+- https://github.com/luqmaan - :hankey:
+- https://github.com/drmaples - :rooster: The inspiration behind making Instabus a webapp instead of a native app.
+- https://github.com/scascketta - The name Instabus, the Go proxy, many bugfixes, sanity, plenty of testing, beans, and much more.
+- https://github.com/walkeriniraq - So much help with Transitime and figuring out Java
+- https://github.com/paulserraino - Map usability and CSS minification
+- https://github.com/ECatx - Accessibility contributions
+- https://github.com/jpmensching - :star2: Added favorites
+- https://github.com/sethgho - Created MetroRappid for Android, MetroRappid for iOS contributions
+- https://github.com/johntyree - MetroRappid for Android contributions, help with arrival time prediction algorithms , and much more
+- https://github.com/fleeting - Default map location and README contributions
+- https://github.com/Caskman - MetroRappid for Android contributions, beans, Android theme color
 
 ## License
 
