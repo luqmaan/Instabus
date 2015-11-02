@@ -127,7 +127,7 @@ Stop.prototype = {
         }
 
         var routeStop = this.routeID() + '|' + this.stopID();
-        var url = 'http://transitime-host.cloudapp.net/api/v1/key/f18a8240/agency/cap-metro/command/predictions?rs=' + routeStop;
+        var url = 'http://crossorigin.me/http://transitime-host.cloudapp.net/api/v1/key/f18a8240/agency/cap-metro/command/predictions?rs=' + routeStop;
         var routeID = this.routeID;
 
         return requests.get(url)
