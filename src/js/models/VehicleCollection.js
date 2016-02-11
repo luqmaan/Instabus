@@ -22,16 +22,16 @@ VehicleCollection.prototype = {
             .tap(this.draw.bind(this));
     },
     fetch: function() {
-        var capURL = 'https://data.texas.gov/resource/9e7h-gz56.json?Route=' + this.route;
+        var url = 'https://crossorigin.me/http://52.88.82.199:8080/onebusaway-api-webapp/api/where/trips-for-route/1_' + this.route + '.json?key=TEST&includeSchedules=true&includeStatus=true';
 
-        return requests.get(capURL)
+        return requests.get(url)
             .then(this.parseResponse.bind(this, this.direction));
     },
     parseResponse: function(direction, res) {
         var vehicles = [];
 
-        vehicles = res.map(function(v) {
-            var vehicle = new Vehicle(v);
+        vehicles = res.data.list.map(function(v) {
+            var vehicle = new Vehicle(v, res);
             // if (vehicle.directionID() === direction) {
                 return vehicle;
             // }
