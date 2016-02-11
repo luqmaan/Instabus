@@ -1,6 +1,7 @@
 var ko = require('knockout');
 var L = require('leaflet');
 var fs = require('fs');
+var moment = require('moment');
 require('leaflet.label');
 var config = require('../config');
 var utils = require('../utils');
@@ -24,9 +25,64 @@ function animateMarker(marker, i, steps, startLatLng, deltaLatLng) {
     }
 }
 
-function Vehicle(data) {
+
+function prettyTime(aMoment) {
+  var secondsAgo = Math.abs(aMoment.diff(moment(), 'seconds'));
+  if (secondsAgo < 60) {
+      return secondsAgo + 's';
+  }
+
+  var diff = Math.abs(aMoment.diff(moment(), 'minutes'));
+  if (diff <= 60) {
+    return diff + 'm ' + (secondsAgo % 60) + 's';
+  }
+  diff = Math.abs(aMoment.diff(moment(), 'hours'));
+  return diff + 'h';
+}
+
+function directionForHeadsign(headsign) {
+    var head = headsign.toLowerCase();
+
+    if (head.indexOf('-eb') !== -1) {
+        return 'East';
+    }
+    if (head.indexOf('-wb') !== -1) {
+        return 'West';
+    }
+    if (head.indexOf('-nb') !== -1) {
+        return 'North';
+    }
+    if (head.indexOf('-sb') !== -1) {
+        return 'South';
+    }
+    return headsign;
+}
+
+
+function obaResponseAsTurd(tripDetails, fullRes) {
+    var tripStatus = tripDetails.status;
+    var trip = fullRes.data.references.trips.find(function(x) { return x.id === tripStatus.activeTripId });
+    var route = fullRes.data.references.routes.find(function(x) { return x.id === trip.routeId });
+
+    var time = moment(tripStatus.lastUpdateTime);
+    var updatetime = prettyTime(time) + ' ago';
+
+    return {
+        vehicleid: tripStatus.vehicleId,
+        location: [tripStatus.position.lat, tripStatus.position.lon],
+        routeid: route.shortName,
+        direction: directionForHeadsign(trip.tripHeadsign),
+        updatetime: updatetime,
+        inservice: '',
+        heading: tripStatus.orientation / 10,
+    };
+}
+
+function Vehicle(tripDetails, fullRes) {
+    var data = obaResponseAsTurd(tripDetails, fullRes);
+
     this.id = this.vehicleID = Number(data.vehicleid);
-    this.location = this.parseLocationString(data.location);
+    this.location = data.location;
 
     // observables
     this.route = ko.observable(Number(data.routeid));
