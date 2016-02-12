@@ -64,31 +64,33 @@ function obaResponseAsTurd(tripDetails, fullRes) {
     var trip = fullRes.data.references.trips.find(function(x) { return x.id === tripStatus.activeTripId });
     var route = fullRes.data.references.routes.find(function(x) { return x.id === trip.routeId });
 
+    var predictions = window.location.href.indexOf('predictions') !== -1;
+
     var time = moment(tripStatus.lastUpdateTime);
     var updatetime = prettyTime(time) + ' ago';
 
     return {
         vehicleid: tripStatus.vehicleId,
-        location: [tripStatus.position.lat, tripStatus.position.lon],
+        location: !predictions ? [tripStatus.lastKnownLocation.lat, tripStatus.lastKnownLocation.lon] : [tripStatus.position.lat, tripStatus.position.lon],
         routeid: route.shortName,
         direction: directionForHeadsign(trip.tripHeadsign),
         updatetime: updatetime,
         inservice: '',
-        heading: tripStatus.orientation / 10,
+        heading: !predictions ? (tripStatus.lastKnownOrientation / 10) : (tripStatus.orientation / 10),
     };
 }
 
 function Vehicle(tripDetails, fullRes) {
     var data = obaResponseAsTurd(tripDetails, fullRes);
 
-    this.id = this.vehicleID = Number(data.vehicleid);
+    this.id = this.vehicleID = data.vehicleid;
     this.location = data.location;
 
     // observables
-    this.route = ko.observable(Number(data.routeid));
+    this.route = ko.observable(data.routeid);
     this.direction = ko.observable(data.direction);
     this.directionID = ko.observable(utils.getDirectionID(this.route(), data.direction));
-    this.updateTime = ko.observable(data.updatetime.replace(/^0/g, ''));
+    this.updateTime = ko.observable(data.updatetime);
     this.inService = ko.observable(data.inservice === "Y" ? true : false);
     this.routeID = ko.observable(Number(data.routeid));
     this.heading = ko.observable(Number(data.heading) * 10);  // heading is a value between 0 and 36
