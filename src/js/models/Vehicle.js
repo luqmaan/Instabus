@@ -69,9 +69,12 @@ function obaResponseAsTurd(tripDetails, fullRes) {
     var time = moment(tripStatus.lastUpdateTime);
     var updatetime = prettyTime(time) + ' ago';
 
+    var location = tripStatus.lastKnownLocation ? [tripStatus.lastKnownLocation.lat, tripStatus.lastKnownLocation.lon] : [null, null];
+    location = (predictions && location) ?  [tripStatus.position.lat, tripStatus.position.lon] : location;
+
     return {
         vehicleid: tripStatus.vehicleId,
-        location: !predictions ? [tripStatus.lastKnownLocation.lat, tripStatus.lastKnownLocation.lon] : [tripStatus.position.lat, tripStatus.position.lon],
+        location: location,
         routeid: route.shortName,
         direction: directionForHeadsign(trip.tripHeadsign),
         updatetime: updatetime,
