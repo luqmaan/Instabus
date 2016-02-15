@@ -39,7 +39,10 @@ VehicleCollection.prototype = {
     },
     filter: function(rawVehicles) {
         return rawVehicles.filter(function(v) {
-            return v.vehicleID && v.location;
+            if (v.vehicleID && v.location) {
+                return v;
+            }
+            console.log('discarding vehicle vehicleID: ', v.vehicleID, 'location', v.location);
         });
     },
     draw: function(newVehicles) {
