@@ -19,25 +19,28 @@ function VehicleCollection(route, direction) {
 VehicleCollection.prototype = {
     refresh: function() {
         return this.fetch()
+            .then(this.filter.bind(this))
             .tap(this.draw.bind(this));
     },
     fetch: function() {
         var url = 'https://crossorigin.me/http://52.88.82.199:8080/onebusaway-api-webapp/api/where/trips-for-route/1_' + this.route + '.json?key=TEST&includeSchedules=true&includeStatus=true';
 
         return requests.get(url)
-            .then(this.parseResponse.bind(this, this.direction));
+            .then(this.parseResponse.bind(this));
     },
-    parseResponse: function(direction, res) {
+    parseResponse: function(res) {
         var vehicles = [];
 
         vehicles = res.data.list.map(function(v) {
-            var vehicle = new Vehicle(v, res);
-            // if (vehicle.directionID() === direction) {
-                return vehicle;
-            // }
+            return new Vehicle(v, res);
         });
 
         return vehicles;
+    },
+    filter: function(rawVehicles) {
+        return rawVehicles.filter(function(v) {
+            return v.vehicleID && v.location;
+        });
     },
     draw: function(newVehicles) {
         var addedVehicles = [],
