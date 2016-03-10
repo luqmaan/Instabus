@@ -1,6 +1,9 @@
 [**www.Instabus.org**](http://instabus.org)
 ====================
 
+:fire: We're rewriting Instabus. https://github.com/open-austin/instabus :fire:
+
+
 [![Slack](http://slack.open-austin.org/badge.svg)](Chat on the Open Austin #instabus Slack channel) Chat on the Open Austin **#instabus** Slack channel
 
 #### [Realtime map of Austin's MetroRapid bus and MetroRail train](http://instabus.org)
