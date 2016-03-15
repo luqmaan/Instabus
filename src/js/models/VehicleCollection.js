@@ -23,7 +23,7 @@ VehicleCollection.prototype = {
             .tap(this.draw.bind(this));
     },
     fetch: function() {
-        var url = 'https://crossorigin.me/http://52.88.82.199:8080/onebusaway-api-webapp/api/where/trips-for-route/1_' + this.route + '.json?key=TEST&includeSchedules=true&includeStatus=true';
+        var url = 'https://crossorigin.me/http://52.88.82.199:8080/onebusaway-api-webapp/api/where/trips-for-route/1_' + this.route + '.json?key=TEST&includeSchedules=true&includeStatus=true&_=' + (Math.ceil(Math.random() * 100000));
 
         return requests.get(url)
             .then(this.parseResponse.bind(this));
