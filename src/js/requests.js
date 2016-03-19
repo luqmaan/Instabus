@@ -2,6 +2,30 @@ var when = require('when');
 
 var requests = {
     requestID: 0,
+    jsonp: function(url) {
+        // http://stackoverflow.com/questions/22780430/javascript-xmlhttprequest-using-jsonp
+        var deferred = when.defer();
+
+        try {
+            var callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
+            window[callbackName] = function(data) {
+                delete window[callbackName];
+                document.body.removeChild(script);
+                deferred.resolve(data);
+            };
+
+            var script = document.createElement('script');
+            script.src = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'callback=' + callbackName;
+            document.body.appendChild(script);
+        }
+        catch (e) {
+            console.error('jsonp error', e);
+            deferred.reject(e);
+        }
+
+        return deferred.promise;
+    },
+
     send: function(method, url, data, headers) {
         var self = this,
             deferred = when.defer(),
