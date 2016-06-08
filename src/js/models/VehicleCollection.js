@@ -23,16 +23,19 @@ VehicleCollection.prototype = {
             .tap(this.draw.bind(this));
     },
     fetch: function() {
-        var url = 'http://52.88.82.199:8080/onebusaway-api-webapp/api/where/trips-for-route/1_' + this.route + '.json?key=TEST&includeSchedules=true&includeStatus=true&_=' + (Math.ceil(Math.random() * 100000));
+        var url = 'https://lnykjry6ze.execute-api.us-west-2.amazonaws.com/prod/gtfsrt-debug?url=https://data.texas.gov/download/eiei-9rpf/application/octet-stream&_=' + (Math.ceil(Math.random() * 100000));
 
-        return requests.jsonp(url)
+        return requests.json(url)
             .then(this.parseResponse.bind(this));
     },
     parseResponse: function(res) {
-        var vehicles = [];
+        debugger;
+        var currentRoute = this.route;
 
-        vehicles = res.data.list.map(function(v) {
-            return new Vehicle(v, res);
+        var vehicles = res.entity.filter(function(vehicle) {
+            return vehicle.trip.route_id === currentRoute;
+        }).map(function(vehicle) {
+            return new Vehicle(res);
         });
 
         return vehicles;

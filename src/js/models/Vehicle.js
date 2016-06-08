@@ -59,34 +59,28 @@ function directionForHeadsign(headsign) {
 }
 
 
-function obaResponseAsTurd(tripDetails, fullRes) {
-    var tripStatus = tripDetails.status;
-    var trip = fullRes.data.references.trips.find(function(x) { return x.id === tripStatus.activeTripId });
-    var route = fullRes.data.references.routes.find(function(x) { return x.id === trip.routeId });
-
-    var predictions = window.location.href.indexOf('predictions') !== -1;
-
-    var time = moment(tripStatus.lastUpdateTime);
+function obaResponseAsTurd(res) {
+    var time = moment(res.vehicle.timestamp);
     var updatetime = prettyTime(time) + ' ago';
 
-    var location = tripStatus.lastKnownLocation ? [tripStatus.lastKnownLocation.lat, tripStatus.lastKnownLocation.lon] : [null, null];
-    location = (predictions && location) ?  [tripStatus.position.lat, tripStatus.position.lon] : location;
+    var location = res.vehicle.position ? [res.vehicle.position.latitude, res.vehicle.position.longitude] : [null, null];
+    location = (predictions && location) ?  [res.vehicle.position.latitude, res.vehicle.position.longitude] : location;
 
-    var heading = (!!tripStatus.lastKnownOrientation && !predictions) ? tripStatus.lastKnownOrientation / 10 : (tripStatus.orientation / 10);
+    var heading = res.vehicle.position.bearing;
 
     return {
-        vehicleid: tripStatus.vehicleId,
+        vehicleid: res.vehicle.vehicle.id,
         location: location,
         routeid: route.shortName,
-        direction: directionForHeadsign(trip.tripHeadsign),
+        direction: '',
         updatetime: updatetime,
         inservice: '',
         heading: heading,
     };
 }
 
-function Vehicle(tripDetails, fullRes) {
-    var data = obaResponseAsTurd(tripDetails, fullRes);
+function Vehicle(res) {
+    var data = obaResponseAsTurd(res);
 
     this.id = this.vehicleID = data.vehicleid;
     this.location = data.location;
