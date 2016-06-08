@@ -16,7 +16,7 @@ function easeInOutCubic(t, b, c, d) {
 
 function animateMarker(marker, i, steps, startLatLng, deltaLatLng) {
     var x = easeInOutCubic(i, startLatLng[0], deltaLatLng[0], steps),
-        y = easeInOutCubic(i, startLatLng[1], deltaLatLng[1], steps);
+    y = easeInOutCubic(i, startLatLng[1], deltaLatLng[1], steps);
 
     marker.setLatLng([x, y]);
 
@@ -25,19 +25,18 @@ function animateMarker(marker, i, steps, startLatLng, deltaLatLng) {
     }
 }
 
-
 function prettyTime(aMoment) {
-  var secondsAgo = Math.abs(aMoment.diff(moment(), 'seconds'));
-  if (secondsAgo < 60) {
-      return secondsAgo + 's';
-  }
+    var secondsAgo = Math.abs(aMoment.diff(moment(), 'seconds'));
+    if (secondsAgo < 60) {
+        return secondsAgo + 's';
+    }
 
-  var diff = Math.abs(aMoment.diff(moment(), 'minutes'));
-  if (diff <= 60) {
-    return diff + 'm ' + (secondsAgo % 60) + 's';
-  }
-  diff = Math.abs(aMoment.diff(moment(), 'hours'));
-  return diff + 'h';
+    var diff = Math.abs(aMoment.diff(moment(), 'minutes'));
+    if (diff <= 60) {
+        return diff + 'm ' + (secondsAgo % 60) + 's';
+    }
+    diff = Math.abs(aMoment.diff(moment(), 'hours'));
+    return diff + 'h';
 }
 
 function directionForHeadsign(headsign) {
@@ -59,34 +58,27 @@ function directionForHeadsign(headsign) {
 }
 
 
-function obaResponseAsTurd(tripDetails, fullRes) {
-    var tripStatus = tripDetails.status;
-    var trip = fullRes.data.references.trips.find(function(x) { return x.id === tripStatus.activeTripId });
-    var route = fullRes.data.references.routes.find(function(x) { return x.id === trip.routeId });
-
-    var predictions = window.location.href.indexOf('predictions') !== -1;
-
-    var time = moment(tripStatus.lastUpdateTime);
+function obaResponseAsTurd(res) {
+    var time = moment.unix(res.vehicle.timestamp);
     var updatetime = prettyTime(time) + ' ago';
 
-    var location = tripStatus.lastKnownLocation ? [tripStatus.lastKnownLocation.lat, tripStatus.lastKnownLocation.lon] : [null, null];
-    location = (predictions && location) ?  [tripStatus.position.lat, tripStatus.position.lon] : location;
+    var location = res.vehicle.position ? [res.vehicle.position.latitude, res.vehicle.position.longitude] : [null, null];
 
-    var heading = (!!tripStatus.lastKnownOrientation && !predictions) ? tripStatus.lastKnownOrientation / 10 : (tripStatus.orientation / 10);
+    var heading = res.vehicle.position.bearing;
 
     return {
-        vehicleid: tripStatus.vehicleId,
+        vehicleid: res.vehicle.vehicle.id,
         location: location,
-        routeid: route.shortName,
-        direction: directionForHeadsign(trip.tripHeadsign),
+        routeid: res.vehicle.trip.route_id,
+        direction: '',
         updatetime: updatetime,
         inservice: '',
         heading: heading,
     };
 }
 
-function Vehicle(tripDetails, fullRes) {
-    var data = obaResponseAsTurd(tripDetails, fullRes);
+function Vehicle(res) {
+    var data = obaResponseAsTurd(res);
 
     this.id = this.vehicleID = data.vehicleid;
     this.location = data.location;
