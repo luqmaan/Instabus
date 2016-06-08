@@ -23,19 +23,28 @@ VehicleCollection.prototype = {
             .tap(this.draw.bind(this));
     },
     fetch: function() {
-        var url = 'https://lnykjry6ze.execute-api.us-west-2.amazonaws.com/prod/gtfsrt-debug?url=https://data.texas.gov/download/eiei-9rpf/application/octet-stream&_=' + (Math.ceil(Math.random() * 100000));
+        var url = 'https://lnykjry6ze.execute-api.us-west-2.amazonaws.com/prod/gtfsrt-debug?url=https://data.texas.gov/download/eiei-9rpf/application/octet-stream';
 
-        return requests.json(url)
+        return requests.get(url)
             .then(this.parseResponse.bind(this));
     },
     parseResponse: function(res) {
-        debugger;
+        var observedVehicles = {};
+        var duplicates = 0;
         var currentRoute = this.route;
 
         var vehicles = res.entity.filter(function(vehicle) {
-            return vehicle.trip.route_id === currentRoute;
-        }).map(function(vehicle) {
-            return new Vehicle(res);
+            var routeMatches = parseInt(vehicle.vehicle.trip.route_id) === currentRoute;
+            var vehicleID = vehicle.vehicle.vehicle.id;
+            var observed = observedVehicles.hasOwnProperty(vehicleID);
+            if (!observed) {
+                observedVehicles[vehicleID] = true;
+            }
+            return routeMatches && !observed;
+        });
+        
+        vehicles = vehicles.map(function(vehicle) {
+            return new Vehicle(vehicle);
         });
 
         return vehicles;

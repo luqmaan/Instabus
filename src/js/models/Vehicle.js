@@ -16,7 +16,7 @@ function easeInOutCubic(t, b, c, d) {
 
 function animateMarker(marker, i, steps, startLatLng, deltaLatLng) {
     var x = easeInOutCubic(i, startLatLng[0], deltaLatLng[0], steps),
-        y = easeInOutCubic(i, startLatLng[1], deltaLatLng[1], steps);
+    y = easeInOutCubic(i, startLatLng[1], deltaLatLng[1], steps);
 
     marker.setLatLng([x, y]);
 
@@ -25,19 +25,18 @@ function animateMarker(marker, i, steps, startLatLng, deltaLatLng) {
     }
 }
 
-
 function prettyTime(aMoment) {
-  var secondsAgo = Math.abs(aMoment.diff(moment(), 'seconds'));
-  if (secondsAgo < 60) {
-      return secondsAgo + 's';
-  }
+    var secondsAgo = Math.abs(aMoment.diff(moment(), 'seconds'));
+    if (secondsAgo < 60) {
+        return secondsAgo + 's';
+    }
 
-  var diff = Math.abs(aMoment.diff(moment(), 'minutes'));
-  if (diff <= 60) {
-    return diff + 'm ' + (secondsAgo % 60) + 's';
-  }
-  diff = Math.abs(aMoment.diff(moment(), 'hours'));
-  return diff + 'h';
+    var diff = Math.abs(aMoment.diff(moment(), 'minutes'));
+    if (diff <= 60) {
+        return diff + 'm ' + (secondsAgo % 60) + 's';
+    }
+    diff = Math.abs(aMoment.diff(moment(), 'hours'));
+    return diff + 'h';
 }
 
 function directionForHeadsign(headsign) {
@@ -60,18 +59,17 @@ function directionForHeadsign(headsign) {
 
 
 function obaResponseAsTurd(res) {
-    var time = moment(res.vehicle.timestamp);
+    var time = moment.unix(res.vehicle.timestamp);
     var updatetime = prettyTime(time) + ' ago';
 
     var location = res.vehicle.position ? [res.vehicle.position.latitude, res.vehicle.position.longitude] : [null, null];
-    location = (predictions && location) ?  [res.vehicle.position.latitude, res.vehicle.position.longitude] : location;
 
     var heading = res.vehicle.position.bearing;
 
     return {
         vehicleid: res.vehicle.vehicle.id,
         location: location,
-        routeid: route.shortName,
+        routeid: res.vehicle.trip.route_id,
         direction: '',
         updatetime: updatetime,
         inservice: '',
