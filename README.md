@@ -1,21 +1,30 @@
+:warning: Instabus is deprecated.
+
+Thank you for your support and for advocating to CapMetro the need for realtime transit data. Thanks to your help, CapMetro noticed Instabus and invited us to work with them to publish realtime data. CapMetro now publishes [reliable GTFS-realtime feeds](https://data.texas.gov/capital-metro), which means more than just the CapMetro app and Instabus can show realtime data for Austin.
+
+Try out [Transit](https://transitapp.com/), possibly the best realtime transit app that works in Austin. For more transit apps  take a look at [awesome-transit](https://github.com/luqmaan/awesome-transit).
+
+------------
+
 [**www.Instabus.org**](http://instabus.org)
 ====================
 
-:fire: We're rewriting Instabus. https://github.com/open-austin/instabus :fire:
-
-
-[![Slack](http://slack.open-austin.org/badge.svg)](Chat on the Open Austin #instabus Slack channel) Chat on the Open Austin **#instabus** Slack channel
-
 #### [Realtime map of Austin's MetroRapid bus and MetroRail train](http://instabus.org)
 
-[![](https://cloud.githubusercontent.com/assets/1275831/3210441/0128e4a2-eec1-11e3-8622-fc947f7c305c.png)](http://instabus.org)
+![](https://cloud.githubusercontent.com/assets/1275831/3210441/0128e4a2-eec1-11e3-8622-fc947f7c305c.png)  
 
 ##### Works on your desktop, your iPhone, and your Android device. Just go to [instabus.org](http://instabus.org)
 
 ![placeit](https://cloud.githubusercontent.com/assets/1275831/3565798/3078cb22-0ad3-11e4-8285-005d3c211766.jpg)
 
+![image](https://user-images.githubusercontent.com/1275831/28501239-34618a76-6f9d-11e7-985c-7b3a4156c2b8.png)
+
 
 ## FAQ
+
+### What happened to the rewrite you started in 2016?
+
+We got distracted by trying to make the map animations awesome and the code beautiful. You can view the work we started at https://github.com/open-austin/instabus.
 
 ### What happened to MetroRappid?
 
