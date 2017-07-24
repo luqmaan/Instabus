@@ -17,7 +17,7 @@ Try out [Transit](https://transitapp.com/), possibly the best realtime transit a
 
 ![placeit](https://cloud.githubusercontent.com/assets/1275831/3565798/3078cb22-0ad3-11e4-8285-005d3c211766.jpg)
 
-<img src="https://user-images.githubusercontent.com/1275831/28545957-98880cae-708e-11e7-9848-ae6d610c0107.png" width="300">  <img src="https://user-images.githubusercontent.com/1275831/28545972-ac7bbd14-708e-11e7-8e1a-16ff630c4a66.png" width="300">
+<img src="https://user-images.githubusercontent.com/1275831/28545957-98880cae-708e-11e7-9848-ae6d610c0107.png" width="450">  <img src="https://user-images.githubusercontent.com/1275831/28545972-ac7bbd14-708e-11e7-8e1a-16ff630c4a66.png" width="450">
 
 
 ## FAQ
