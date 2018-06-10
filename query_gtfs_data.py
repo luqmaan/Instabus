@@ -10,6 +10,7 @@ import os
 import json
 import sqlite3
 import logging
+import re
 from collections import defaultdict
 
 GTFS_DB = os.path.join('/tmp', 'gtfs.db')
@@ -50,10 +51,20 @@ def _get_directions_for_routes(curr, routes):
         route_id = int(row[0])
         direction_id = int(row[1])
         headsign = row[2].title()
+        headsign = headsign.replace('{}-'.format(route_id), '')
+        headsign = re.sub(r'-(Nb|Eb|Sb|Wb|Ib|Ob)', r' \1', headsign)
+        headsign = re.sub(r'\bNb\b', 'Northbound', headsign)
+        headsign = re.sub(r'\bEb\b', 'Eastbound', headsign)
+        headsign = re.sub(r'\bSb\b', 'Southbound', headsign)
+        headsign = re.sub(r'\bWb\b', 'Westbound', headsign)
+        headsign = re.sub(r'\bIb\b', 'Inbound', headsign)
+        headsign = re.sub(r'\bOb\b', 'Outbound', headsign)
+
         direction = {
             'direction_id': direction_id,
             'headsign': headsign,
         }
+
         routes[route_id]['directions'].append(direction)
 
     return routes
