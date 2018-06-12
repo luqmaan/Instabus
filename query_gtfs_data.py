@@ -8,63 +8,21 @@ from __future__ import unicode_literals
 
 import os
 import json
-import tempfile
 import sqlite3
 import logging
+import re
 from collections import defaultdict
 
-import arrow
-import requests
-import gtfsdb
-from gtfsdb.api import database_load
-
-# GTFS_DOWNLOAD_FILE = os.path.join(tempfile.gettempdir(), 'capmetro_gtfs.zip')
-GTFS_DOWNLOAD_FILE = os.path.join('/tmp', 'capmetro_gtfs.zip')
-GTFS_DB = os.path.join(tempfile.gettempdir(), 'capmetro_gtfs_data.db')
+GTFS_DB = os.path.join('/tmp', 'gtfs.db')
 DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
 DATA_VERSION_FILE = os.path.join(DATA_DIR, 'data_version.txt')
 
 
-def fetch_gtfs_data():
-    logger.info('fetching gtfs data....')
-    # for other cities we can use http://www.gtfs-data-exchange.com/agency/capital-metro/latest.zip
-    gtfs_url = 'https://www.capmetro.org/gisdata/google_transit.zip'
-    r = requests.get(gtfs_url, stream=True)
-    assert r.ok, 'problem fetching data. status_code={}'.format(r.status_code)
-
-    # looks like 'capital-metro_20140609_0109.zip'
-    with open(DATA_VERSION_FILE, 'wb') as f:
-        f.write('{}\n{}\n'.format(r.url, arrow.now()))
-
-    with open(GTFS_DOWNLOAD_FILE, 'wb') as f:
-        for chunk in r.iter_content(1024):
-            f.write(chunk)
-    logger.info('saved to {}'.format(GTFS_DOWNLOAD_FILE))
-
-
-def _get_route_types(curr):
-    route_types = {}
-
-    sql = '''
-        SELECT route_type, route_type_name
-        FROM route_type
-    '''
-    curr.execute(sql)
-
-    for row in curr:
-        route_type = int(row[0])
-        route_type_name = row[1]
-
-        route_types[route_type] = route_type_name
-
-    return route_types
-
-
-def _get_routes_for_types(curr, route_types):
+def _get_routes(curr):
     routes = {}
 
     sql = '''
-        SELECT route_id, route_long_name, route_type
+        SELECT route_id, route_long_name
         FROM routes
     '''
     curr.execute(sql)
@@ -72,11 +30,9 @@ def _get_routes_for_types(curr, route_types):
     for row in curr:
         route_id = int(row[0])
         route_long_name = row[1]
-        route_type = int(row[2])
         routes[route_id] = {
             'route_id': route_id,
             'name': route_long_name,
-            'route_type': route_types[route_type],
             'directions': [],
         }
 
@@ -95,18 +51,27 @@ def _get_directions_for_routes(curr, routes):
         route_id = int(row[0])
         direction_id = int(row[1])
         headsign = row[2].title()
+        headsign = headsign.replace('{}-'.format(route_id), '')
+        headsign = re.sub(r'-(Nb|Eb|Sb|Wb|Ib|Ob)', r' \1', headsign)
+        headsign = re.sub(r'\bNb\b', 'Northbound', headsign)
+        headsign = re.sub(r'\bEb\b', 'Eastbound', headsign)
+        headsign = re.sub(r'\bSb\b', 'Southbound', headsign)
+        headsign = re.sub(r'\bWb\b', 'Westbound', headsign)
+        headsign = re.sub(r'\bIb\b', 'Inbound', headsign)
+        headsign = re.sub(r'\bOb\b', 'Outbound', headsign)
+
         direction = {
             'direction_id': direction_id,
             'headsign': headsign,
         }
+
         routes[route_id]['directions'].append(direction)
 
     return routes
 
 
 def _save_route_data(curr):
-    route_types = _get_route_types(curr)
-    routes = _get_routes_for_types(curr, route_types)
+    routes = _get_routes(curr)
     directions = _get_directions_for_routes(curr, routes)
 
     data = sorted(directions.values(), key=lambda x: x['route_id'])
@@ -191,7 +156,6 @@ def _save_stop_data(curr):
             stops.parent_station,
             stops.stop_timezone,
             stops.wheelchair_boarding,
-            stops.platform_code,
             stop_times.stop_sequence
         FROM
             stop_times, trips, stops
@@ -212,14 +176,13 @@ def _save_stop_data(curr):
             stops.parent_station,
             stops.stop_timezone,
             stops.wheelchair_boarding,
-            stops.platform_code,
             stop_times.stop_sequence
         ORDER BY stop_times.stop_sequence
     '''
     curr.execute(sql)
 
     data_by_stops = defaultdict(list)
-    for (route_id, direction_id, stop_id, stop_code, stop_name, stop_desc, stop_lat, stop_lon, zone_id, stop_url, location_type, parent_station, stop_timezone, wheelchair_boarding, platform_code, stop_sequence) in curr:
+    for (route_id, direction_id, stop_id, stop_code, stop_name, stop_desc, stop_lat, stop_lon, zone_id, stop_url, location_type, parent_station, stop_timezone, wheelchair_boarding, stop_sequence) in curr:
         data_by_stops[(route_id, direction_id)].append({
             'route_id': route_id,
             'direction_id': direction_id,
@@ -235,7 +198,6 @@ def _save_stop_data(curr):
             'parent_station': parent_station,
             'stop_timezone': stop_timezone,
             'wheelchair_boarding': wheelchair_boarding,
-            'platform_code': platform_code,
             'stop_sequence': stop_sequence,
         })
 
@@ -246,32 +208,14 @@ def _save_stop_data(curr):
             f.write(json.dumps(data) + '\n')
 
 
-def parse_gtfs_data():
-    logger.info('loading gtfs data into db ({})...'.format(GTFS_DB))
-    database_load(
-        filename=GTFS_DOWNLOAD_FILE,
-        batch_size=gtfsdb.config.DEFAULT_BATCH_SIZE,
-        schema=gtfsdb.config.DEFAULT_SCHEMA,
-        is_geospatial=gtfsdb.config.DEFAULT_IS_GEOSPATIAL,
-        tables=None,
-        url='sqlite:///{}'.format(GTFS_DB),
-    )
+if __name__ == '__main__':
+    logging.basicConfig(level=logging.INFO, format='%(asctime)-15s [%(levelname)s] %(message)s')
+    logger = logging.getLogger(__name__)
 
+    logger.info('query from gtfs db ({})...'.format(GTFS_DB))
     with sqlite3.connect(GTFS_DB) as conn:
         curr = conn.cursor()
         _save_route_data(curr)
         shape_data = _get_shape_data(curr)
         _save_shape_data(curr, shape_data)
         _save_stop_data(curr)
-
-
-if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO, format='%(asctime)-15s [%(levelname)s] %(message)s')
-    logger = logging.getLogger(__name__)
-
-    # Manually download the GTFS file from socrata https://data.texas.gov/Transportation/Capital-Metro-Google-Transit/8s4f-jd2a
-    # And copy pasta it to /tmp/capmetro_gtfs.zip
-    # The file is still behind a socrata login wall during the beta
-    # fetch_gtfs_data()
-
-    parse_gtfs_data()

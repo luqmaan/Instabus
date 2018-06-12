@@ -2,7 +2,6 @@ var ko = require('knockout');
 var L = require('leaflet');
 var fs = require('fs');
 var moment = require('moment');
-require('leaflet.label');
 var config = require('../config');
 var utils = require('../utils');
 var vehiclePopupHTML = fs.readFileSync(__dirname + '/../templates/vehicle-popup.html', 'utf8');
@@ -117,8 +116,7 @@ Vehicle.prototype = {
 
         this.location = newVehicle.location;
 
-        this.marker.label._content = this.updateTime() + ' ' +  this.direction();
-        this.marker.label._update();
+        this.marker.tooltip.setToolTipContent(this.updateTime() + ' ' +  this.direction());
 
         this.move();
     },
@@ -161,11 +159,11 @@ Vehicle.prototype = {
         });
 
         marker.bindPopup(this.popupContent());
-        marker.bindLabel(this.updateTime() + ' ' + this.direction(), {
-            noHide: true,
-            direction: 'left',
-            className: 'vehicle-leaflet-label',
-            offset: [25, -10],
+        marker.bindTooltip(this.updateTime() + ' ' + this.direction(), {
+            permanent: true,
+            direction: 'right',
+            className: 'vehicle-leaflet-tooltip',
+            offset: [-100, 0],
         });
 
         return marker;

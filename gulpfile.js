@@ -26,7 +26,7 @@ gulp.task('clean', function () {
 gulp.task('build-css', function() {
     var src = [
         './src/css/leaflet.css',
-        './src/css/leaflet-label.css',
+        './src/css/leaflet-tooltip.css',
         './src/css/nprogress.css',
         './src/css/progress.css',
         './src/css/main.css',

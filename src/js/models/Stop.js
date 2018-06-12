@@ -2,7 +2,6 @@ var ko = require('knockout');
 var when = require('when');
 var leaflet = require('leaflet');
 var moment = require('moment');
-require('leaflet.label');
 var StopDetails = require('./StopDetails');
 var fs = require('fs');
 var config = require('../config');
@@ -55,23 +54,22 @@ function Stop(data) {
         fill: true,
         fillOpacity: 1,
         radius: 12,
-        zIndexOffset: config.STOP_Z_INDEX
+        zIndexOffset: config.STOP_Z_INDEX,
     });
 
-    this.marker.bindLabel(this.name(), {
-        noHide: false,
-        direction: 'right',
-        className: 'stop-leaflet-label',
-        offset: [15, -10],
-        clickable: true
-   });
+    this.marker.on('click', function() {window.x = this;}.bind(this));
 
-    this.marker.on('click', this.centerMarker.bind(this));
-    this.marker.on('click', this.stopClicked.bind(this));
+    this.marker.bindTooltip(this.name(), {
+        permanent: true,
+        direction: 'right',
+        className: 'stop-leaflet-tooltip',
+        offset: [15, 0],
+   });
 }
 
 Stop.prototype = {
     stopClicked: function() {
+      window.alert("hi")
         var hash = '#/route/' + this.routeID() + '/direction/' + this.directionID() + '/stop/' + this.stopID();
         location.hash = hash;
     },
